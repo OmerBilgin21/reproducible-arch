@@ -37,6 +37,7 @@ return {
         formatters_by_ft = {
           lua = { "stylua" },
           sh = { "shfmt" },
+          zsh = { "beautysh" },
           nix = { "nixfmt" },
           python = { "isort", "black" },
           javascript = {
