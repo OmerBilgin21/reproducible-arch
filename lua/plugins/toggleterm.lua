@@ -22,6 +22,7 @@ return {
           border = "single",
         },
         title_pos = "center",
+        scroll_on_output = false,
       }
 
       local claude_setup = {
@@ -30,6 +31,7 @@ return {
         cmd = "claude",
         hidden = true,
         title = "Claude Code",
+        scroll_on_output = false,
       }
 
       local lazygit_setup = vim.tbl_deep_extend("force", {
@@ -69,9 +71,24 @@ return {
         test_terminal:toggle()
       end)
 
+      vim.keymap.set("v", "<C-p>", function()
+        require("toggleterm").send_lines_to_terminal("visual_lines", true, { args = claude_setup.id })
+      end)
+
+      vim.keymap.set({ "t" }, "<C-p>", function()
+        local current_win = vim.api.nvim_get_current_win()
+        vim.cmd("wincmd p")
+        local filename = vim.fn.expand("%:t")
+        vim.api.nvim_set_current_win(current_win)
+        if filename ~= "" then
+          vim.api.nvim_paste(filename, true, -1)
+        end
+      end, { noremap = true, silent = true })
+
       vim.keymap.set("t", "<C-n>", [[<C-\><C-n>]])
       vim.keymap.set({ "i", "n", "t" }, "<S-tab>", function()
         if term.get_focused_id() == 999 then
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<S-tab>", true, false, true), "n", false)
           return
         end
         default:toggle()
