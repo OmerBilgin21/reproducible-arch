@@ -73,9 +73,9 @@ km.set(
   [[:lua require('vim.lsp.buf').rename(vim.fn.input('New Name: '))<CR>]],
   { noremap = true, silent = true }
 )
-km.set("n", "<leader><tab>d", "<cmd>tabnew | DBUIToggle<CR>", { desc = "", noremap = true, silent = true })
-km.set("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
-km.set("n", "<leader><tab>c", "<cmd>tabclose<cr>", { desc = "New Tab" })
+km.set("n", "<leader><tab>d", "<cmd>tabnew | DBUIToggle<CR>", { noremap = true, silent = true })
+km.set("n", "<leader><tab><tab>", "<cmd>tabnew<cr>")
+km.set("n", "<leader><tab>c", "<cmd>tabclose<cr>")
 km.set("n", "<leader><tab>n", "<cmd>:tabnext<cr>")
 km.set("n", "<leader><tab>p", "<cmd>:tabprevious<cr>")
 
