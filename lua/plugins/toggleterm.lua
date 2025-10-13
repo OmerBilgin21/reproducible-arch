@@ -23,6 +23,7 @@ return {
         },
         title_pos = "center",
         scroll_on_output = false,
+        shade_terminals = false,
       }
 
       local claude_setup = {
@@ -32,6 +33,7 @@ return {
         hidden = true,
         title = "Claude Code",
         scroll_on_output = false,
+        shade_terminals = false,
       }
 
       local lazygit_setup = vim.tbl_deep_extend("force", {
@@ -61,10 +63,14 @@ return {
         return test_setup
       end
 
+      tt.setup(vim.tbl_extend("force", base_setup, {
+        shade_filetypes = {},
+        shading_factor = 0,
+      }))
+
       local lazygit = Terminal:new(lazygit_setup)
       local claude = Terminal:new(claude_setup)
       local default = Terminal:new(default_setup)
-      tt.setup(base_setup)
 
       vim.keymap.set("n", "<leader>tt", function()
         local test_terminal = Terminal:new(get_test_setup())
