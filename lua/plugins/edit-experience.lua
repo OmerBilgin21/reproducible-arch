@@ -106,6 +106,7 @@ return {
   },
   {
     "ggandor/leap.nvim",
+    lazy = true,
     config = function()
       local curr_file = vim.bo.filetype
 
@@ -115,15 +116,16 @@ return {
       end
 
       local leap = require("leap")
-      local user = require("leap.user")
-      user.set_repeat_keys("<enter>", "<backspace>")
-      leap.opts = {
+      leap.setup({
         equivalence_classes = { " \t\r\n", "([{", ")]}", "'\"`" },
         preview_filter = function(c0, c1, c2)
           return not (c1:match("%s") or c0:match("%w") and c1:match("%w") and c2:match("%w"))
         end,
-      }
+      })
       leap.create_default_mappings()
+
+      local user = require("leap.user")
+      user.set_repeat_keys("<enter>", "<backspace>")
     end,
   },
 }
