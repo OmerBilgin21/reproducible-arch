@@ -3,7 +3,7 @@ local exists, _ = pcall(require, "telescope")
 return {
   "nvim-telescope/telescope.nvim",
   dependencies = {
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    { "nvim-telescope/telescope-fzf-native.nvim" },
   },
   lazy = false,
   config = function()
@@ -12,6 +12,14 @@ return {
     local actions = require("telescope.actions")
 
     telescope.setup({
+      extensions = {
+        fzf = {
+          fuzzy = true,                   -- false will only do exact matching
+          override_generic_sorter = true, -- override the generic sorter
+          override_file_sorter = true,    -- override the file sorter
+          case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
+        }
+      },
       defaults = {
         layout_strategy = "vertical",
         file_ignore_patterns = {
@@ -38,9 +46,11 @@ return {
             ["<esc>"] = actions.close,
             ["["] = actions.close,
             ["]"] = actions.close,
+            ["<C-f>"] = actions.delete_mark,
           },
           n = {
             ["<C-d>"] = actions.delete_buffer,
+            ["<C-f>"] = actions.delete_mark,
             ["<C-c>"] = actions.close,
             ["q"] = actions.close,
             ["["] = actions.close,
@@ -61,6 +71,12 @@ return {
     })
     vim.keymap.set("n", "<C-p>", function()
       builtin.find_files()
+    end, {
+      noremap = true,
+      silent = true,
+    })
+    vim.keymap.set("n", "<C-m>", function()
+      builtin.marks()
     end, {
       noremap = true,
       silent = true,
@@ -102,12 +118,4 @@ return {
       telescope.load_extension("fzf")
     end
   end,
-  extensions = {
-    fzf = {
-      fuzzy = true,
-      override_generic_sorter = true,
-      override_file_sorter = true,
-      case_mode = "smart_case",
-    },
-  },
 }
