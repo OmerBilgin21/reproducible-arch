@@ -109,6 +109,10 @@ return {
       end)
 
       vim.keymap.set("t", "<C-x>", function()
+        local trim = function(str)
+          return str:match("^%s*(.-)%s*$")
+        end
+
         if term.get_focused_id() ~= 997 then
           return
         end
@@ -137,6 +141,7 @@ return {
 
         vim.keymap.set({ "i", "n" }, "<CR>", function()
           local command = vim.api.nvim_buf_get_lines(buf, 0, -1, false)[1] or ""
+          command = trim(command)
           vim.api.nvim_win_close(win, true)
           default:send(command, false)
           vim.schedule(function()
