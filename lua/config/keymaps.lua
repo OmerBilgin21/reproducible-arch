@@ -79,20 +79,6 @@ km.set("n", "<leader><tab>c", "<cmd>tabclose<cr>")
 km.set("n", "<leader><tab>n", "<cmd>:tabnext<cr>")
 km.set("n", "<leader><tab>p", "<cmd>:tabprevious<cr>")
 
-km.set("n", "<leader><tab>s", function()
-  local port_check = vim.fn.system("lsof -ti:5432")
-
-  if port_check ~= "" then
-    print("Killing existing tunnel...")
-    vim.fn.system("zsh -c 'source ~/.zshrc && killp 5432'")
-    print("Tunnel killed")
-  else
-    print("Starting SSH tunnel...")
-    vim.fn.system("ssh -fN stg-db -v")
-    print("Tunnel started - connect to the DB in DBUI")
-  end
-end, { desc = "Toggle DB tunnel" })
-
 km.set({ "i", "x", "n", "s" }, "<C-s>", function()
   vim.cmd("w")
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
