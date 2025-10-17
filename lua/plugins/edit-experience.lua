@@ -106,7 +106,6 @@ return {
   },
   {
     "ggandor/leap.nvim",
-    lazy = true,
     config = function()
       local curr_file = vim.bo.filetype
 
