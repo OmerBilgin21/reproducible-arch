@@ -144,7 +144,8 @@ return {
           },
         },
       },
-      fuzzy = { implementation = "prefer_rust_with_warning" },
+      -- never do this again, TERRRIBBBBLE speed
+      -- fuzzy = { implementation = "prefer_rust_with_warning" },
     },
     opts_extend = { "sources.default" },
   },
