@@ -51,6 +51,10 @@ return {
       vim.api.nvim_set_hl(0, "ToggleTermNormal", { bg = "none" })
       vim.api.nvim_set_hl(0, "ToggleTermBorder", { bg = "none" })
 
+      vim.api.nvim_set_hl(0, "TabLine", { bg = "none" })
+      vim.api.nvim_set_hl(0, "TabLineFill", { bg = "none" })
+      vim.api.nvim_set_hl(0, "TabLineSel", { bg = "#0f1116", bold = true })
+
       vim.api.nvim_create_autocmd("TermOpen", {
         pattern = "*",
         callback = function()
