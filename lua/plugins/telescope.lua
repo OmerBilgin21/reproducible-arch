@@ -23,19 +23,6 @@ return {
       defaults = {
         layout_strategy = "vertical",
         file_ignore_patterns = {
-          "node_modules/",
-          ".git/",
-          -- for files you have to do it like below
-          "!*lock.json",
-          "raycast/",
-          "venv/",
-          "hf_cache/",
-          "cdk.out/",
-          "dist/",
-          "*.next/",
-          "*.gitlab/",
-          "build/",
-          "target/",
         },
         preview = {
           filesize_limit = 1,
@@ -83,8 +70,24 @@ return {
     })
     vim.keymap.set("n", "<leader>p", function()
       builtin.find_files({
-        hidden = true,
-        no_ignore = true,
+        find_command = {
+          "rg",
+          "--files",
+          "--hidden",
+          "--no-ignore",
+          "-g", "!node_modules/",
+          "-g", "!.git/",
+          "-g", "!*lock.json",
+          "-g", "!raycast/",
+          "-g", "!venv/",
+          "-g", "!hf_cache/",
+          "-g", "!cdk.out/",
+          "-g", "!dist/",
+          "-g", "!*.next/",
+          "-g", "!*.gitlab/",
+          "-g", "!build/",
+          "-g", "!target/",
+        },
       })
     end, {
       noremap = true,
