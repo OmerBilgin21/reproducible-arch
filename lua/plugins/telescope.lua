@@ -33,11 +33,8 @@ return {
             ["<esc>"] = actions.close,
             ["["] = actions.close,
             ["]"] = actions.close,
-            ["<C-f>"] = actions.delete_mark,
           },
           n = {
-            ["<C-d>"] = actions.delete_buffer,
-            ["<C-f>"] = actions.delete_mark,
             ["<C-c>"] = actions.close,
             ["q"] = actions.close,
             ["["] = actions.close,
@@ -53,7 +50,22 @@ return {
           initial_mode = "normal",
           theme = "dropdown",
           sort_mru = true,
+          mappings = {
+            n = {
+              ["<C-d>"] = actions.delete_buffer,
+            }
+          }
         },
+        marks = {
+          initial_mode = "normal",
+          theme = "dropdown",
+          sort_mru = true,
+          mappings = {
+            n = {
+              ["<C-i>"] = actions.delete_mark,
+            },
+          },
+        }
       },
     })
     vim.keymap.set("n", "<C-p>", function()
@@ -62,7 +74,7 @@ return {
       noremap = true,
       silent = true,
     })
-    vim.keymap.set("n", "<C-m>", function()
+    vim.keymap.set("n", "<C-n>", function()
       builtin.marks()
     end, {
       noremap = true,
