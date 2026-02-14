@@ -36,6 +36,17 @@ ensureYay() {
   yay -Qi "$1" &>/dev/null || yay -S --needed --noconfirm "$1"
 }
 
+ensureYayInstalled() {
+  if ! command -v yay >/dev/null 2>&1; then
+    if [[ ! -d "$yayPath" ]]; then
+      echo "you did not have yay, installing"
+      git clone https://aur.archlinux.org/yay.git "$yayPath"
+    fi
+    cd "$yayPath" && makepkg -si --noconfirm
+    cd "$bakDir"
+  fi
+}
+
 sudo pacman -Syu --noconfirm
 
 ensurePac gum
@@ -45,16 +56,13 @@ if gum confirm "Restore pacman packages?"; then
   while IFS= read -r line; do
     ensurePac "$line"
   done <"$bakDir/installed-packages.txt"
-
-  if [[ ! -d "$yayPath" ]]; then
-    git clone https://aur.archlinux.org/yay.git "$yayPath"
-    cd "$yayPath" && makepkg -si --noconfirm
-  fi
 fi
 
 cd "$bakDir"
 
 if gum confirm "Restore yay packages?"; then
+  ensureYayInstalled
+
   while IFS= read -r line; do
     ensureYay "$line"
   done <"$bakDir/installed-aur.txt"
@@ -75,21 +83,12 @@ fi
 
 if gum confirm "Make ZSH your default shell?"; then
   echo "[+] switching shells..."
-  chsh -s "$(which zsh)"
+  chsh -s "$(command -v zsh)"
 fi
 
 if gum confirm "Install and setup mise/mise-packages?"; then
   ensurePac mise
   mise install
 fi
-
-#   REMINDER SERVICES!
-#   dnscrypt-proxy.service
-#   tlp.service
-#   nvidia-hibernate.service
-#   nvidia-resume.service
-#   nvidia-suspend.service
-#   greetd.service
-#   docker.service
 
 echo "[+] Done."
