@@ -1,0 +1,12 @@
+librewolf-bin
+localsend-bin
+pinta
+postman-bin
+python-terminaltexteffects
+spotify
+ttf-ia-writer
+tzupdate
+ufw-docker
+ungoogled-chromium-bin
+wl-screenrec
+yaru-icon-theme
