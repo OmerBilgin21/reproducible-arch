@@ -1,8 +1,31 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2317
 
 set -euo pipefail
 
 bakDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+read -r -p "are you here only for nvim with stow setup? (y/N): " confirm
+
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  if ! command -v stow >/dev/null 2>&1; then
+    echo "stow is required for nvim-only setup. Install it first, then retry."
+    exit 1
+  fi
+
+  mkdir -p "$HOME/.config"
+
+  if [ -e "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
+    mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak.$(date +%Y%m%d-%H%M%S)"
+  fi
+
+  stow -d "$bakDir/config" -t "$HOME/.config" nvim
+  echo "nvim setup complete."
+  exit 0
+fi
+
+echo "continuing with OS setup as usual"
+
 yayPath="$HOME/yay"
 
 ensurePac() {
