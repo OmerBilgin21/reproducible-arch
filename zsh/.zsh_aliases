@@ -5,6 +5,7 @@ alias so='source ~/.zshrc'
 alias pg='cd ~/projects/playground;nvim'
 
 alias nvc="cd ~/reproducible-arch/config/nvim;nvim"
+alias repr='cd ~/reproducible-arch;nvim'
 alias lg='lazygit'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias nrt='npm run test'
