@@ -4,7 +4,7 @@ alias envs='nvim ~/.zshenv'
 alias so='source ~/.zshrc'
 alias pg='cd ~/projects/playground;nvim'
 
-alias nvc="$HOME/reproducible-arch/config/nvim;nvim"
+alias nvc="cd $HOME/reproducible-arch/config/nvim;nvim"
 alias lg='lazygit'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias nrt='npm run test'
