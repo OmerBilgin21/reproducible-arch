@@ -19,7 +19,8 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
     mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak.$(date +%Y%m%d-%H%M%S)"
   fi
 
-  stow -d "$bakDir/config" -t "$HOME/.config" nvim
+  mkdir -p "$HOME/.config/nvim"
+  stow -d "$bakDir/config" -t "$HOME/.config/nvim" nvim
   echo "nvim setup complete."
   exit 0
 fi
