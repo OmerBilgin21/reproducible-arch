@@ -1,0 +1,27 @@
+bindkey -M vicmd 'n' edit-command-line
+bindkey '^x' vi-cmd-mode
+export KEYTIMEOUT=1
+
+function zle-keymap-select {
+    if [[ ${KEYMAP} == vicmd ]] || [[ ${KEYMAP} == vimcmd ]]; then
+        echo -ne '\e[2 q'  # block cursor
+    else
+        echo -ne '\e[6 q'  # beam cursor
+    fi
+}
+zle -N zle-keymap-select
+
+# Set beam cursor when zle starts (insert mode)
+function zle-line-init {
+    zle -K viins
+    echo -ne '\e[6 q'
+}
+zle -N zle-line-init
+
+function vi-yank-clipboard {
+    zle vi-yank
+    echo "$CUTBUFFER" | wl-copy
+}
+zle -N vi-yank-clipboard
+
+bindkey -M vicmd 'y' vi-yank-clipboard
