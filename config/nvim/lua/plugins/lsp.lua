@@ -17,15 +17,10 @@ return {
           "typescript",
           "python",
           "jsonc",
-          "markdown",
-          "markdown_inline",
           "go",
           "yaml",
-          "dockerfile",
           "vim",
-          "prisma",
           "tsx",
-          "html",
         },
       })
     end,
@@ -37,8 +32,8 @@ return {
         formatters_by_ft = {
           lua = { "stylua" },
           sh = { "shfmt" },
-          zsh = { "beautysh" },
-          nix = { "nixfmt" },
+          zsh = { "shfmt" },
+          bash = { "shfmt" },
           python = { "isort", "black" },
           javascript = {
             "prettier",
@@ -107,6 +102,9 @@ return {
     lazy = false,
     opts = {
       servers = {
+        bashls = {
+          filetypes = { "sh", "bash", "zsh" },
+        },
         lua_ls = {
           settings = {
             Lua = {
