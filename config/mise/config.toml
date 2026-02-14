@@ -1,0 +1,6 @@
+[tools]
+go = "latest"
+node = "24.12.0"
+fzf = "latest"
+eza = "latest"
+starship = "latest"
