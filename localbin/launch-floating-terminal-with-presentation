@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cmd="$*"
+exec setsid alacritty --title=FloatingTerm -e bash -c "show-logo; $cmd; show-done"

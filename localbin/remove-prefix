@@ -1,0 +1,52 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 <directory> <prefix>"
+  echo "Example: $0 /path/to/dir old_"
+  exit 1
+fi
+
+DIR="$1"
+PREFIX="$2"
+
+# Check if directory exists
+if [ ! -d "$DIR" ]; then
+  echo "Error: Directory '$DIR' does not exist"
+  exit 1
+fi
+
+cd "$DIR" || exit 1
+
+echo "Removing prefix '$PREFIX' from files in: $DIR"
+echo ""
+
+count=0
+
+# Loop through files with the prefix
+for file in "${PREFIX}"*; do
+  # Check if file exists (handles case where no matches found)
+  if [ -e "$file" ]; then
+    # Remove the prefix from filename
+    newname="${file#$PREFIX}"
+
+    # Check if new filename would be empty
+    if [ -z "$newname" ]; then
+      echo "Skipping '$file': would result in empty filename"
+      continue
+    fi
+
+    # Check if target filename already exists
+    if [ -e "$newname" ]; then
+      echo "Skipping '$file': '$newname' already exists"
+      continue
+    fi
+
+    # Rename the file
+    mv "$file" "$newname"
+    echo "Renamed: $file -> $newname"
+    ((count++))
+  fi
+done
+
+echo ""
+echo "Total files renamed: $count"

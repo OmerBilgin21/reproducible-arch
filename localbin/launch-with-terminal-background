@@ -1,0 +1,11 @@
+#!/bin/env bash
+
+if [[ $# -eq 0 ]]; then
+  echo "usage: launch-with-terminal-background <command> [args...]"
+  exit 1
+fi
+
+(
+  set +m
+  launch-with-terminal "$@" >/dev/null 2>&1 </dev/null &
+)
