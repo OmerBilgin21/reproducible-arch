@@ -85,6 +85,7 @@ end
 
 vim.filetype.add({
   pattern = {
-    ["*%.(bashrc|zshrc|sh|zsh_aliases|zsh_env|bash_aliases|bash_env)$"] = "sh",
+    [".*/%.?bash.*$"] = "sh",
+    [".*/%.?zsh.*$"] = "sh",
   },
 })
