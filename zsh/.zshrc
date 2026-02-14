@@ -6,15 +6,13 @@ source "${ZINIT_HOME}/zinit.zsh"
 autoload -Uz compinit && compinit
 
 repo_dir="$HOME/reproducible-arch"
+source "$repo_dir/zsh/.zshenv"
+source "$repo_dir/zsh/.zshsecrets"
+source "$repo_dir/zsh/.zsh_vi_mode"
+source "$repo_dir/zsh/.zsh_aliases"
 
 eval "$(mise activate zsh)"
 eval "$(atlas completion zsh)"
-source "$repo_dir/zsh/.zshenv"
-source "$repo_dir/zsh/fzf-completion.zsh"
-source "$repo_dir/zsh/fzf-key-bindings.zsh"
-source "$repo_dir/zsh/.zsh_vi_mode"
-source "$repo_dir/zsh/.zsh_aliases"
-source "$repo_dir/zsh/.zshsecrets"
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh --cmd cd)"
 
@@ -34,6 +32,10 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+# needs to be after plugin setup
+source "$repo_dir/zsh/fzf-completion.zsh"
+source "$repo_dir/zsh/fzf-key-bindings.zsh"
 
 # Keybindings
 bindkey '^p' history-search-backward
