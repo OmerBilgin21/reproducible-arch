@@ -26,15 +26,24 @@ return {
         shade_terminals = false,
       }
 
-      local claude_setup = {
+      local ai_setup = {
         id = 999,
         direction = "vertical",
-        cmd = "codex",
         hidden = true,
-        title = "Claude Code",
+        title = "AI Assistant",
         scroll_on_output = false,
         shade_terminals = false,
       }
+
+      local claude_setup = vim.tbl_extend("force", {}, ai_setup, {
+        cmd = "claude",
+        id = 999,
+      })
+
+      local codex_setup = vim.tbl_extend("force", {}, ai_setup, {
+        cmd = "codex",
+        id = 996,
+      })
 
       local lazygit_setup = vim.tbl_deep_extend("force", {
         id = 998,
@@ -69,8 +78,9 @@ return {
       }))
 
       local lazygit = Terminal:new(lazygit_setup)
-      local claude = Terminal:new(claude_setup)
       local default = Terminal:new(default_setup)
+      local claude = Terminal:new(claude_setup)
+      local codex = Terminal:new(codex_setup)
 
       vim.keymap.set("n", "<leader>tt", function()
         local test_terminal = Terminal:new(get_test_setup())
@@ -78,11 +88,18 @@ return {
       end)
 
       vim.keymap.set("v", "<C-p>", function()
-        require("toggleterm").send_lines_to_terminal("visual_lines", true, { args = claude_setup.id })
+        require("toggleterm").send_lines_to_terminal(
+          "visual_lines",
+          true,
+          { args = { claude_setup.id, codex_setup.id } }
+        )
       end)
 
       vim.keymap.set("v", "<C-g>", function()
-        print("ignore ctrl+g on AI CLI")
+        if term.get_focused_id() == 999 or term.get_focused_id() == claude_setup.id then
+          -- do nothing
+          return
+        end
       end)
 
       vim.keymap.set({ "t" }, "<C-p>", function()
@@ -97,7 +114,7 @@ return {
 
       vim.keymap.set("t", "<C-n>", [[<C-\><C-n>]])
       vim.keymap.set({ "i", "n", "t" }, "<S-tab>", function()
-        if term.get_focused_id() == 999 then
+        if term.get_focused_id() == claude_setup.id or term.get_focused_id() == codex_setup.id then
           vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<S-tab>", true, false, true), "n", false)
           return
         end
@@ -110,6 +127,10 @@ return {
 
       vim.keymap.set({ "n", "t" }, "<C-Space>", function()
         claude:toggle()
+      end)
+
+      vim.keymap.set({ "n", "t" }, "<M-Space>", function()
+        codex:toggle()
       end)
 
       vim.keymap.set("t", "<C-x>", function()
