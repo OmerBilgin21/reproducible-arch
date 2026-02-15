@@ -5,7 +5,7 @@ return {
   version = false,
   config = function()
     require("print-debugger").setup({
-      javascript = {
+      typescript = {
         prefix = "logger.info",
       },
       go = {
