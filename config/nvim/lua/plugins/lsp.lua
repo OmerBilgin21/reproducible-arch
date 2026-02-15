@@ -145,15 +145,12 @@ return {
             })
           end,
         },
+        tailwindcss = {},
+        cssls = {},
       },
     },
     config = function(_, opts)
       local lspconfig = require("lspconfig")
-
-      if is_react() then
-        opts["servers"].tailwindcss = {}
-        opts["servers"].cssls = {}
-      end
 
       require("mason-lspconfig").setup({
         automatic_installation = true,
