@@ -1,6 +1,6 @@
-alias rc='nvim ~/.zshrc'
-alias aliases='nvim ~/.zsh_aliases'
-alias envs='nvim ~/.zshenv'
+alias rc='nvim ~/reproducible-arch/zsh/.zshrc'
+alias aliases='nvim ~/reproducible-arch/zsh/.zsh_aliases'
+alias envs='nvim ~/reproducible-arch/zsh/.zshenv'
 alias so='source ~/.zshrc'
 alias pg='cd ~/projects/playground;nvim'
 
@@ -25,7 +25,16 @@ alias aws='AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=
 alias pac='pkg-install'
 alias aur='pkg-aur-install'
 alias cat='bat'
-alias aider='aider --model ollama_chat/gpt-oss:20b'
+alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider --model ollama_chat/gpt-oss:20b-fast'
+
+oo() {
+  export OLLAMA_FLASH_ATTENTION=1
+  # export OLLAMA_MAX_LOADED_MODELS=1
+  # export OLLAMA_NUM_PARALLEL=1
+  export OLLAMA_HOST=0.0.0.0:11434
+
+  ollama serve
+}
 
 k() {
   local pids

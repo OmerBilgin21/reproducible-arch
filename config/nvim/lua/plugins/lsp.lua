@@ -117,7 +117,13 @@ return {
             },
           },
         },
-        gopls = {},
+        gopls = {
+          settings = {
+            gopls = {
+              buildFlags = { "-tags=integration" },
+            },
+          },
+        },
         ts_ls = {},
         pyright = {
           settings = {
