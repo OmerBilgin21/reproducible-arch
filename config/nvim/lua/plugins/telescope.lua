@@ -14,16 +14,15 @@ return {
     telescope.setup({
       extensions = {
         fzf = {
-          fuzzy = true,                   -- false will only do exact matching
-          override_generic_sorter = true, -- override the generic sorter
-          override_file_sorter = true,    -- override the file sorter
-          case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
-        }
+          fuzzy = true, -- false will only do exact matching
+          case_mode = "smart_case", -- or "ignore_case" or "respect_case"
+        },
+        override_generic_sorter = true, -- override the generic sorter
+        override_file_sorter = true, -- override the file sorter
       },
       defaults = {
         layout_strategy = "vertical",
-        file_ignore_patterns = {
-        },
+        file_ignore_patterns = {},
         preview = {
           filesize_limit = 1,
         },
@@ -53,8 +52,8 @@ return {
           mappings = {
             n = {
               ["<C-d>"] = actions.delete_buffer,
-            }
-          }
+            },
+          },
         },
         marks = {
           initial_mode = "normal",
@@ -65,7 +64,7 @@ return {
               ["<C-i>"] = actions.delete_mark,
             },
           },
-        }
+        },
       },
     })
     vim.keymap.set("n", "<C-p>", function()
@@ -87,18 +86,30 @@ return {
           "--files",
           "--hidden",
           "--no-ignore",
-          "-g", "!node_modules/",
-          "-g", "!.git/",
-          "-g", "!*lock.json",
-          "-g", "!raycast/",
-          "-g", "!venv/",
-          "-g", "!hf_cache/",
-          "-g", "!cdk.out/",
-          "-g", "!dist/",
-          "-g", "!*.next/",
-          "-g", "!*.gitlab/",
-          "-g", "!build/",
-          "-g", "!target/",
+          "-g",
+          "!node_modules/",
+          "-g",
+          "!.git/",
+          "-g",
+          "!*lock.json",
+          "-g",
+          "!raycast/",
+          "-g",
+          "!venv/",
+          "-g",
+          "!hf_cache/",
+          "-g",
+          "!cdk.out/",
+          "-g",
+          "!dist/",
+          "-g",
+          "!*.next/",
+          "-g",
+          "!*.gitlab/",
+          "-g",
+          "!build/",
+          "-g",
+          "!target/",
         },
       })
     end, {
@@ -106,7 +117,9 @@ return {
       silent = true,
     })
     vim.keymap.set("n", "<leader>f", function()
-      builtin.live_grep()
+      builtin.live_grep({
+        glob_pattern = { "!package.json", "!package-lock.json" },
+      })
     end, { noremap = true, silent = true })
     vim.keymap.set("n", "<leader><leader>", function()
       builtin.buffers()
