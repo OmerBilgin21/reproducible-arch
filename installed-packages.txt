@@ -98,6 +98,7 @@ polkit-gnome
 postgresql-libs
 python-gobject
 python-poetry-core
+pyenv
 qt5-wayland
 qutebrowser
 resvg

@@ -11,6 +11,7 @@ source "$repo_dir/zsh/.zshsecrets"
 source "$repo_dir/zsh/.zsh_vi_mode"
 source "$repo_dir/zsh/.zsh_aliases"
 
+eval "$(pyenv init -)"
 eval "$(mise activate zsh)"
 eval "$(atlas completion zsh)"
 eval "$(starship init zsh)"
