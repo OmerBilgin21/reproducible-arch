@@ -27,7 +27,6 @@ return {
       }
 
       local ai_setup = {
-        id = 999,
         direction = "vertical",
         hidden = true,
         title = "AI Assistant",
@@ -96,6 +95,7 @@ return {
       end)
 
       vim.keymap.set("t", "<C-g>", function()
+      vim.keymap.set("v", "<C-g>", function()
         if term.get_focused_id() == codex_setup.id or term.get_focused_id() == claude_setup.id then
           -- do nothing
           return
