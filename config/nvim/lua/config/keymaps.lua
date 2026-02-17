@@ -35,6 +35,7 @@ vim.keymap.set({ "i", "n", "t" }, "<C-l>", function()
   vim.cmd("TmuxNavigateRight")
 end, { noremap = true })
 
+km.set("n", "t", "f", { noremap = true, desc = "make t also jump to character like f" })
 km.set("n", "<M-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
 km.set("n", "<M-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
 km.set("n", "<M-right>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
