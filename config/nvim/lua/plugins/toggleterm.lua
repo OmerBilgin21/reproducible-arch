@@ -95,8 +95,8 @@ return {
         )
       end)
 
-      vim.keymap.set("v", "<C-g>", function()
-        if term.get_focused_id() == 999 or term.get_focused_id() == claude_setup.id then
+      vim.keymap.set("t", "<C-g>", function()
+        if term.get_focused_id() == codex_setup.id or term.get_focused_id() == claude_setup.id then
           -- do nothing
           return
         end
