@@ -2,6 +2,7 @@ local km = vim.keymap
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
+vim.g.omni_sql_no_default_maps = 1
 
 km.set({ "i", "n", "v", "x" }, "<C-c>", "<esc>", { desc = "control+c acts like esc", noremap = true, silent = true })
 
