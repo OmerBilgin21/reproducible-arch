@@ -68,18 +68,6 @@ return {
       },
     })
     vim.keymap.set("n", "<C-p>", function()
-      builtin.find_files()
-    end, {
-      noremap = true,
-      silent = true,
-    })
-    vim.keymap.set("n", "<C-n>", function()
-      builtin.marks()
-    end, {
-      noremap = true,
-      silent = true,
-    })
-    vim.keymap.set("n", "<leader>p", function()
       builtin.find_files({
         find_command = {
           "rg",
@@ -116,9 +104,15 @@ return {
       noremap = true,
       silent = true,
     })
+    vim.keymap.set("n", "<C-n>", function()
+      builtin.marks()
+    end, {
+      noremap = true,
+      silent = true,
+    })
     vim.keymap.set("n", "<leader>f", function()
       builtin.live_grep({
-        glob_pattern = { "!package.json", "!package-lock.json" },
+        glob_pattern = { "!package-lock.json" },
       })
     end, { noremap = true, silent = true })
     vim.keymap.set("n", "<leader><leader>", function()
