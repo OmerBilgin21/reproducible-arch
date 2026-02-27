@@ -26,7 +26,7 @@ return {
         shade_terminals = false,
       }
 
-      local ai_setup = {
+      local right_side_offcanvas_terminal_setup = {
         direction = "vertical",
         hidden = true,
         title = "AI Assistant",
@@ -34,14 +34,23 @@ return {
         shade_terminals = false,
       }
 
-      local claude_setup = vim.tbl_extend("force", {}, ai_setup, {
+      local claude_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
         cmd = "claude",
+        title = "Claude",
         id = 999,
       })
 
-      local codex_setup = vim.tbl_extend("force", {}, ai_setup, {
+      local codex_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
         cmd = "codex",
+        title = "Codex",
         id = 996,
+      })
+
+      local rest_api_client_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
+        cmd = "rest",
+        title = "Call bruno go brr",
+        id = 995,
+        close_on_exit = false,
       })
 
       local lazygit_setup = vim.tbl_deep_extend("force", {
@@ -80,6 +89,7 @@ return {
       local default = Terminal:new(default_setup)
       local claude = Terminal:new(claude_setup)
       local codex = Terminal:new(codex_setup)
+      local rest_api_client = Terminal:new(rest_api_client_setup)
 
       vim.keymap.set("n", "<leader>tt", function()
         local test_terminal = Terminal:new(get_test_setup())
@@ -130,6 +140,10 @@ return {
 
       vim.keymap.set({ "n", "t" }, "<M-Space>", function()
         codex:toggle()
+      end)
+
+      vim.keymap.set({ "n", "t" }, "<C-e>", function()
+        rest_api_client:toggle()
       end)
 
       vim.keymap.set("t", "<C-x>", function()
