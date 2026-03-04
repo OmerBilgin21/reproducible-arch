@@ -1,4 +1,4 @@
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH:$HOME/.emacs.d/bin"
 export XCOMPOSEFILE="$HOME/.config/xcompose"
 export SUDO_EDITOR="$EDITOR"
 export BAT_THEME=ansi
