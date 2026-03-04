@@ -1,0 +1,517 @@
+#!/usr/bin/env bash
+
+set -u
+
+json_escape() {
+  local s=${1-}
+  s=${s//\\/\\\\}
+  s=${s//\"/\\\"}
+  s=${s//$'\n'/\\n}
+  s=${s//$'\r'/\\r}
+  s=${s//$'\t'/\\t}
+  printf '%s' "$s"
+}
+
+jstr() {
+  printf '"%s"' "$(json_escape "${1-}")"
+}
+
+ok() {
+  local data_json=${1-"null"}
+  printf '{"ok":true,"data":%s}\n' "$data_json"
+}
+
+err() {
+  local code=${1:-"UNKNOWN"}
+  local msg=${2:-"Unknown error"}
+  printf '{"ok":false,"error":{"code":%s,"message":%s}}\n' "$(jstr "$code")" "$(jstr "$msg")"
+  exit 1
+}
+
+usage() {
+  cat <<'USAGE'
+settingsctl usage:
+  settingsctl wifi status
+  settingsctl wifi list
+  settingsctl wifi toggle on|off
+  settingsctl wifi connect <ssid-or-bssid>
+
+  settingsctl bt status
+  settingsctl bt list
+  settingsctl bt toggle on|off
+  settingsctl bt connect <mac>
+  settingsctl bt disconnect <mac>
+
+  settingsctl audio status
+  settingsctl audio list-sinks
+  settingsctl audio set-volume <0-100>
+  settingsctl audio set-default-sink <sink-name>
+  settingsctl audio set-mic-volume <0-100>
+  settingsctl audio toggle-mute
+  settingsctl audio toggle-mic
+
+  settingsctl theme list
+  settingsctl theme current
+  settingsctl theme backgrounds <theme-name>
+  settingsctl theme set <theme-name>
+
+  settingsctl wallpaper set <absolute-or-relative-path>
+  settingsctl wallpaper status
+
+  settingsctl system battery
+  settingsctl system active-monitor
+USAGE
+}
+
+require_cmd() {
+  local c=${1-}
+  command -v "$c" >/dev/null 2>&1 || err "MISSING_CMD" "Required command not found: $c"
+}
+
+require_int_0_100() {
+  local v=${1-}
+  [[ "$v" =~ ^[0-9]+$ ]] || err "INVALID_ARG" "Expected integer in 0-100, got: $v"
+  (( v >= 0 && v <= 100 )) || err "INVALID_ARG" "Value must be between 0 and 100, got: $v"
+}
+
+get_wifi_iface() {
+  iw dev 2>/dev/null | awk '$1=="Interface"{print $2; exit}'
+}
+
+wifi_signal_pct_from_rssi() {
+  local rssi=${1-0}
+  if (( rssi >= -50 )); then
+    printf '100'
+  elif (( rssi <= -90 )); then
+    printf '0'
+  else
+    printf '%d' $(((rssi + 90) * 5 / 2))
+  fi
+}
+
+wifi_status() {
+  require_cmd rfkill
+
+  local enabled state ssid signal iface
+  enabled=$(rfkill list wifi 2>/dev/null | awk '/Soft blocked:/ {print ($3=="yes" ? "false" : "true"); found=1; exit} END {if (!found) print "true"}')
+
+  if command -v iwctl >/dev/null 2>&1; then
+    iface=$(get_wifi_iface)
+    if [[ -n "$iface" ]]; then
+      state=$(iwctl station "$iface" show 2>/dev/null | awk 'tolower($1)=="state" {print tolower($2); ok=1; exit} END {if (!ok) print "unavailable"}')
+      ssid=$(iwctl station "$iface" show 2>/dev/null | awk 'tolower($1)=="connected" && tolower($2)=="network" {$1="";$2=""; sub(/^ +/, "", $0); print; ok=1; exit} END {if (!ok) print ""}')
+      local rssi
+      rssi=$(iwctl station "$iface" show 2>/dev/null | awk 'tolower($1)=="average" && tolower($2)=="rssi" {gsub(/[^0-9-]/,"",$3); print $3+0; ok=1; exit} END {if (!ok) print -999}')
+      signal=$(wifi_signal_pct_from_rssi "$rssi")
+    else
+      state="unavailable"
+      ssid=""
+      signal=0
+    fi
+  else
+    iface=""
+    state="unavailable"
+    ssid=""
+    signal=0
+  fi
+
+  ok "{\"enabled\":$enabled,\"state\":$(jstr "$state"),\"ssid\":$(jstr "$ssid"),\"signal\":$signal,\"interface\":$(jstr "${iface-}")}";
+}
+
+wifi_list() {
+  require_cmd iwctl
+  local iface
+  iface=$(get_wifi_iface)
+  [[ -n "$iface" ]] || err "NO_WIFI_IFACE" "No Wi-Fi interface found"
+
+  iwctl station "$iface" scan >/dev/null 2>&1 || true
+
+  local out
+  out=$(iwctl station "$iface" get-networks rssi-dbms 2>/dev/null | sed -E 's/\x1b\[[0-9;]*m//g')
+
+  local items_json
+  items_json=$(printf '%s\n' "$out" | awk '
+    function esc(s){gsub(/\\/, "\\\\", s); gsub(/"/, "\\\"", s); gsub(/\t/, "\\t", s); return s}
+    function secword(s){
+      t=tolower(s)
+      return (t=="open" || t=="psk" || t=="sae" || t=="8021x" || t=="wep" || t=="owe" || t=="wps")
+    }
+    function join(arr, a, b,   i, o){o=""; for(i=a;i<=b;i++){if(i>a)o=o" "; o=o arr[i]} return o}
+    function pct(r){if(r>=-50)return 100; if(r<=-90)return 0; return int((r+90)*2.5)}
+    BEGIN{first=1; print "["}
+    {
+      raw=$0
+      line=raw
+      gsub(/^\s+|\s+$/, "", line)
+      if(line=="" || line ~ /Available networks/ || line ~ /Network name/ || line ~ /^[-\s]+$/) next
+
+      inuse=(raw ~ /^\s*(\*>|>)/) ? "true" : "false"
+      sub(/^\s*(\*>|>)\s*/, "", raw)
+      gsub(/^\s+|\s+$/, "", raw)
+      if(raw=="") next
+
+      n=split(raw, cols, /[[:space:]]{2,}/)
+      if(n<2) next
+
+      rssi=cols[n]+0
+      if((rssi<0?-rssi:rssi)>1000) rssi=int(rssi/100)
+
+      sec=""
+      last=n-1
+      if(last>=1 && secword(cols[last])) { sec=cols[last]; last-- }
+      if(last<1) next
+
+      ssid=join(cols,1,last)
+      if(ssid=="") next
+
+      if(!first) printf ","
+      first=0
+      printf "{\"name\":\"%s\",\"security\":\"%s\",\"rssi\":%d,\"signal\":%d,\"in_use\":%s}", esc(ssid), esc(sec), rssi, pct(rssi), inuse
+    }
+    END{print "]"}
+  ')
+
+  ok "{\"interface\":$(jstr "$iface"),\"items\":$items_json}";
+}
+
+wifi_toggle() {
+  require_cmd rfkill
+  local mode=${1-}
+  case "$mode" in
+    on) rfkill unblock wifi >/dev/null 2>&1 || err "WIFI_TOGGLE_FAILED" "Failed to turn Wi-Fi on" ;;
+    off) rfkill block wifi >/dev/null 2>&1 || err "WIFI_TOGGLE_FAILED" "Failed to turn Wi-Fi off" ;;
+    *) err "INVALID_ARG" "Usage: settingsctl wifi toggle on|off" ;;
+  esac
+  ok "{\"changed\":true,\"enabled\":$([[ "$mode" == "on" ]] && echo true || echo false)}"
+}
+
+wifi_connect() {
+  require_cmd iwctl
+  local target=${1-}
+  [[ -n "$target" ]] || err "INVALID_ARG" "Usage: settingsctl wifi connect <ssid-or-bssid>"
+  local iface
+  iface=$(get_wifi_iface)
+  [[ -n "$iface" ]] || err "NO_WIFI_IFACE" "No Wi-Fi interface found"
+
+  iwctl station "$iface" connect "$target" >/dev/null 2>&1 || err "WIFI_CONNECT_FAILED" "Failed to connect to: $target"
+  ok "{\"connected\":true,\"target\":$(jstr "$target")}";
+}
+
+bt_status() {
+  require_cmd bluetoothctl
+  local powered connected
+  powered=$(bluetoothctl show 2>/dev/null | sed -n 's/.*Powered: //p' | head -n1)
+  connected=$(bluetoothctl devices Connected 2>/dev/null | wc -l | tr -d ' ')
+  [[ "$powered" == "yes" ]] && powered=true || powered=false
+  ok "{\"powered\":$powered,\"connected_count\":${connected:-0}}"
+}
+
+bt_list() {
+  require_cmd bluetoothctl
+  local connected_set
+  connected_set=$(bluetoothctl devices Connected 2>/dev/null | awk '{print $2}' | tr '\n' ' ')
+
+  local items_json
+  items_json=$(bluetoothctl devices 2>/dev/null | awk -v c="$connected_set" '
+    function esc(s){gsub(/\\/, "\\\\", s); gsub(/"/, "\\\"", s); return s}
+    BEGIN{split(c,a," "); for(i in a) if(a[i] != "") conn[a[i]]=1; first=1; printf "["}
+    /^Device /{
+      addr=$2
+      $1=""; $2=""
+      sub(/^  */, "", $0)
+      name=$0
+      if(!first) printf ","
+      first=0
+      printf "{\"address\":\"%s\",\"name\":\"%s\",\"connected\":%s}", esc(addr), esc(name), (conn[addr]?"true":"false")
+    }
+    END{printf "]"}
+  ')
+
+  ok "{\"items\":$items_json}"
+}
+
+bt_toggle() {
+  require_cmd bluetoothctl
+  local mode=${1-}
+  case "$mode" in
+    on) bluetoothctl power on >/dev/null 2>&1 || err "BT_TOGGLE_FAILED" "Failed to turn Bluetooth on" ;;
+    off) bluetoothctl power off >/dev/null 2>&1 || err "BT_TOGGLE_FAILED" "Failed to turn Bluetooth off" ;;
+    *) err "INVALID_ARG" "Usage: settingsctl bt toggle on|off" ;;
+  esac
+  ok "{\"changed\":true,\"powered\":$([[ "$mode" == "on" ]] && echo true || echo false)}"
+}
+
+bt_connect() {
+  require_cmd bluetoothctl
+  local mac=${1-}
+  [[ -n "$mac" ]] || err "INVALID_ARG" "Usage: settingsctl bt connect <mac>"
+  bluetoothctl connect "$mac" >/dev/null 2>&1 || err "BT_CONNECT_FAILED" "Failed to connect device: $mac"
+  ok "{\"connected\":true,\"address\":$(jstr "$mac")}";
+}
+
+bt_disconnect() {
+  require_cmd bluetoothctl
+  local mac=${1-}
+  [[ -n "$mac" ]] || err "INVALID_ARG" "Usage: settingsctl bt disconnect <mac>"
+  bluetoothctl disconnect "$mac" >/dev/null 2>&1 || err "BT_DISCONNECT_FAILED" "Failed to disconnect device: $mac"
+  ok "{\"disconnected\":true,\"address\":$(jstr "$mac")}";
+}
+
+audio_status() {
+  require_cmd pamixer
+
+  local out_mute out_vol mic_mute mic_vol sink
+  out_mute=$(pamixer --get-mute 2>/dev/null || echo true)
+  out_vol=$(pamixer --get-volume 2>/dev/null || echo 0)
+  mic_mute=$(pamixer --default-source --get-mute 2>/dev/null || echo true)
+  mic_vol=$(pamixer --default-source --get-volume 2>/dev/null || echo 0)
+  sink=$(pactl get-default-sink 2>/dev/null || echo "")
+
+  [[ "$out_mute" == "true" ]] && out_mute=true || out_mute=false
+  [[ "$mic_mute" == "true" ]] && mic_mute=true || mic_mute=false
+  [[ "$out_vol" =~ ^[0-9]+$ ]] || out_vol=0
+  [[ "$mic_vol" =~ ^[0-9]+$ ]] || mic_vol=0
+
+  ok "{\"output\":{\"muted\":$out_mute,\"volume\":$out_vol},\"mic\":{\"muted\":$mic_mute,\"volume\":$mic_vol},\"default_sink\":$(jstr "$sink")}";
+}
+
+audio_list_sinks() {
+  require_cmd pactl
+  require_cmd jq
+
+  local raw
+  raw=$(pactl -f json list sinks 2>/dev/null || true)
+  [[ -n "$raw" ]] || err "AUDIO_LIST_SINKS_FAILED" "Failed to list sinks"
+
+  local items
+  items=$(printf '%s' "$raw" | jq -c '[.[] | {name: .name, description: .description, volume: ((.volume | to_entries[0].value.value_percent | sub("%";"")) | tonumber)}]') || err "AUDIO_LIST_SINKS_FAILED" "Failed to parse sinks"
+  ok "{\"items\":$items}"
+}
+
+audio_set_volume() {
+  require_cmd pamixer
+  local v=${1-}
+  require_int_0_100 "$v"
+  pamixer --set-volume "$v" >/dev/null 2>&1 || err "AUDIO_SET_VOLUME_FAILED" "Failed to set output volume"
+  ok "{\"output\":{\"volume\":$v}}"
+}
+
+audio_set_default_sink() {
+  require_cmd pactl
+  local sink=${1-}
+  [[ -n "$sink" ]] || err "INVALID_ARG" "Usage: settingsctl audio set-default-sink <sink-name>"
+  pactl set-default-sink "$sink" >/dev/null 2>&1 || err "AUDIO_SET_DEFAULT_SINK_FAILED" "Failed to set default sink: $sink"
+  ok "{\"default_sink\":$(jstr "$sink")}"
+}
+
+audio_set_mic_volume() {
+  require_cmd pamixer
+  local v=${1-}
+  require_int_0_100 "$v"
+  pamixer --default-source --set-volume "$v" >/dev/null 2>&1 || err "AUDIO_SET_MIC_VOLUME_FAILED" "Failed to set mic volume"
+  ok "{\"mic\":{\"volume\":$v}}"
+}
+
+audio_toggle_mute() {
+  require_cmd pamixer
+  pamixer -t >/dev/null 2>&1 || err "AUDIO_TOGGLE_MUTE_FAILED" "Failed to toggle output mute"
+  local out_mute
+  out_mute=$(pamixer --get-mute 2>/dev/null || echo true)
+  [[ "$out_mute" == "true" ]] && out_mute=true || out_mute=false
+  ok "{\"output\":{\"muted\":$out_mute}}"
+}
+
+audio_toggle_mic() {
+  require_cmd pamixer
+  pamixer --default-source -t >/dev/null 2>&1 || err "AUDIO_TOGGLE_MIC_FAILED" "Failed to toggle mic mute"
+  local mic_mute
+  mic_mute=$(pamixer --default-source --get-mute 2>/dev/null || echo true)
+  [[ "$mic_mute" == "true" ]] && mic_mute=true || mic_mute=false
+  ok "{\"mic\":{\"muted\":$mic_mute}}"
+}
+
+theme_list() {
+  require_cmd theme-list
+  local current raw name first
+  current=$(basename "$(realpath "$HOME/.config/themedir/current/theme" 2>/dev/null)" 2>/dev/null || true)
+  raw=$(theme-list 2>/dev/null || true)
+
+  local items='['
+  first=1
+  while IFS= read -r name; do
+    [[ -z "$name" ]] && continue
+    if [[ $first -eq 0 ]]; then items+=","; fi
+    first=0
+    if [[ -n "$current" && "$name" == "$current" ]]; then
+      items+="{\"name\":$(jstr "$name"),\"current\":true}"
+    else
+      items+="{\"name\":$(jstr "$name"),\"current\":false}"
+    fi
+  done <<< "$raw"
+  items+=']'
+
+  ok "{\"items\":$items}"
+}
+
+theme_current() {
+  require_cmd theme-current
+  local pretty raw
+  pretty=$(theme-current 2>/dev/null || true)
+  raw=$(basename "$(realpath "$HOME/.config/themedir/current/theme" 2>/dev/null)" 2>/dev/null || true)
+  ok "{\"name\":$(jstr "$raw"),\"display\":$(jstr "$pretty")}"
+}
+
+theme_set() {
+  require_cmd theme-set
+  local name=${1-}
+  [[ -n "$name" ]] || err "INVALID_ARG" "Usage: settingsctl theme set <theme-name>"
+  theme-set "$name" >/dev/null 2>&1 || err "THEME_SET_FAILED" "Failed to set theme: $name"
+  ok "{\"changed\":true,\"name\":$(jstr "$name")}"
+}
+
+theme_backgrounds() {
+  local name=${1-}
+  [[ -n "$name" ]] || err "INVALID_ARG" "Usage: settingsctl theme backgrounds <theme-name>"
+
+  local dir="$HOME/.config/themedir/themes/$name/backgrounds"
+  if [[ ! -d "$dir" ]]; then
+    ok "{\"theme\":$(jstr "$name"),\"items\":[]}"
+    return 0
+  fi
+
+  local items='['
+  local first=1
+  local path
+  while IFS= read -r path; do
+    [[ -z "$path" ]] && continue
+    if [[ $first -eq 0 ]]; then items+=","; fi
+    first=0
+    items+=$(jstr "$path")
+  done < <(find "$dir" -maxdepth 1 -type f | sort)
+  items+=']'
+
+  ok "{\"theme\":$(jstr "$name"),\"items\":$items}"
+}
+
+wallpaper_set() {
+  local input=${1-}
+  [[ -n "$input" ]] || err "INVALID_ARG" "Usage: settingsctl wallpaper set <path>"
+  require_cmd swaybg
+
+  local resolved
+  resolved=$(realpath "$input" 2>/dev/null || true)
+  [[ -n "$resolved" ]] || err "INVALID_PATH" "Wallpaper path does not exist: $input"
+  [[ -f "$resolved" ]] || err "INVALID_PATH" "Wallpaper path is not a file: $resolved"
+
+  local current_link="$HOME/.config/themedir/current/background"
+  ln -nsf "$resolved" "$current_link" || err "WALLPAPER_SET_FAILED" "Failed to update wallpaper symlink"
+
+  pkill -x swaybg >/dev/null 2>&1 || true
+  setsid swaybg -i "$current_link" -m fill >/dev/null 2>&1 &
+
+  ok "{\"changed\":true,\"path\":$(jstr "$resolved")}"
+}
+
+wallpaper_status() {
+  local current_link="$HOME/.config/themedir/current/background"
+  local path
+  path=$(readlink -f "$current_link" 2>/dev/null || true)
+  ok "{\"path\":$(jstr "$path")}"
+}
+
+system_battery() {
+  local bat
+  bat=$(ls /sys/class/power_supply 2>/dev/null | grep -m1 '^BAT' || true)
+  if [[ -z "$bat" ]]; then
+    ok "{\"present\":false,\"percent\":0,\"status\":$(jstr "Unknown")}"
+    return 0
+  fi
+
+  local cap stat
+  cap=$(cat "/sys/class/power_supply/$bat/capacity" 2>/dev/null || echo 0)
+  stat=$(cat "/sys/class/power_supply/$bat/status" 2>/dev/null || echo Unknown)
+  [[ "$cap" =~ ^[0-9]+$ ]] || cap=0
+  ok "{\"present\":true,\"percent\":$cap,\"status\":$(jstr "$stat")}"
+}
+
+system_active_monitor() {
+  local name=""
+  if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    name=$(hyprctl monitors -j 2>/dev/null | jq -r '.[] | select(.focused==true) | .name' 2>/dev/null | head -n1)
+    [[ "$name" == "null" ]] && name=""
+  fi
+  ok "{\"name\":$(jstr "$name")}"
+}
+
+main() {
+  local domain=${1-}
+  local cmd=${2-}
+  local arg1=${3-}
+
+  [[ -n "$domain" ]] || { usage; exit 1; }
+
+  case "$domain" in
+    wifi)
+      case "$cmd" in
+        status) wifi_status ;;
+        list) wifi_list ;;
+        toggle) wifi_toggle "$arg1" ;;
+        connect) wifi_connect "$arg1" ;;
+        *) err "INVALID_ARG" "Unknown wifi command: $cmd" ;;
+      esac
+      ;;
+    bt|bluetooth)
+      case "$cmd" in
+        status) bt_status ;;
+        list) bt_list ;;
+        toggle) bt_toggle "$arg1" ;;
+        connect) bt_connect "$arg1" ;;
+        disconnect) bt_disconnect "$arg1" ;;
+        *) err "INVALID_ARG" "Unknown bt command: $cmd" ;;
+      esac
+      ;;
+    audio)
+      case "$cmd" in
+        status) audio_status ;;
+        list-sinks) audio_list_sinks ;;
+        set-volume) audio_set_volume "$arg1" ;;
+        set-default-sink) audio_set_default_sink "$arg1" ;;
+        set-mic-volume) audio_set_mic_volume "$arg1" ;;
+        toggle-mute) audio_toggle_mute ;;
+        toggle-mic) audio_toggle_mic ;;
+        *) err "INVALID_ARG" "Unknown audio command: $cmd" ;;
+      esac
+      ;;
+    theme)
+      case "$cmd" in
+        list) theme_list ;;
+        current) theme_current ;;
+        backgrounds) theme_backgrounds "$arg1" ;;
+        set) theme_set "$arg1" ;;
+        *) err "INVALID_ARG" "Unknown theme command: $cmd" ;;
+      esac
+      ;;
+    wallpaper)
+      case "$cmd" in
+        set) wallpaper_set "$arg1" ;;
+        status) wallpaper_status ;;
+        *) err "INVALID_ARG" "Unknown wallpaper command: $cmd" ;;
+      esac
+      ;;
+    -h|--help|help)
+      usage
+      ;;
+    system)
+      case "$cmd" in
+        battery) system_battery ;;
+        active-monitor) system_active_monitor ;;
+        *) err "INVALID_ARG" "Unknown system command: $cmd" ;;
+      esac
+      ;;
+    *)
+      err "INVALID_ARG" "Unknown domain: $domain"
+      ;;
+  esac
+}
+
+main "$@"
