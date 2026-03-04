@@ -1,9 +1,0 @@
-#!/bin/bash
-
-URL="$1"
-librewolf "$URL" --kiosk &
-
-sleep 1.5
-hyprctl dispatch focuswindow class:^librewolf$
-sleep 0.5
-hyprctl dispatch fullscreen 0 # effectively disables kiosk fullscreen, lets it tile
