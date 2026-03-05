@@ -11,7 +11,7 @@ vim.keymap.set({ "i", "n", "t" }, "<c-h>", function()
   if mode == "t" then
     vim.cmd("stopinsert")
   end
-  vim.cmd("TmuxNavigateLeft")
+  vim.cmd.wincmd("h")
 end, { noremap = true })
 
 vim.keymap.set({ "i", "n", "t" }, "<c-j>", function()
@@ -19,21 +19,21 @@ vim.keymap.set({ "i", "n", "t" }, "<c-j>", function()
   if mode == "t" then
     vim.cmd("stopinsert")
   end
-  vim.cmd("TmuxNavigateDown")
+  vim.cmd.wincmd("j")
 end, { noremap = true })
 vim.keymap.set({ "i", "n", "t" }, "<c-k>", function()
   local mode = vim.api.nvim_get_mode().mode
   if mode == "t" then
     vim.cmd("stopinsert")
   end
-  vim.cmd("TmuxNavigateUp")
+  vim.cmd.wincmd("k")
 end, { noremap = true })
 vim.keymap.set({ "i", "n", "t" }, "<C-l>", function()
   local mode = vim.api.nvim_get_mode().mode
   if mode == "t" then
     vim.cmd("stopinsert")
   end
-  vim.cmd("TmuxNavigateRight")
+  vim.cmd.wincmd("l")
 end, { noremap = true })
 
 km.set("n", "t", "f", { noremap = true, desc = "make t also jump to character like f" })
