@@ -1,7 +1,6 @@
 local opt = vim.opt
 vim.g.root_spec = { "lsp", { ".git", "lua" }, "cwd" }
 opt.clipboard = "unnamedplus"
-vim.g.tmux_navigator_no_mappings = 1
 vim.opt.backspace = { "indent", "eol", "start" }
 opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.cursorline = true -- Enable highlighting of the current line
