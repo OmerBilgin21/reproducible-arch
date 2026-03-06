@@ -27,6 +27,7 @@ alias aur='pkg-aur-install'
 alias cat='bat'
 alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider'
 alias launchresearcher="docker compose -f ~/projects/local-deep-research-compose/docker-compose.yml up -d"
+alias claude="ollama launch claude --model qwen3.5:4b-claude-48-trial"
 
 oo() {
   export OLLAMA_FLASH_ATTENTION=1
