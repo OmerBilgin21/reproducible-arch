@@ -6,7 +6,7 @@ target="$(
       n = split($3, parts, "/")
       dir = parts[n]
       if (dir == "") dir = $3
-      printf "%-20s\t%-8s\t%s\n", $1, $2, dir
+      print $1 "\t" $2 "\t" dir
     }' |
     fzf \
       --prompt='window> ' \
@@ -17,4 +17,7 @@ target="$(
 
 [ -z "$target" ] && exit 0
 
-tmux switch-client -t "$(printf '%s' "$target" | cut -f1)"
+window_target="$(printf '%s' "$target" | cut -f1)"
+session_target="${window_target%%:*}"
+
+tmux switch-client -t "$session_target" \; select-window -t "$window_target"
