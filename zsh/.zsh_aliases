@@ -25,7 +25,7 @@ alias aws='AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=
 alias pac='pkg-install'
 alias aur='pkg-aur-install'
 alias cat='bat'
-alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider --model ollama_chat/gpt-oss:20b-fast'
+alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider'
 
 oo() {
   export OLLAMA_FLASH_ATTENTION=1
