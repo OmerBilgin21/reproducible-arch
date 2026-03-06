@@ -35,7 +35,7 @@ return {
       }
 
       local claude_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
-        cmd = "claude",
+        cmd = is_home() and "ollama launch claude --model qwen3.5:4b-claude-48-trial" or "claude",
         title = "Claude",
         id = 999,
       })

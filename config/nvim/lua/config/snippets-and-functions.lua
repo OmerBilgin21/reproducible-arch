@@ -79,8 +79,8 @@ _G.appendTables = function(destination, source)
   end
 end
 
-_G.is_react = function()
-  return has_files_with_extensions({ "jsx", "tsx", "css" })
+_G.is_home = function()
+  return true
 end
 
 vim.filetype.add({
