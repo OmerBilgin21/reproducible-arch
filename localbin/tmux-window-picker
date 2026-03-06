@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+target="$(
+  tmux list-windows -a -F $'#{session_name}:#{window_index}\t#{pane_current_command}\t#{pane_current_path}' |
+    awk -F '\t' '{
+      n = split($3, parts, "/")
+      dir = parts[n]
+      if (dir == "") dir = $3
+      printf "%-20s\t%-8s\t%s\n", $1, $2, dir
+    }' |
+    fzf \
+      --prompt='window> ' \
+      --delimiter='\t' \
+      --with-nth=1,2,3 \
+      --no-hscroll
+)"
+
+[ -z "$target" ] && exit 0
+
+tmux switch-client -t "$(printf '%s' "$target" | cut -f1)"

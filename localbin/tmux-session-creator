@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+printf "Session name: "
+IFS= read -r name
+
+[ -z "$name" ] && echo "you did not provide a name, session will not be created" && exit 0
+
+if tmux has-session -t "$name" 2>/dev/null; then
+  tmux switch-client -t "$name"
+else
+  tmux new-session -d -s "$name"
+  tmux switch-client -t "$name"
+fi
