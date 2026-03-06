@@ -147,3 +147,4 @@ yazi
 zoxide
 zram-generator
 zsh
+nvidia-container-toolkit
