@@ -85,3 +85,10 @@ km.set({ "i", "x", "n", "s" }, "<C-s>", function()
   vim.cmd("w")
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
 end)
+
+local function map_handler()
+  vim.cmd("stopinsert")
+  vim.api.nvim_feedkeys(vim.keycode("vip:DB<CR>"), "nx", false)
+end
+
+km.set({ "n", "i" }, "<C-f>", map_handler, { silent = true, desc = "DBUI execute query block (paragraph)" })
