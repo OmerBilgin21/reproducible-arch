@@ -4,7 +4,6 @@ base
 base-devel
 bat
 bind
-blueberry
 brightnessctl
 btop
 btrfs-progs
@@ -148,3 +147,6 @@ zoxide
 zram-generator
 zsh
 nvidia-container-toolkit
+bluez
+bluetui
+foot
