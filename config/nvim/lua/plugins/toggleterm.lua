@@ -37,7 +37,7 @@ return {
       local claude_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
         -- this below gave me some useful info, keep it for now
         -- "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name // \"?\"' | sed 's/claude-//'); branch=$(git -C \"$(echo \"$input\" | jq -r '.workspace.current_dir')\" branch --show-current 2>/dev/null || echo \"no-git\"); pct=$(echo \"$input\" | jq -r '.context_window.used_percentage // 0' | awk '{printf \"%.0f\", $1}'); tokens=$(echo \"$input\" | jq -r '(.context_window.total_input_tokens // 0) + (.context_window.total_output_tokens // 0)' | awk '{if($1>=1000) printf \"%.1fk\", $1/1000; else print $1}'); cc=$(echo \"$pct\" | awk '{if($1<50) print \"\\033[32m\"; else if($1<80) print \"\\033[33m\"; else print \"\\033[31m\"}'); printf \"%sctx:%s%%\\033[0m \\033[36m%s\\033[0m \\033[33m(%s)\\033[0m \\033[35m~%s tok\\033[0m\" \"$cc\" \"$pct\" \"$model\" \"$branch\" \"$tokens\""
-        cmd = is_home() and "ollama launch claude --model qwen3.5:4b-claude-48-trial" or "claude",
+        cmd = is_home() and "ollama launch claude --config" or "claude",
         title = "Claude",
         id = 999,
       })
