@@ -76,7 +76,7 @@
     "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
     "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
     "interval": 5,
-    "on-click": "powerprofilesctl | rofi -dmenu",
+    "on-click": "powerprofilesctl | rofi",
     "states": {
       "warning": 20,
       "critical": 10
@@ -87,7 +87,7 @@
     "format-disabled": "󰂲",
     "format-connected": "",
     "tooltip-format": "Devices connected: {num_connections}",
-    "on-click": "blueberry"
+    "on-click": "launch-with-terminal bluetui"
   },
   "pulseaudio": {
     "format": "{icon}",
@@ -114,7 +114,7 @@
   },
   "custom/screenrecording-indicator": {
     "on-click": "cmd-screenrecord",
-    "exec": "$HOME/.config/waybar/screen-recording.sh",
+    "exec": "$HOME/reproducible-arch/waybar/screen-recording.sh",
     "signal": 8,
     "return-type": "json"
   },
