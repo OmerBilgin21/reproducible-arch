@@ -48,12 +48,22 @@ return {
         id = 996,
       })
 
-      local rest_api_client_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
-        cmd = "rest",
-        title = "Call bruno go brr",
-        id = 995,
-        close_on_exit = false,
+      local free_offcanvas_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
+        title = "Free brother",
+        id = 994,
       })
+
+      local offcanvas_setups = { claude_setup, codex_setup, free_offcanvas_setup }
+
+      local function is_offcanvas_focused()
+        local focused_id = term.get_focused_id()
+        for _, s in ipairs(offcanvas_setups) do
+          if focused_id == s.id then
+            return true
+          end
+        end
+        return false
+      end
 
       local lazygit_setup = vim.tbl_deep_extend("force", {
         id = 998,
@@ -91,23 +101,15 @@ return {
       local default = Terminal:new(default_setup)
       local claude = Terminal:new(claude_setup)
       local codex = Terminal:new(codex_setup)
-      local rest_api_client = Terminal:new(rest_api_client_setup)
+      local free_offcanvas = Terminal:new(free_offcanvas_setup)
 
       vim.keymap.set("n", "<leader>tt", function()
         local test_terminal = Terminal:new(get_test_setup())
         test_terminal:toggle()
       end)
 
-      vim.keymap.set("v", "<C-p>", function()
-        require("toggleterm").send_lines_to_terminal(
-          "visual_lines",
-          true,
-          { args = { claude_setup.id, codex_setup.id } }
-        )
-      end)
-
-      vim.keymap.set("v", "<C-g>", function()
-        if term.get_focused_id() == codex_setup.id or term.get_focused_id() == claude_setup.id then
+      vim.keymap.set("t", "<C-g>", function()
+        if is_offcanvas_focused() then
           -- do nothing
           return
         end
@@ -125,12 +127,12 @@ return {
 
       vim.keymap.set("t", "<C-n>", [[<C-\><C-n>]])
       vim.keymap.set({ "i", "n", "t" }, "<S-tab>", function()
-        if term.get_focused_id() == claude_setup.id or term.get_focused_id() == codex_setup.id then
+        if is_offcanvas_focused() then
           vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<S-tab>", true, false, true), "n", false)
           return
         end
         default:toggle()
-      end, { desc = "Close all terminals or open a new one" })
+      end, { desc = "toggle floating term" })
 
       vim.keymap.set("n", "<leader>gg", function()
         lazygit:toggle()
@@ -144,8 +146,8 @@ return {
         codex:toggle()
       end)
 
-      vim.keymap.set({ "n", "t" }, "<C-e>", function()
-        rest_api_client:toggle()
+      vim.keymap.set({ "n", "t" }, "<C-f>", function()
+        free_offcanvas:toggle()
       end)
 
       vim.keymap.set("t", "<C-x>", function()
