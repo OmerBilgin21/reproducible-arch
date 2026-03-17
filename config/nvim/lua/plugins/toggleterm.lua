@@ -146,7 +146,7 @@ return {
         codex:toggle()
       end)
 
-      vim.keymap.set({ "n", "t" }, "<C-f>", function()
+      vim.keymap.set({ "n", "t" }, "<C-a>", function()
         free_offcanvas:toggle()
       end)
 
