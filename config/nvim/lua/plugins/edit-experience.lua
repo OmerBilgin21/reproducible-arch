@@ -53,23 +53,10 @@ return {
   {
     "kylechui/nvim-surround",
     event = "VeryLazy",
-    config = function()
-      require("nvim-surround").setup({
-        keymaps = {
-          insert = false,
-          insert_line = false,
-          normal = "ys",
-          normal_cur = "yss",
-          normal_line = "yS",
-          normal_cur_line = "ySS",
-          visual = "S",
-          visual_line = "gS",
-          delete = "ds",
-          change = "cs",
-          change_line = "cS",
-        },
-      })
+    init = function()
+      vim.g.nvim_surround_no_insert_mappings = true
     end,
+    opts = {},
   },
   {
     "echasnovski/mini.pairs",
@@ -105,12 +92,12 @@ return {
     },
   },
   {
-    "ggandor/leap.nvim",
+    url = "https://codeberg.org/andyg/leap.nvim",
+    name = "leap.nvim",
     config = function()
       local curr_file = vim.bo.filetype
 
       if curr_file == "trouble" or curr_file == "lazy" then
-        print("went in the wanted case ")
         return
       end
 
@@ -121,7 +108,8 @@ return {
           return not (c1:match("%s") or c0:match("%w") and c1:match("%w") and c2:match("%w"))
         end,
       })
-      leap.create_default_mappings()
+      vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)")
+      vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)")
 
       local user = require("leap.user")
       user.set_repeat_keys("<enter>", "<backspace>")
