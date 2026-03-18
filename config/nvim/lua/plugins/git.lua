@@ -109,7 +109,7 @@ return {
       end, { desc = "Show commits in current branch" })
 
       -- Diff operations (enhanced)
-      vim.keymap.set("n", "<leader>gd", "<cmd>Gdiffsplit<cr>", { desc = "Git diff split" })
+      vim.keymap.set("n", "<leader>gd", "<cmd>Gvdiffsplit<cr>", { desc = "Git diff split" })
 
       -- Git status buffer specific mappings (these work when you're in the :G buffer)
       vim.api.nvim_create_autocmd("FileType", {
