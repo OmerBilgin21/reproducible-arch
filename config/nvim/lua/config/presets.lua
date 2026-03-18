@@ -41,6 +41,47 @@ opt.smoothscroll = false
 opt.autoread = true
 opt.swapfile = false
 
+local file_sync_group = vim.api.nvim_create_augroup("FileSync", { clear = true })
+
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+  group = file_sync_group,
+  callback = function()
+    vim.cmd("silent! checktime")
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = file_sync_group,
+  callback = function(args)
+    if vim.bo[args.buf].buftype ~= "" then
+      return
+    end
+    vim.cmd(("silent! checktime %d"):format(args.buf))
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileChangedShellPost", {
+  group = file_sync_group,
+  callback = function(args)
+    local name = vim.api.nvim_buf_get_name(args.buf)
+    if name == "" then
+      return
+    end
+    vim.notify(("Reloaded from disk: %s"):format(vim.fn.fnamemodify(name, ":~:.")), vim.log.levels.INFO)
+  end,
+})
+
+vim.api.nvim_create_user_command("WorkspaceSync", function(opts)
+  if opts.bang then
+    vim.cmd("silent! wall")
+  end
+
+  vim.cmd("silent! checktime")
+end, {
+  bang = true,
+  desc = "Sync buffers with disk changes; use ! to write all modified buffers first",
+})
+
 vim.o.tabline = "%!v:lua.require'config.presets'.custom_tabline()"
 
 local M = {}
