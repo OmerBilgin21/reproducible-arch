@@ -26,60 +26,6 @@ return {
     end,
   },
   {
-    "stevearc/conform.nvim",
-    opts = function()
-      require("conform").setup({
-        formatters_by_ft = {
-          lua = { "stylua" },
-          sh = { "shfmt" },
-          zsh = { "shfmt" },
-          bash = { "shfmt" },
-          python = { "isort", "black" },
-          javascript = {
-            "prettier",
-            stop_after_first = true,
-          },
-          javascriptreact = {
-            "prettier",
-            stop_after_first = true,
-          },
-          sql = { "sqlfmt" },
-          typescript = {
-            "prettier",
-            stop_after_first = true,
-          },
-          typescriptreact = {
-            "prettier",
-            stop_after_first = true,
-          },
-          go = { "gofmt" },
-          json = { "jq" },
-        },
-        default_format_opts = {
-          lsp_format = "fallback",
-        },
-        notify_on_error = true,
-        notify_no_formatters = true,
-        log_level = vim.log.levels.ERROR,
-        format_on_save = {
-          timeout_ms = 5000,
-          lsp_format = "fallback",
-        },
-      })
-
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        pattern = "*",
-        callback = function(args)
-          require("conform").format({ bufnr = args.buf })
-        end,
-      })
-
-      vim.keymap.set("n", "<leader>,", function()
-        require("conform").format()
-      end)
-    end,
-  },
-  {
     "williamboman/mason.nvim",
     lazy = false,
     config = function()
@@ -87,18 +33,8 @@ return {
     end,
   },
   {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {
-      library = {
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-      },
-    },
-  },
-  { "williamboman/mason-lspconfig" },
-  {
     "neovim/nvim-lspconfig",
-    dependencies = { "saghen/blink.cmp", "williamboman/mason-lspconfig" },
+    dependencies = { "saghen/blink.cmp" },
     lazy = false,
     opts = {
       servers = {
@@ -124,7 +60,7 @@ return {
             },
           },
         },
-        ts_ls = {},
+        vtsls = {},
         pyright = {
           settings = {
             python = {
@@ -144,32 +80,43 @@ return {
           filetypes = { "yaml" },
         },
         eslint = {
+          settings = {
+            run = "onSave",
+            format = false,
+          },
           on_attach = function(_, bufnr)
+            local eslint_client = vim.lsp.get_clients({ bufnr = bufnr, name = "eslint" })[1]
+            if not eslint_client then
+              return
+            end
+
             vim.api.nvim_create_autocmd("BufWritePre", {
               buffer = bufnr,
-              command = "EslintFixAll",
+              callback = function()
+                eslint_client:request_sync("workspace/executeCommand", {
+                  command = "eslint.applyAllFixes",
+                  arguments = {
+                    {
+                      uri = vim.uri_from_bufnr(bufnr),
+                      version = vim.lsp.util.buf_versions[bufnr],
+                    },
+                  },
+                }, nil, bufnr)
+              end,
             })
           end,
         },
-        tailwindcss = {},
-        cssls = {},
       },
     },
     config = function(_, opts)
-      local lspconfig = require("lspconfig")
-
-      require("mason-lspconfig").setup({
-        automatic_installation = true,
-        ensure_installed = vim.tbl_keys(opts.servers),
-      })
-
       for server, config in pairs(opts.servers) do
         config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
-        lspconfig[server].setup(config)
+        vim.lsp.config(server, config)
+        vim.lsp.enable(server)
       end
 
       vim.diagnostic.config({
-        virtual_text = false,
+        virtual_text = true,
         virtual_lines = false,
         float = true,
         signs = true,
@@ -181,6 +128,12 @@ return {
       -- hover with border but it's stupidly complicated :D
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(event)
+          local client = event.data and vim.lsp.get_client_by_id(event.data.client_id)
+          if client and (client.name == "ts_ls" or client.name == "vtsls") then
+            -- This trims per-keystroke TS token traffic to keep editing responsive.
+            client.server_capabilities.semanticTokensProvider = nil
+          end
+
           local buf = event.buf
           vim.keymap.set("n", "K", function()
             vim.lsp.buf.hover({
