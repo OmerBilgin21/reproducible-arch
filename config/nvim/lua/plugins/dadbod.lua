@@ -17,5 +17,6 @@ return {
     vim.g.db_ui_execute_on_save = 0
     vim.g.db_ui_save_location = vim.fn.expand("~/queries")
     vim.g.db_ui_use_nerd_fonts = 1
+    vim.g.vim_dadbod_completion_omnifunc = 0
   end,
 }

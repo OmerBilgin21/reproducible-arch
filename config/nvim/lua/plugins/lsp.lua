@@ -36,12 +36,17 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = { "saghen/blink.cmp" },
     lazy = false,
-    opts = {
+    opts = function()
+      local mason_bin = vim.fn.stdpath("data") .. "/mason/bin/"
+      return {
       servers = {
         bashls = {
           filetypes = { "sh", "bash", "zsh" },
+          cmd = { mason_bin .. "bash-language-server", "start" },
         },
         lua_ls = {
+          filetypes = { "lua" },
+          cmd = { mason_bin .. "lua-language-server" },
           settings = {
             Lua = {
               completion = {
@@ -54,14 +59,21 @@ return {
           },
         },
         gopls = {
+          filetypes = { "go", "gomod", "gowork", "gotmpl" },
+          cmd = { mason_bin .. "gopls" },
           settings = {
             gopls = {
               buildFlags = { "-tags=integration" },
             },
           },
         },
-        vtsls = {},
+        vtsls = {
+          filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
+          cmd = { mason_bin .. "vtsls", "--stdio" },
+        },
         pyright = {
+          filetypes = { "python" },
+          cmd = { mason_bin .. "pyright-langserver", "--stdio" },
           settings = {
             python = {
               venvPath = ".",
@@ -75,39 +87,15 @@ return {
         },
         dockerls = {
           filetypes = { "dockerfile" },
+          cmd = { mason_bin .. "docker-langserver", "--stdio" },
         },
         docker_compose_language_service = {
           filetypes = { "yaml" },
-        },
-        eslint = {
-          settings = {
-            run = "onSave",
-            format = false,
-          },
-          on_attach = function(_, bufnr)
-            local eslint_client = vim.lsp.get_clients({ bufnr = bufnr, name = "eslint" })[1]
-            if not eslint_client then
-              return
-            end
-
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              buffer = bufnr,
-              callback = function()
-                eslint_client:request_sync("workspace/executeCommand", {
-                  command = "eslint.applyAllFixes",
-                  arguments = {
-                    {
-                      uri = vim.uri_from_bufnr(bufnr),
-                      version = vim.lsp.util.buf_versions[bufnr],
-                    },
-                  },
-                }, nil, bufnr)
-              end,
-            })
-          end,
+          cmd = { mason_bin .. "docker-compose-langserver", "--stdio" },
         },
       },
-    },
+    }
+    end,
     config = function(_, opts)
       for server, config in pairs(opts.servers) do
         config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
