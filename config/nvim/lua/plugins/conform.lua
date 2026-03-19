@@ -1,5 +1,6 @@
 return {
   "stevearc/conform.nvim",
+  lazy = false,
   opts = {
     formatters_by_ft = {
       lua = { "stylua" },
@@ -7,23 +8,11 @@ return {
       zsh = { "shfmt" },
       bash = { "shfmt" },
       python = { "isort", "black" },
-      javascript = {
-        "prettier",
-        stop_after_first = true,
-      },
-      javascriptreact = {
-        "prettier",
-        stop_after_first = true,
-      },
+      javascript = { "eslint_d" },
+      javascriptreact = { "eslint_d" },
       sql = { "sqlfmt" },
-      typescript = {
-        "prettier",
-        stop_after_first = true,
-      },
-      typescriptreact = {
-        "prettier",
-        stop_after_first = true,
-      },
+      typescript = { "eslint_d" },
+      typescriptreact = { "eslint_d" },
       go = { "gofmt" },
       json = { "jq" },
     },
