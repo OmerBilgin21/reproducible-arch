@@ -8,8 +8,6 @@ return {
       },
     },
     version = "1.*",
-    ---@module 'blink.cmp'
-    ---@type blink.cmp.Config
     opts = {
       keymap = { preset = "enter" },
       appearance = {
@@ -88,7 +86,7 @@ return {
           },
           dadbod = {
             name = "Dadbod",
-            module = "config.dadbod-fuzzy",
+            module = "config.override_defaults",
             score_offset = 60,
           },
         },

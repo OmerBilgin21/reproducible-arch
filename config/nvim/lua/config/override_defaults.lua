@@ -1,3 +1,5 @@
+local M = {}
+
 local map_kind = {
   F = 3,
   C = 5,
@@ -7,7 +9,59 @@ local map_kind = {
   S = 19,
 }
 
-local M = {}
+function M.tabline()
+  local s = ""
+  for i = 1, vim.fn.tabpagenr("$") do
+    if i == vim.fn.tabpagenr() then
+      s = s .. "%#TabLineSel#"
+    else
+      s = s .. "%#TabLine#"
+    end
+    s = s .. "%" .. i .. "T"
+    s = s .. " " .. i .. " "
+    local buflist = vim.fn.tabpagebuflist(i)
+    local winnr = vim.fn.tabpagewinnr(i)
+    local bufname = vim.fn.bufname(buflist[winnr])
+    local filename = bufname ~= "" and vim.fn.fnamemodify(bufname, ":t") or "[No Name]"
+    s = s .. filename .. " "
+  end
+  s = s .. "%#TabLineFill#%T"
+  return s
+end
+
+function M.foldtext()
+  local start_line = vim.fn.getline(vim.v.foldstart)
+  local end_line = vim.fn.getline(vim.v.foldend)
+  local indent = start_line:match("^%s*") or ""
+  local text = start_line:gsub("^%s*", ""):gsub("%s*$", "")
+
+  if text == "" then
+    text = end_line:gsub("^%s*", ""):gsub("%s*$", "")
+  end
+
+  local line_count = vim.v.foldend - vim.v.foldstart + 1
+  local suffix = (" %s [%d lines]"):format(vim.v.folddashes, line_count)
+  local available_width = vim.api.nvim_win_get_width(0)
+    - vim.fn.strdisplaywidth(indent)
+    - vim.fn.strdisplaywidth(suffix)
+
+  if available_width < 0 then
+    available_width = 0
+  end
+
+  if vim.fn.strdisplaywidth(text) > available_width then
+    local truncated = math.max(available_width - 3, 0)
+    text = vim.fn.strcharpart(text, 0, truncated)
+    if available_width >= 3 then
+      text = text .. "..."
+    end
+  end
+
+  local padding = math.max(available_width - vim.fn.strdisplaywidth(text), 1)
+  return indent .. text .. string.rep(" ", padding) .. suffix
+end
+
+-- begin dadbod completion override
 
 function M.new()
   return setmetatable({}, { __index = M })
@@ -77,5 +131,7 @@ function M:get_completions(ctx, callback)
 
   return function() end
 end
+
+-- end dadbod completion override
 
 return M

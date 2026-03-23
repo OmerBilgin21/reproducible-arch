@@ -1,4 +1,5 @@
 local opt = vim.opt
+
 vim.g.root_spec = { "lsp", { ".git", "lua" }, "cwd" }
 opt.clipboard = "unnamedplus"
 vim.opt.backspace = { "indent", "eol", "start" }
@@ -6,7 +7,12 @@ opt.confirm = true -- Confirm to save changes before exiting modified buffer
 opt.cursorline = true -- Enable highlighting of the current line
 opt.expandtab = true -- Use spaces instead of tabs
 
+opt.foldenable = true
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldmethod = "expr"
+opt.foldtext = "v:lua.override_defaults.foldtext()"
 opt.grepprg = "rg --vimgrep"
 opt.ignorecase = true -- Ignore case
 
@@ -82,28 +88,4 @@ end, {
   desc = "Sync buffers with disk changes; use ! to write all modified buffers first",
 })
 
-vim.o.tabline = "%!v:lua.require'config.presets'.custom_tabline()"
-
-local M = {}
-
-function M.custom_tabline()
-  local s = ""
-  for i = 1, vim.fn.tabpagenr("$") do
-    if i == vim.fn.tabpagenr() then
-      s = s .. "%#TabLineSel#"
-    else
-      s = s .. "%#TabLine#"
-    end
-    s = s .. "%" .. i .. "T"
-    s = s .. " " .. i .. " "
-    local buflist = vim.fn.tabpagebuflist(i)
-    local winnr = vim.fn.tabpagewinnr(i)
-    local bufname = vim.fn.bufname(buflist[winnr])
-    local filename = bufname ~= "" and vim.fn.fnamemodify(bufname, ":t") or "[No Name]"
-    s = s .. filename .. " "
-  end
-  s = s .. "%#TabLineFill#%T"
-  return s
-end
-
-return M
+vim.o.tabline = "%!v:lua.override_defaults.tabline()"

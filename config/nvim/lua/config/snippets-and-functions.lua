@@ -42,6 +42,8 @@ _G.is_home = function()
   return true
 end
 
+_G.override_defaults = require("config.override_defaults")
+
 vim.filetype.add({
   pattern = {
     [".*/%.?bash.*$"] = "sh",
