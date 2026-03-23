@@ -39,62 +39,62 @@ return {
     opts = function()
       local mason_bin = vim.fn.stdpath("data") .. "/mason/bin/"
       return {
-      servers = {
-        bashls = {
-          filetypes = { "sh", "bash", "zsh" },
-          cmd = { mason_bin .. "bash-language-server", "start" },
-        },
-        lua_ls = {
-          filetypes = { "lua" },
-          cmd = { mason_bin .. "lua-language-server" },
-          settings = {
-            Lua = {
-              completion = {
-                callSnippet = "Replace",
-              },
-              diagnostics = {
-                globals = { "vim" },
-              },
-            },
+        servers = {
+          bashls = {
+            filetypes = { "sh", "bash", "zsh" },
+            cmd = { mason_bin .. "bash-language-server", "start" },
           },
-        },
-        gopls = {
-          filetypes = { "go", "gomod", "gowork", "gotmpl" },
-          cmd = { mason_bin .. "gopls" },
-          settings = {
-            gopls = {
-              buildFlags = { "-tags=integration" },
-            },
-          },
-        },
-        vtsls = {
-          filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
-          cmd = { mason_bin .. "vtsls", "--stdio" },
-        },
-        pyright = {
-          filetypes = { "python" },
-          cmd = { mason_bin .. "pyright-langserver", "--stdio" },
-          settings = {
-            python = {
-              venvPath = ".",
-              venv = "venv",
-              analysis = {
-                autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
+          lua_ls = {
+            filetypes = { "lua" },
+            cmd = { mason_bin .. "lua-language-server" },
+            settings = {
+              Lua = {
+                completion = {
+                  callSnippet = "Replace",
+                },
+                diagnostics = {
+                  globals = { "vim" },
+                },
               },
             },
           },
+          gopls = {
+            filetypes = { "go", "gomod", "gowork", "gotmpl" },
+            cmd = { mason_bin .. "gopls" },
+            settings = {
+              gopls = {
+                buildFlags = { "-tags=integration" },
+              },
+            },
+          },
+          vtsls = {
+            filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
+            cmd = { mason_bin .. "vtsls", "--stdio" },
+          },
+          pyright = {
+            filetypes = { "python" },
+            cmd = { mason_bin .. "pyright-langserver", "--stdio" },
+            settings = {
+              python = {
+                venvPath = ".",
+                venv = "venv",
+                analysis = {
+                  autoSearchPaths = true,
+                  useLibraryCodeForTypes = true,
+                },
+              },
+            },
+          },
+          dockerls = {
+            filetypes = { "dockerfile" },
+            cmd = { mason_bin .. "docker-langserver", "--stdio" },
+          },
+          docker_compose_language_service = {
+            filetypes = { "yaml" },
+            cmd = { mason_bin .. "docker-compose-langserver", "--stdio" },
+          },
         },
-        dockerls = {
-          filetypes = { "dockerfile" },
-          cmd = { mason_bin .. "docker-langserver", "--stdio" },
-        },
-        docker_compose_language_service = {
-          filetypes = { "yaml" },
-          cmd = { mason_bin .. "docker-compose-langserver", "--stdio" },
-        },
-      },
-    }
+      }
     end,
     config = function(_, opts)
       for server, config in pairs(opts.servers) do
@@ -106,8 +106,8 @@ return {
       vim.diagnostic.config({
         virtual_text = true,
         virtual_lines = false,
-        float = true,
-        signs = true,
+        float = false,
+        signs = false,
         underline = true,
         update_in_insert = false,
         severity_sort = true,
@@ -136,13 +136,11 @@ return {
       vim.keymap.set("n", "gd", function()
         vim.lsp.buf.definition({ reuse_win = true })
       end, {})
-      vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {})
-      vim.keymap.set("n", "<leader>ct", function()
-        vim.diagnostic.enable(not vim.diagnostic.is_enabled())
-      end, { desc = "toggle diagnostics" })
-      vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, {})
-      vim.keymap.set("n", "]d", vim.diagnostic.goto_next, {})
-      vim.keymap.set("n", "<leader>cf", vim.diagnostic.open_float, {})
+
+      vim.keymap.set("n", "<leader>ca", function()
+        local current = vim.diagnostic.config().virtual_text
+        vim.diagnostic.config({ virtual_text = not current })
+      end, {})
     end,
   },
 }

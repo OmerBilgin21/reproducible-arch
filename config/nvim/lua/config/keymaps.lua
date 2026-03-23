@@ -6,7 +6,7 @@ vim.g.omni_sql_no_default_maps = 1
 
 km.set({ "i", "n", "v", "x" }, "<C-c>", "<esc>", { desc = "control+c acts like esc", noremap = true, silent = true })
 
-vim.keymap.set({ "i", "n", "t" }, "<c-h>", function()
+km.set({ "i", "n", "t" }, "<c-h>", function()
   local mode = vim.api.nvim_get_mode().mode
   if mode == "t" then
     vim.cmd("stopinsert")
@@ -14,21 +14,21 @@ vim.keymap.set({ "i", "n", "t" }, "<c-h>", function()
   vim.cmd.wincmd("h")
 end, { noremap = true })
 
-vim.keymap.set({ "i", "n", "t" }, "<c-j>", function()
+km.set({ "i", "n", "t" }, "<c-j>", function()
   local mode = vim.api.nvim_get_mode().mode
   if mode == "t" then
     vim.cmd("stopinsert")
   end
   vim.cmd.wincmd("j")
 end, { noremap = true })
-vim.keymap.set({ "i", "n", "t" }, "<c-k>", function()
+km.set({ "i", "n", "t" }, "<c-k>", function()
   local mode = vim.api.nvim_get_mode().mode
   if mode == "t" then
     vim.cmd("stopinsert")
   end
   vim.cmd.wincmd("k")
 end, { noremap = true })
-vim.keymap.set({ "i", "n", "t" }, "<C-l>", function()
+km.set({ "i", "n", "t" }, "<C-l>", function()
   local mode = vim.api.nvim_get_mode().mode
   if mode == "t" then
     vim.cmd("stopinsert")
@@ -92,3 +92,6 @@ local function map_handler()
 end
 
 km.set({ "n", "i" }, "<C-f>", map_handler, { silent = true, desc = "DBUI execute query block (paragraph)" })
+
+km.set({ "n" }, "<leader>co", "zo", { silent = true, desc = "unfold text" })
+km.set({ "n" }, "<leader>cf", "zc", { silent = true, desc = "fold text" })

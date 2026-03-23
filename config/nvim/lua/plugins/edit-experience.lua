@@ -40,11 +40,6 @@ return {
         desc = "Buffer Diagnostics (Trouble)",
       },
       {
-        "<leader>cs",
-        "<cmd>Trouble symbols toggle focus=false<cr>",
-        desc = "Symbols (Trouble)",
-      },
-      {
         "<leader>cl",
         "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
         desc = "LSP Definitions / references / ... (Trouble)",
@@ -117,27 +112,18 @@ return {
     },
   },
   {
-    url = "https://codeberg.org/andyg/leap.nvim",
-    name = "leap.nvim",
-    config = function()
-      local curr_file = vim.bo.filetype
-
-      if curr_file == "trouble" or curr_file == "lazy" then
-        return
-      end
-
-      local leap = require("leap")
-      leap.setup({
-        equivalence_classes = { " \t\r\n", "([{", ")]}", "'\"`" },
-        preview_filter = function(c0, c1, c2)
-          return not (c1:match("%s") or c0:match("%w") and c1:match("%w") and c2:match("%w"))
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    opts = {},
+    keys = {
+      {
+        "s",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump()
         end,
-      })
-      vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)")
-      vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)")
-
-      local user = require("leap.user")
-      user.set_repeat_keys("<enter>", "<backspace>")
-    end,
+        desc = "Flash",
+      },
+    },
   },
 }
