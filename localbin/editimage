@@ -1,0 +1,3 @@
+#!/bin/bash
+
+satty --filename "$(zenity --file-selection --filename=$HOME/Pictures/)"
