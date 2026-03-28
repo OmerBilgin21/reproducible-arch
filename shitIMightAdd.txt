@@ -1,0 +1,81 @@
+
+    "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": 4096,
+
+
+
+
+
+{
+  "statusLine": {
+    "type": "command",
+    "command": "jq -r '(.context_window.used_percentage // 0) as $p | (($p / 100) * 200000) as $u | (($u / 48000) * 100) as $r | \"[\\(.model.display_name)] \\(($u|floor))t / 48k · \\(($r|floor))%\"'"
+  },
+  "permissions": {
+    "ask": [
+      "Bash(mv*)",
+      "Bash(cat*)",
+      "Bash(mkdir*)",
+      "Edit",
+      "Skill",
+      "Write"
+    ],
+    "deny": [
+      "NotebookEdit",
+      "Agent",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "allow": [
+      "Task",
+      "TaskOutput",
+      "TaskCreate",
+      "TaskGet",
+      "TaskList",
+      "TaskUpdate",
+      "ToolSearch",
+      "ExitPlanMode",
+      "ExitPlanMode",
+      "EnterPlanMode",
+      "AskUserQuestion",
+      "LSP",
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(find .:)",
+      "Bash(find*)",
+      "Bash(rg*)",
+      "Bash(ls*)"
+    ],
+    "defaultMode": "default"
+  },
+  "env": {
+    "CLAUDE_CODE_DISABLE_1M_CONTEXT": 1,
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": 1,
+    "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": 1,
+    "CLAUDE_CODE_EFFORT_LEVEL": "low",
+    "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION": false,
+    "CLAUDE_CODE_ENABLE_TELEMETRY": 0,
+    "CLAUDE_CODE_IDE_SKIP_AUTO_INSTALL": 1,
+    "CLAUDE_CODE_SIMPLE": 1,
+    "DISABLE_AUTOUPDATER": 1,
+    "DISABLE_BUG_COMMAND": 1,
+    "DISABLE_ERROR_REPORTING": 1,
+    "DISABLE_INSTALLATION_CHECKS": 1,
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": 1,
+    "DISABLE_TELEMETRY": 1,
+    "ENABLE_TOOL_SEARCH": true,
+    "MAX_THINKING_TOKENS": 0,
+    "USE_BUILTIN_RIPGREP": 0,
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": 22,
+    "CLAUDE_CODE_AUTOCOMPACT_PCT_OVERRIDE": 22,
+    "AUTOCOMPACT_PCT_OVERRIDE": 22
+  },
+  "spinnerTipsEnabled": false,
+  "prefersReducedMotion": true,
+  "alwaysThinkingEnabled": false,
+  "promptSuggestionEnabled": false,
+  "autoMemoryEnabled": true,
+  "autoUpdatesChannel": "stable",
+  "minimumVersion": "2.1.42",
+  "language": "English"
+}
