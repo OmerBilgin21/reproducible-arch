@@ -5,3 +5,6 @@ stow -D -t ~/ zsh
 stow -t ~/.config config
 stow -t ~/.local/bin localbin
 stow -t ~/ zsh
+
+hyprctl reload
+restart-app waybar
