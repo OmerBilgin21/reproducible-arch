@@ -20,10 +20,12 @@ return {
         direction = "float",
         float_opts = {
           border = "single",
+          title_pos = "center",
         },
         title_pos = "center",
         scroll_on_output = false,
         shade_terminals = false,
+        auto_scroll = false,
       }
 
       local right_side_offcanvas_terminal_setup = {
