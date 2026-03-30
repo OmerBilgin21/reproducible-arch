@@ -1,5 +1,21 @@
 return {
   {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      library = {
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        { path = "lazy.nvim", words = { "LazyPlugin", "LazySpec" } },
+        { path = "blink.cmp" },
+        { path = "conform.nvim" },
+        { path = "mason.nvim" },
+        { path = "nvim-lspconfig" },
+        { path = "telescope.nvim" },
+        { path = "LuaSnip" },
+      },
+    },
+  },
+  {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
@@ -67,9 +83,9 @@ return {
               },
             },
           },
-          vtsls = {
+          ts_ls = {
             filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
-            cmd = { mason_bin .. "vtsls", "--stdio" },
+            cmd = { mason_bin .. "typescript-language-server", "--stdio" },
           },
           pyright = {
             filetypes = { "python" },
@@ -117,7 +133,7 @@ return {
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(event)
           local client = event.data and vim.lsp.get_client_by_id(event.data.client_id)
-          if client and (client.name == "ts_ls" or client.name == "vtsls") then
+          if client and client.name == "ts_ls" then
             -- This trims per-keystroke TS token traffic to keep editing responsive.
             client.server_capabilities.semanticTokensProvider = nil
           end
