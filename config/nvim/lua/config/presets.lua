@@ -49,12 +49,16 @@ opt.swapfile = false
 
 local file_sync_group = vim.api.nvim_create_augroup("FileSync", { clear = true })
 
-vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave", "VimResume" }, {
   group = file_sync_group,
   callback = function()
     vim.cmd("silent! checktime")
   end,
 })
+
+vim.fn.timer_start(2000, function()
+  vim.cmd("silent! checktime")
+end, { ["repeat"] = -1 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
   group = file_sync_group,
