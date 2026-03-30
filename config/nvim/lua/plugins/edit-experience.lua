@@ -125,7 +125,7 @@ return {
         desc = "Flash",
       },
       {
-        "n",
+        "r",
         mode = "o",
         function()
           require("flash").remote()
