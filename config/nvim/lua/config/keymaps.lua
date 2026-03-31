@@ -95,3 +95,30 @@ km.set({ "n", "i" }, "<C-f>", map_handler, { silent = true, desc = "DBUI execute
 
 km.set({ "n" }, "<leader>co", "zo", { silent = true, desc = "unfold text" })
 km.set({ "n" }, "<leader>cf", "zc", { silent = true, desc = "fold text" })
+
+km.set("n", "<leader>cd", function()
+  require("dapui").toggle()
+end, { desc = "Toggle DAP UI" })
+
+vim.keymap.set("n", "<leader>ct", function()
+  local file = vim.fn.expand("%")
+  local line = vim.fn.line(".")
+  vim.fn.jobstart({
+    "gomodifytags",
+    "-file",
+    file,
+    "-line",
+    tostring(line),
+    "-add-tags",
+    "json",
+    "-transform",
+    "snakecase",
+    "-w",
+  }, {
+    on_exit = function(_, code)
+      if code == 0 then
+        vim.cmd("edit") -- reload buffer
+      end
+    end,
+  })
+end, { desc = "Add json tags" })
