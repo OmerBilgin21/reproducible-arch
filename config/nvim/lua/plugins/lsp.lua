@@ -55,6 +55,7 @@ return {
         { path = "conform.nvim" },
         { path = "mason.nvim" },
         { path = "nvim-lspconfig" },
+        { path = "render-markdown" },
         { path = "telescope.nvim" },
         { path = "LuaSnip" },
       },
