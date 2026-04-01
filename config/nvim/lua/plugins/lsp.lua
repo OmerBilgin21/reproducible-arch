@@ -132,6 +132,13 @@ return {
           ts_ls = {
             filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
             cmd = { mason_bin .. "typescript-language-server", "--stdio" },
+            init_options = {
+              hostInfo = "neovim",
+              maxTsServerMemory = 8192,
+              preferences = {
+                includePackageJsonAutoImports = "auto",
+              },
+            },
           },
           pyright = {
             filetypes = { "python" },
@@ -174,6 +181,8 @@ return {
         update_in_insert = false,
         severity_sort = true,
       })
+
+      vim.lsp.inlay_hint = false
 
       -- hover with border but it's stupidly complicated :D
       vim.api.nvim_create_autocmd("LspAttach", {
