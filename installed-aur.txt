@@ -1,7 +1,5 @@
-librewolf-bin
 localsend-bin
 pinta
-postman-bin
 python-terminaltexteffects
 ttf-ia-writer
 tzupdate

@@ -24,7 +24,6 @@ fastfetch
 fcitx5
 fcitx5-gtk
 fcitx5-qt
-fd
 ffmpegthumbnailer
 fontconfig
 gamemode
@@ -76,7 +75,6 @@ mesa-utils
 mise
 mpv
 nautilus
-neovim
 noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
@@ -101,7 +99,6 @@ pyenv
 qt5-wayland
 qutebrowser
 resvg
-ripgrep
 rofi
 rsync
 rust
@@ -116,7 +113,6 @@ swayosd
 system-config-printer
 tldr
 tlp
-tmux
 tree
 tree-sitter-cli
 ttf-cascadia-mono-nerd
@@ -150,3 +146,4 @@ nvidia-container-toolkit
 bluez
 bluetui
 foot
+cloc
