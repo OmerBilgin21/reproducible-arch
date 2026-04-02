@@ -1,4 +1,4 @@
-export PATH="$HOME/.local/bin:/home/oemer/.opencode/bin:$HOME/.emacs.d/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 export XCOMPOSEFILE="$HOME/.config/xcompose"
 export SUDO_EDITOR="$EDITOR"
 export BAT_THEME=ansi
