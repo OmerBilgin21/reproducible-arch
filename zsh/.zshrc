@@ -11,9 +11,9 @@ source "$repo_dir/zsh/.zshsecrets"
 source "$repo_dir/zsh/.zsh_vi_mode"
 source "$repo_dir/zsh/.zsh_aliases"
 
-eval "$(pyenv init -)"
 eval "$(mise activate zsh)"
 eval "$(starship init zsh)"
+eval "$(starship completions zsh)"
 
 if [[ $- == *i* ]]; then
   eval "$(zoxide init zsh --cmd cd)"
