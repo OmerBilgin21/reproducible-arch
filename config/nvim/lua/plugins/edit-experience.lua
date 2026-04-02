@@ -80,7 +80,7 @@ return {
   },
   {
     "echasnovski/mini.pairs",
-    config = {
+    opts = {
       modes = { insert = true, command = true, terminal = false },
       skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
       skip_ts = { "string" },
@@ -90,7 +90,7 @@ return {
   },
   {
     "MagicDuck/grug-far.nvim",
-    config = { headerMaxWidth = 80 },
+    opts = { headerMaxWidth = 80 },
     cmd = "GrugFar",
     keys = {
       {
