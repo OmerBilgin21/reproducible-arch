@@ -51,8 +51,8 @@ return {
           prefix = "logger.info",
         },
         go = {
-          -- prefix = "util.Log",
-          -- spread_mode = true,
+          prefix = "internal.Logger",
+          spread_mode = true,
         },
         keymaps = {
           "<C-g>",
