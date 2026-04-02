@@ -1,0 +1,78 @@
+theme = "onedark"
+
+[editor]
+line-number = "relative"
+cursorline = true
+scrolloff = 4
+mouse = true
+auto-pairs = true
+color-modes = true        # tint cursor color per mode
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false            # show dotfiles (matches --hidden in your telescope rg command)
+
+[editor.search]
+smart-case = true
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = false
+
+[editor.soft-wrap]
+enable = true
+
+[editor.indent-guides]
+render = true
+
+# ---------------------------------------------------------------------------
+# Normal mode keymaps
+# ---------------------------------------------------------------------------
+[keys.normal]
+"C-p" = "file_picker"
+"C-s" = ":write"
+"C-h" = "jump_view_left"
+"C-j" = "jump_view_down"
+"C-k" = "jump_view_up"
+"C-l" = "jump_view_right"
+"-" = "goto_line_end"
+"_" = "goto_line_start"
+"K" = "hover"
+
+# ---------------------------------------------------------------------------
+# Space (leader) submenu
+# ---------------------------------------------------------------------------
+[keys.normal.space]
+"space" = "buffer_picker"
+"f" = "global_search"
+"," = ":format"
+"b" = { d = ":buffer-close" }
+"s" = { h = ":hsplit", v = ":vsplit" }
+"x" = { x = "workspace_diagnostics_picker" }
+
+# ---------------------------------------------------------------------------
+# Insert mode keymaps
+# ---------------------------------------------------------------------------
+[keys.insert]
+# <C-c> → normal mode (like Escape)
+"C-c" = "normal_mode"
+# <C-s> → save and return to normal
+"C-s" = ["normal_mode", ":write"]
+# Window navigation from insert mode
+"C-h" = ["normal_mode", "jump_view_left"]
+"C-j" = ["normal_mode", "jump_view_down"]
+"C-k" = ["normal_mode", "jump_view_up"]
+"C-l" = ["normal_mode", "jump_view_right"]
+
+# ---------------------------------------------------------------------------
+# Select mode keymaps
+# ---------------------------------------------------------------------------
+[keys.select]
+# <C-c> → normal mode (like Escape)
+"C-c" = "normal_mode"
+# nvim-surround: S<char> in visual → surround_add (like visual S in nvim-surround)
+"S" = "surround_add"
