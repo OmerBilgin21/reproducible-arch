@@ -68,7 +68,7 @@ if [ -n "$(lspci | grep -i 'nvidia')" ]; then
 
   # Add NVIDIA environment variables to hyprland.conf
   CURR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  HYPRLAND_CONF="$CURR_DIR/config/hypr/hyprland.conf"
+  HYPRLAND_CONF="$CURR_DIR/config-linux/hypr/hyprland.conf"
   if [ -f "$HYPRLAND_CONF" ]; then
     cat >>"$HYPRLAND_CONF" <<'EOF'
 
