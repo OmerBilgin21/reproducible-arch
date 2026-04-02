@@ -1,4 +1,4 @@
-@theme "~/reproducible-arch/config/rofi/theme.rasi"
+@theme "~/reproducible-arch/config-linux/rofi/theme.rasi"
 
 configuration {
   modi: "drun";
