@@ -20,7 +20,7 @@ if [[ "$confirm" =~ ^[Yy]$ ]]; then
   fi
 
   mkdir -p "$HOME/.config/nvim"
-  stow -d "$bakDir/config" -t "$HOME/.config/nvim" nvim
+  stow -d "$bakDir/config-shared" -t "$HOME/.config/nvim" nvim
   echo "nvim setup complete."
   exit 0
 fi

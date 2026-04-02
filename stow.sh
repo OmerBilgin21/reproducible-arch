@@ -1,5 +1,16 @@
 mkdir -p ~/.config
 mkdir -p ~/.local/bin
-stow -t ~/.config config
-stow -t ~/.local/bin localbin
+
+OS="$(uname -s)"
+
+stow -t ~/.config config-shared
+stow -t ~/.local/bin localbin-shared
 stow -t ~/ zsh
+
+if [[ "$OS" == "Linux" ]]; then
+  stow -t ~/.config config-linux
+  stow -t ~/.local/bin localbin-linux
+elif [[ "$OS" == "Darwin" ]]; then
+  stow -t ~/.config config-mac
+  stow -t ~/.local/bin localbin-mac
+fi
