@@ -182,8 +182,6 @@ return {
         severity_sort = true,
       })
 
-      vim.lsp.inlay_hint = false
-
       -- hover with border but it's stupidly complicated :D
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(event)
@@ -208,7 +206,7 @@ return {
         vim.lsp.buf.definition({ reuse_win = true })
       end, {})
 
-      vim.keymap.set("n", "<leader>ca", function()
+      vim.keymap.set("n", "<leader>cv", function()
         local current = vim.diagnostic.config().virtual_text
         vim.diagnostic.config({ virtual_text = not current })
       end, {})
