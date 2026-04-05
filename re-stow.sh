@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
 OS="$(uname -s)"
 
 stow -D -t ~/.config config-shared
