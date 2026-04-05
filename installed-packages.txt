@@ -60,7 +60,6 @@ less
 libpulse
 libqalculate
 libreoffice-fresh
-libva-nvidia-driver
 libyaml
 linux
 linux-firmware
@@ -80,8 +79,6 @@ noto-fonts-cjk
 noto-fonts-emoji
 noto-fonts-extra
 nss-mdns
-nvidia-open-dkms
-nvidia-utils
 ollama-cuda
 pacman-contrib
 pamixer
@@ -142,7 +139,6 @@ yazi
 zoxide
 zram-generator
 zsh
-nvidia-container-toolkit
 bluez
 bluetui
 foot
