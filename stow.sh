@@ -6,6 +6,7 @@ OS="$(uname -s)"
 stow -t ~/.config config-shared
 stow -t ~/.local/bin localbin-shared
 stow -t ~/ zsh
+stow -t ~/ home-shared
 
 if [[ "$OS" == "Linux" ]]; then
   stow -t ~/.config config-linux

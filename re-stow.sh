@@ -3,10 +3,12 @@ OS="$(uname -s)"
 stow -D -t ~/.config config-shared
 stow -D -t ~/.local/bin localbin-shared
 stow -D -t ~/ zsh
+stow -D -t ~/ home-shared
 
 stow -t ~/.config config-shared
 stow -t ~/.local/bin localbin-shared
 stow -t ~/ zsh
+stow -t ~/ home-shared
 
 if [[ "$OS" == "Linux" ]]; then
   stow -D -t ~/.config config-linux
