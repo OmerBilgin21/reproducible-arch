@@ -87,13 +87,7 @@ return {
       })
     end,
   },
-  {
-    "williamboman/mason.nvim",
-    lazy = false,
-    config = function()
-      require("mason").setup()
-    end,
-  },
+
   {
     "neovim/nvim-lspconfig",
     dependencies = { "saghen/blink.cmp" },
@@ -129,14 +123,26 @@ return {
               },
             },
           },
-          ts_ls = {
+          vtsls = {
             filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
-            cmd = { mason_bin .. "typescript-language-server", "--stdio" },
-            init_options = {
-              hostInfo = "neovim",
-              maxTsServerMemory = 8192,
-              preferences = {
-                includePackageJsonAutoImports = "auto",
+            cmd = { mason_bin .. "vtsls", "--stdio" },
+            settings = {
+              vtsls = {
+                autoUseWorkspaceTsdk = true,
+                experimental = {
+                  completion = {
+                    enableServerSideFuzzyMatch = true,
+                  },
+                  enableProjectDiagnostics = true,
+                },
+              },
+              typescript = {
+                tsserver = {
+                  maxTsServerMemory = 8192,
+                },
+                preferences = {
+                  includePackageJsonAutoImports = "auto",
+                },
               },
             },
           },
@@ -186,7 +192,7 @@ return {
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(event)
           local client = event.data and vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.name == "ts_ls" then
+          if client and client.name == "vtsls" then
             -- This trims per-keystroke TS token traffic to keep editing responsive.
             client.server_capabilities.semanticTokensProvider = nil
           end
