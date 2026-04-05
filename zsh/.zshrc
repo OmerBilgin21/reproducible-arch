@@ -14,12 +14,11 @@ source "$repo_dir/zsh/.zsh_aliases"
 eval "$(mise activate zsh)"
 eval "$(starship init zsh)"
 eval "$(starship completions zsh)"
+eval "$(rg --generate=complete-zsh)"
 
 if [[ $- == *i* ]]; then
   eval "$(zoxide init zsh --cmd cd)"
 fi
-
-eval "$(rg --generate=complete-zsh)"
 
 export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
 
@@ -39,8 +38,8 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # needs to be after plugin setup
-source "$repo_dir/zsh/fzf-completion.zsh"
-source "$repo_dir/zsh/fzf-key-bindings.zsh"
+source "$repo_dir/home-shared/fzf-completion.zsh"
+source "$repo_dir/home-shared/fzf-key-bindings.zsh"
 
 # Keybindings
 bindkey '^p' history-search-backward
