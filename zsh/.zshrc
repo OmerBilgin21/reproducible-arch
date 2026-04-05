@@ -58,7 +58,3 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
-
-# leave this at the end in case I want to overwrite
-# some home behaviour at work
-source "$repo_dir/zsh/.zsh_workspecific"
