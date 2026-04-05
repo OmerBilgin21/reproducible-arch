@@ -1,32 +1,8 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2317
 
 set -euo pipefail
 
 bakDir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-read -r -p "are you here only for nvim with stow setup? (y/N): " confirm
-
-if [[ "$confirm" =~ ^[Yy]$ ]]; then
-  if ! command -v stow >/dev/null 2>&1; then
-    echo "stow is required for nvim-only setup. Install it first, then retry."
-    exit 1
-  fi
-
-  mkdir -p "$HOME/.config"
-
-  if [ -e "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
-    mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak.$(date +%Y%m%d-%H%M%S)"
-  fi
-
-  mkdir -p "$HOME/.config/nvim"
-  stow -d "$bakDir/config-shared" -t "$HOME/.config/nvim" nvim
-  echo "nvim setup complete."
-  exit 0
-fi
-
-echo "continuing with OS setup as usual"
-
 yayPath="$HOME/yay"
 
 ensurePac() {
@@ -39,57 +15,63 @@ ensureYay() {
 
 ensureYayInstalled() {
   if ! command -v yay >/dev/null 2>&1; then
-    if [[ ! -d "$yayPath" ]]; then
-      echo "you did not have yay, installing"
-      git clone https://aur.archlinux.org/yay.git "$yayPath"
+    if [[ -d "$yayPath" ]]; then
+      echo "removing previously installed yay clone to freshly install it..."
+      rm -rf "$yayPath"
     fi
+    echo "cloning yay..."
+    git clone --depth 1 https://aur.archlinux.org/yay.git "$yayPath"
+    echo "build yay..."
     cd "$yayPath" && makepkg -si --noconfirm
+    echo "yay installation done"
     cd "$bakDir"
   fi
 }
 
 sudo pacman -Syu --noconfirm
 
-ensurePac gum
-
-if gum confirm "Restore pacman packages?"; then
-  echo "[+] Restoring packages..."
-  while IFS= read -r line; do
-    ensurePac "$line"
-  done <"$bakDir/installed-packages.txt"
-fi
-
+echo "switch to work directory: $bakDir"
 cd "$bakDir"
 
-if gum confirm "Restore yay packages?"; then
-  ensureYayInstalled
+echo "Restoring pacman packages..."
+while IFS= read -r line; do
+  ensurePac "$line"
+done <"$bakDir/installed-packages.txt"
+echo "pacman package installations done, installing AUR packages..."
 
-  while IFS= read -r line; do
-    ensureYay "$line"
-  done <"$bakDir/installed-aur.txt"
+echo "installing yay..."
+ensureYayInstalled
+
+echo "Restoring AUR packages..."
+while IFS= read -r line; do
+  ensureYay "$line"
+done <"$bakDir/installed-aur.txt"
+echo "AUR installations done, installing mise packages..."
+
+echo "Installing mise..."
+ensurePac mise
+echo "mise installations done, setting up zsh..."
+mise install
+
+echo "Switching shells..."
+sudo usermod --shell "$(command -v zsh)" "$USER"
+
+echo "Restoring user configs..."
+ensurePac stow
+"$bakDir/stow.sh"
+
+read -r -p "Setup NVIDIA? (y/n)" confirm
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+  echo "starting nvidia setup..."
+
+  echo "installing required packages for nvidia setup..."
+  ensurePac nvidia-open-dkms
+  ensurePac nvidia-utils
+  ensurePac libva-nvidia-driver
+  ensurePac nvidia-container-toolkit
+  echo "nvidia package installations done, running nvidia setup script..."
+
+  "$bakDir/nvidia.sh"
 fi
 
-if gum confirm "Restore user configs?"; then
-  echo "[+] Restoring user configs..."
-  ensurePac stow
-  chmod +x "$bakDir/stow.sh"
-  $bakDir/stow.sh
-fi
-
-if gum confirm "Setup NVIDIA?"; then
-  echo "[+] starting nvidia setup..."
-  chmod +x "$bakDir/nvidia.sh"
-  $bakDir/nvidia.sh
-fi
-
-if gum confirm "Make ZSH your default shell?"; then
-  echo "[+] switching shells..."
-  chsh -s "$(command -v zsh)"
-fi
-
-if gum confirm "Install and setup mise/mise-packages?"; then
-  ensurePac mise
-  mise install
-fi
-
-echo "[+] Done."
+echo "Done."
