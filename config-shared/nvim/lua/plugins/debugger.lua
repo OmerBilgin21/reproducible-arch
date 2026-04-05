@@ -83,7 +83,7 @@ return {
     config = function()
       require("print-debugger").setup({
         typescript = { prefix = "logger.info" },
-        go = { prefix = "internal.Logger", spread_mode = true },
+        -- go = { prefix = "internal.Logger", spread_mode = true },
         keymaps = { "<C-g>" },
       })
     end,
