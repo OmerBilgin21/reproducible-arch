@@ -1,10 +1,5 @@
-local exists, _ = pcall(require, "telescope")
-
 return {
   "nvim-telescope/telescope.nvim",
-  dependencies = {
-    { "nvim-telescope/telescope-fzf-native.nvim" },
-  },
   lazy = false,
   config = function()
     local telescope = require("telescope")
@@ -13,10 +8,6 @@ return {
 
     telescope.setup({
       extensions = {
-        fzf = {
-          fuzzy = true, -- false will only do exact matching
-          case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-        },
         override_generic_sorter = true, -- override the generic sorter
         override_file_sorter = true, -- override the file sorter
       },
@@ -135,9 +126,5 @@ return {
     end, {})
 
     vim.keymap.set("n", "<leader>br", "<cmd>Telescope git_branches<cr>")
-
-    if exists then
-      telescope.load_extension("fzf")
-    end
   end,
 }
