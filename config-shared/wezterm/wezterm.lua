@@ -10,6 +10,23 @@ local theme_file = dofile(os.getenv("HOME") .. "/.config/themedir/current/theme/
 
 if theme_file ~= nil then
   config.color_scheme = theme_file["color_scheme"]
+else
+  local tokyo = wezterm.color.get_builtin_schemes()["Tokyo Night"]
+
+  local function dim(c)
+    return wezterm.color.parse(c):darken(0.15)
+  end
+
+  tokyo.foreground = dim(tokyo.foreground)
+  for i, c in ipairs(tokyo.ansi) do
+    tokyo.ansi[i] = dim(c)
+  end
+  for i, c in ipairs(tokyo.brights) do
+    tokyo.brights[i] = dim(c)
+  end
+
+  config.color_schemes = { ["Tokyo Night Soft"] = tokyo }
+  config.color_scheme = "Tokyo Night Soft"
 end
 
 config.enable_tab_bar = false
