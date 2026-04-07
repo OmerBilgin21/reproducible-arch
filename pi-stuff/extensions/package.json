@@ -1,0 +1,25 @@
+{
+  "name": "websearch",
+  "version": "1.0.0",
+  "description": "websearch via searxng for pi",
+  "license": "MIT",
+  "author": "ob",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc --noEmit",
+    "lint": "eslint './*.{ts,tsx}' && tsc --noEmit",
+    "lint:fix": "eslint './*.{ts,tsx}' --fix",
+    "format": "prettier --write './*.{ts,tsx,js,json,md}'",
+    "test": "ts-node ./teststuff.ts"
+  },
+  "dependencies": {
+    "@mariozechner/pi-ai": "^0.65.2",
+    "@mariozechner/pi-coding-agent": "^0.65.2",
+    "@mozilla/readability": "^0.6.0",
+    "@sinclair/typebox": "^0.34.49",
+    "linkedom": "^0.18.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  }
+}
