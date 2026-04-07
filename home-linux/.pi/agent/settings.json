@@ -1,0 +1,16 @@
+{
+  "lastChangelogVersion": "0.65.2",
+  "defaultModel": "qwen3.5-9b-48kctx:latest",
+  "defaultThinkingLevel": "off",
+  "hideThinkingBlock": false,
+  "extensions": [
+    "/home/oemer/reproducible-arch/pi-stuff/extensions/websearch.ts",
+    "/home/oemer/reproducible-arch/pi-stuff/extensions/permission-gate.ts",
+    "/home/oemer/reproducible-arch/pi-stuff/extensions/full-page-search.ts"
+  ],
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 4096,
+    "keepRecentTokens": 8000
+  }
+}

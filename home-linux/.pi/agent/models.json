@@ -1,0 +1,25 @@
+{
+  "providers": {
+    "ollama": {
+      "baseUrl": "http://localhost:11435/v1",
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "supportsDeveloperRole": false,
+      "supportsReasoningEffort": false,
+      "models": [
+        {
+          "id": "qwen3.5-9b-48kctx:latest",
+          "contextWindow": 48000,
+          "maxTokens": 4096,
+          "reasoning": false,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    }
+  }
+}
