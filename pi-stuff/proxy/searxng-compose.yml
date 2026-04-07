@@ -1,0 +1,9 @@
+services:
+  searxng-pi:
+    image: searxng/searxng:latest@sha256:6dd0dffc05a75d92bbacd858953b4e93b8f709403c3fb1fb8a33ca8fd02e40a4
+    ports:
+      - "5000:8080"
+
+    volumes:
+      - ./searxng-settings.yml:/etc/searxng/settings.yml
+    restart: unless-stopped

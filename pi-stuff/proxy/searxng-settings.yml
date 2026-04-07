@@ -1,0 +1,24 @@
+use_default_settings: true
+
+server:
+  bind_address: "0.0.0.0"
+  port: 5000
+  limiter: false
+  secret_key: "pi-searxng-local"
+
+search:
+  safe_search: 0
+  formats:
+    - html
+    - json
+
+engines:
+  - name: duckduckgo
+    engine: duckduckgo
+    disabled: false
+  - name: startpage
+    engine: startpage
+    disabled: false
+  - name: wikipedia
+    engine: wikipedia
+    disabled: false
