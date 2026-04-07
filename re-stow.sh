@@ -15,10 +15,12 @@ stow -t ~/ zsh
 stow -t ~/ home-shared
 
 if [[ "$OS" == "Linux" ]]; then
+  stow -D -t ~/ home-linux
   stow -D -t ~/.config config-linux
   stow -D -t ~/.local/bin localbin-linux
   stow -t ~/.config config-linux
   stow -t ~/.local/bin localbin-linux
+  stow -t ~/ home-linux
   hyprctl reload
   restart-app waybar
 elif [[ "$OS" == "Darwin" ]]; then

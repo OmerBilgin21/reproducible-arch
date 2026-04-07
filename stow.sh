@@ -15,6 +15,7 @@ stow -t ~/ home-shared
 if [[ "$OS" == "Linux" ]]; then
   stow -t ~/.config config-linux
   stow -t ~/.local/bin localbin-linux
+  stow -t ~/ home-linux
 elif [[ "$OS" == "Darwin" ]]; then
   stow -t ~/.config config-mac
   stow -t ~/.local/bin localbin-mac
