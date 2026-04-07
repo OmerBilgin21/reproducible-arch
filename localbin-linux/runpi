@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+searxng_running=$(docker ps --format '{{.Names}}' | grep 'searxng-pi' || true)
+ollama_running=$(ss -tlnp | grep ':11434 ' || true)
+proxy_running=$(ss -tlnp | grep ':11435 ' || true)
+
+if [[ -z "$searxng_running" ]]; then
+  echo "running the searxng instance for pi..."
+  docker compose -f ~/reproducible-arch/pi-stuff/proxy/searxng-compose.yml up -d
+
+  echo "sleeping for 3 seconds so the container somewhat starts..."
+  sleep 3
+
+  echo "searxng instance logs:"
+  docker compose -f ~/reproducible-arch/pi-stuff/proxy/searxng-compose.yml logs searxng-pi
+else
+  echo "searxng is already running, skipped."
+fi
+
+if [[ -z "$ollama_running" ]]; then
+  export OLLAMA_FLASH_ATTENTION=1
+  export OLLAMA_KV_CACHE_TYPE=q8_0
+  export OLLAMA_NO_CLOUD=1
+  # export OLLAMA_MAX_LOADED_MODELS=1
+  # export OLLAMA_NUM_PARALLEL=1
+  export OLLAMA_HOST=0.0.0.0:11434
+
+  echo "OLLAMA_FLASH_ATTENTION=$OLLAMA_FLASH_ATTENTION"
+  echo "OLLAMA_KV_CACHE_TYPE=$OLLAMA_KV_CACHE_TYPE"
+  echo "OLLAMA_NO_CLOUD=$OLLAMA_NO_CLOUD"
+  echo "OLLAMA_HOST=$OLLAMA_HOST"
+  echo "running ollama..."
+  setsid ollama serve >/dev/null 2>&1 &
+  disown
+else
+  echo "ollama is already running, skipped."
+fi
+
+if [[ -z "$proxy_running" ]]; then
+  echo "running the proxy..."
+  setsid go run ~/reproducible-arch/pi-stuff/proxy/main.go >/dev/null 2>&1 &
+  disown
+else
+  echo "proxy is already running, skipped."
+fi
+
+pi
