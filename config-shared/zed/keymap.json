@@ -1,0 +1,255 @@
+// Zed keymap
+// Ported from Neovim config at ~/reproducible-arch/config/nvim
+[
+  // ============================================================
+  // GLOBAL BINDINGS (always active)
+  // ============================================================
+  {
+    "bindings": {
+      "ctrl-s": "workspace::Save",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+    },
+  },
+
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      // "a": "project_panel::NewFile",
+      "shift-j": "menu::SelectNext",
+      "shift-k": "menu::SelectPrevious",
+      "space e": "project_panel::Toggle",
+    },
+  },
+
+  {
+    "context": "ProjectPanel > !Editor",
+    "bindings": {
+      "a": "project_panel::NewFile",
+    },
+  },
+
+  // ============================================================
+  // PICKER / MENU NAVIGATION
+  // ============================================================
+  {
+    "context": "Picker > Editor",
+    "bindings": {
+      "ctrl-j": "menu::SelectNext",
+      "ctrl-k": "menu::SelectPrevious",
+    },
+  },
+  {
+    "context": "TabSwitcher",
+    "bindings": {
+      "ctrl-d": "tab_switcher::CloseSelectedItem",
+      "j": "menu::SelectNext",
+      "k": "menu::SelectPrevious",
+      "q": "menu::Cancel",
+    },
+  },
+
+  // ============================================================
+  // VIM: NORMAL + VISUAL MODE (VimControl)
+  // ============================================================
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
+      "-": ["workspace::SendKeystrokes", "$"],
+    },
+  },
+
+  // ============================================================
+  // VIM: NORMAL MODE
+  // ============================================================
+  {
+    "context": "vim_mode == normal && !menu",
+    "bindings": {
+      // --- File navigation (telescope equivalents) ---
+      "ctrl-p": "file_finder::Toggle",
+      "space f": "pane::DeploySearch",
+      "space space": "tab_switcher::Toggle",
+
+      // --- File tree (neo-tree equivalent) ---
+      "space e": "workspace::ToggleLeftDock",
+
+      // --- Splits (leader sh / sv) ---
+      "space s h": "pane::SplitDown",
+      "space s v": "pane::SplitRight",
+
+      // --- Buffer operations ---
+      "space b d": "pane::CloseActiveItem",
+      "space b b": "pane::AlternateFile",
+
+      // --- Move lines (Alt-j/k) ---
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp",
+
+      // --- Clear search on escape ---
+      "escape": "editor::Cancel",
+
+      // --- Tab operations (leader <tab>) ---
+      "space tab tab": "workspace::NewFile",
+      "space tab c": "pane::CloseActiveItem",
+      "space tab n": "pane::ActivateNextItem",
+      "space tab p": "pane::ActivatePreviousItem",
+
+      // --- LSP ---
+      "g d": "editor::GoToDefinition",
+      "space g d": "editor::GoToDefinitionSplit",
+      "g r": "editor::FindAllReferences",
+      "space c a": "editor::ToggleCodeActions",
+      "space r c": "editor::Rename",
+
+      // --- Diagnostics ([d / ]d) ---
+      "[ d": "editor::GoToPreviousDiagnostic",
+      "] d": "editor::GoToDiagnostic",
+      "space x x": "diagnostics::Deploy",
+      "space c f": "editor::Hover",
+
+      // --- Symbols outline (leader cs - like Trouble symbols) ---
+      "space c s": "outline::Toggle",
+
+      // --- Git ---
+      "space g b": "git::Blame",
+      "space b r": "git::Branch",
+
+      // --- Search and replace (leader sr - like grug-far) ---
+      "space s r": ["pane::DeploySearch", { "replace_enabled": true }],
+
+      // --- Format (leader ,) ---
+      "space ,": "editor::Format",
+
+      // --- Quickfix-like navigation ---
+      "] q": "editor::GoToDiagnostic",
+      "[ q": "editor::GoToPreviousDiagnostic",
+
+      // --- Project picker ---
+      "space p": ["task::Spawn", { "task_name": "Open Project" }],
+
+      // --- Run test for current file (leader tt) ---
+      "space t t": ["task::Spawn", { "task_name": "Jest: Run Current File" }],
+
+      // --- Yank to end of line (neovim Y behavior) ---
+      "shift-y": ["workspace::SendKeystrokes", "y $"],
+
+      // --- Print debug (Ctrl-g) ---
+      // "o logger.debug('debug:', {data: }); escape h h h",
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "o util.Log(\"debug:\", data); escape h h",
+      ],
+    },
+  },
+
+  // ============================================================
+  // VIM: VISUAL MODE
+  // ============================================================
+  {
+    "context": "vim_mode == visual && !menu",
+    "bindings": {
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp",
+      "shift-s": "vim::PushAddSurrounds",
+    },
+  },
+
+  // ============================================================
+  // VIM: INSERT MODE
+  // ============================================================
+  // "escape o logger.debug('debug:', {data: }); escape h h h",
+  {
+    "context": "vim_mode == insert",
+    "bindings": {
+      "j k": "vim::NormalBefore",
+      "ctrl-c": "vim::NormalBefore",
+      "ctrl-s": ["workspace::SendKeystrokes", "escape :w enter"],
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "escape o util.Log(\"debug:\", ); escape h h",
+      ],
+    },
+  },
+
+  {
+    "context": "Editor && vim_mode == insert",
+    "bindings": {
+      "ctrl-space": "editor::ShowSignatureHelp",
+    },
+  },
+
+  {
+    "context": "(Editor || git_panel) && vim_mode != insert",
+    "bindings": {
+      "space g g": "git_panel::Toggle",
+    },
+  },
+
+  // ============================================================
+  // VIM SNEAK (leap.nvim equivalent)
+  // ============================================================
+  {
+    "context": "vim_mode == normal || vim_mode == visual",
+    "bindings": {
+      "s": "vim::PushSneak",
+      "shift-s": "vim::PushSneakBackward",
+    },
+  },
+
+  // ============================================================
+  // DOCK NAVIGATION (panels like neo-tree, terminal)
+  // ============================================================
+  {
+    "context": "Dock",
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown",
+    },
+  },
+
+  // ============================================================
+  // TERMINAL
+  // ============================================================
+  {
+    "context": "Terminal",
+    "bindings": {
+      "ctrl-n": "terminal::ToggleViMode",
+      "ctrl-enter": "workspace::NewTerminal",
+      "shift-left": "pane::ActivatePreviousItem",
+      "shift-right": "pane::ActivateNextItem",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+    },
+  },
+
+  {
+    "context": "Terminal || vim_mode == normal",
+    "bindings": {
+      "ctrl-space": "workspace::ToggleRightDock",
+    },
+  },
+
+  // ============================================================
+  // EMPTY PANE (no file open - like your landing page)
+  // ============================================================
+  {
+    "context": "EmptyPane || SharedScreen",
+    "bindings": {
+      "space f": "file_finder::Toggle",
+      "space e": "workspace::ToggleLeftDock",
+      "space space": "tab_switcher::Toggle",
+      "space p": ["task::Spawn", { "task_name": "Open Project" }],
+    },
+  },
+  {
+    "bindings": {
+      "shift-tab": "workspace::NewCenterTerminal",
+    },
+  },
+]

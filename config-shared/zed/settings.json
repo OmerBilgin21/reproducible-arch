@@ -1,0 +1,212 @@
+// Zed settings
+// Ported from Neovim config at ~/reproducible-arch/config/nvim
+{
+  "icon_theme": "Zed (Default)",
+  "theme": "One Dark Pro",
+  "disable_ai": true,
+  "buffer_font_weight": 400,
+  "buffer_font_features": {
+    "calt": false,
+  },
+  "ui_font_family": "CaskaydiaMono Nerd Font Mono",
+  "buffer_font_family": "CaskaydiaMono Nerd Font Mono",
+  "theme_overrides": {
+    "Aura Dark": {
+      "editor.document_highlight.read_background": "#00000000",
+      "editor.document_highlight.write_background": "#00000000",
+      "vim.yank.background": "#BD9DFF50",
+      "border.variant": "#15141C",
+      "border": "#15141C",
+      "title_bar.background": "#15141C",
+      "panel.background": "#15141C",
+      "panel.focused_border": "#4E466E",
+      "players": [
+        {
+          "cursor": "#BD9DFF",
+        },
+      ],
+      "syntax": {
+        "comment": {
+          "font_style": "italic",
+        },
+        "comment.doc": {
+          "font_style": "italic",
+        },
+      },
+    },
+  },
+  "title_bar": {
+    "show_onboarding_banner": false,
+    "show_project_items": false,
+    "show_branch_name": false,
+    "show_user_menu": false,
+    "show_sign_in": false,
+  },
+  "tab_bar": {
+    "show": false,
+  },
+  "status_bar": {
+    "experimental.show": false,
+  },
+  "project_panel": {
+    "dock": "left",
+    "auto_reveal_entries": true,
+    "default_width": 400,
+    "hide_root": true,
+    "auto_fold_dirs": false,
+    "starts_open": false,
+    "git_status": false,
+    "sticky_scroll": false,
+    "scrollbar": {
+      "show": "never",
+    },
+    "indent_guides": {
+      "show": "never",
+    },
+  },
+  "outline_panel": {
+    "default_width": 300,
+    "indent_guides": {
+      "show": "never",
+    },
+  },
+  "file_finder": {
+    "modal_max_width": "large",
+  },
+  "gutter": {
+    "min_line_number_digits": 0,
+    "folds": false,
+    "runnables": false,
+  },
+  "indent_guides": {
+    "enabled": false,
+  },
+  "buffer_line_height": {
+    "custom": 1.3,
+  },
+  "multi_cursor_modifier": "cmd_or_ctrl",
+  "cursor_shape": "block",
+  "cursor_blink": false,
+  "selection_highlight": false,
+  "drag_and_drop_selection": {
+    "enabled": false,
+  },
+  "seed_search_query_from_cursor": "never",
+  "current_line_highlight": "none",
+  "show_whitespaces": "none",
+  "tab_size": 2,
+  "auto_indent": true,
+  "auto_indent_on_paste": true,
+  "show_completions_on_input": true,
+  "show_completion_documentation": false,
+  "inline_code_actions": false,
+  "lsp_document_colors": "none",
+  "hover_popover_enabled": false,
+  "auto_update": false,
+  "extend_comment_on_newline": true,
+  "horizontal_scroll_margin": 1,
+  "when_closing_with_no_tabs": "keep_window_open",
+  "close_on_file_delete": true,
+  "restore_on_file_reopen": true,
+  "restore_on_startup": "empty_tab",
+  "show_signature_help_after_edits": false,
+  "auto_signature_help": false,
+  "session": {
+    "restore_unsaved_buffers": true,
+  },
+  "git": {
+    "git_gutter": "hide",
+    "inline_blame": {
+      "enabled": false,
+    },
+  },
+  "centered_layout": {
+    "right_padding": 0.15,
+    "left_padding": 0.15,
+  },
+  "base_keymap": "VSCode",
+  "vim_mode": true,
+  "vim": {
+    "default_mode": "normal",
+    "use_system_clipboard": "on_yank",
+    "use_smartcase_find": true,
+    "toggle_relative_line_numbers": false,
+    "highlight_on_yank_duration": 200,
+  },
+  "diagnostics": {
+    "inline": {
+      "enabled": true,
+      // "update_debounce_ms": 2000
+      "max_severity": "error",
+    },
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+  },
+  "ui_font_size": 15,
+  "buffer_font_size": 14,
+  "relative_line_numbers": "enabled",
+  "hard_tabs": false,
+  "soft_wrap": "editor_width",
+  "scroll_beyond_last_line": "off",
+  "vertical_scroll_margin": 4,
+  "format_on_save": "on",
+  "show_edit_predictions": true,
+  "use_autoclose": true,
+  "inlay_hints": {
+    "enabled": true,
+  },
+  "scrollbar": {
+    "show": "never",
+  },
+  "toolbar": {
+    "breadcrumbs": false,
+    "quick_actions": false,
+  },
+  "terminal": {
+    "dock": "right",
+    "working_directory": "current_project_directory",
+  },
+  "command_aliases": {
+    "W": "w",
+    "Wq": "wq",
+    "Q": "q",
+  },
+  "languages": {
+    "TypeScript": {
+      "tab_size": 2,
+      "format_on_save": "on",
+    },
+    "TSX": {
+      "tab_size": 2,
+      "format_on_save": "on",
+    },
+    "JavaScript": {
+      "tab_size": 2,
+      "format_on_save": "on",
+    },
+    "Go": {
+      "tab_size": 4,
+      "format_on_save": "on",
+      "hard_tabs": true,
+    },
+    "Python": {
+      "tab_size": 4,
+      "format_on_save": "on",
+    },
+    // "Lua": {
+    //   "tab_size": 2,
+    //   "format_on_save": "on",
+    // },
+    "JSON": {
+      "tab_size": 2,
+    },
+    "YAML": {
+      "tab_size": 2,
+    },
+    "SQL": {
+      "tab_size": 2,
+    },
+  },
+}
