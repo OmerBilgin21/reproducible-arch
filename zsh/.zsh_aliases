@@ -52,33 +52,48 @@ oc() {
   ollama serve
 }
 
+tss() {
+  npx ts-node main.ts
+}
+
 k() {
   local pids
-  # shellcheck disable=SC2207
   pids=($(lsof -ti:"$1"))
 
   if [[ ${#pids[@]} -gt 0 ]]; then
+    echo "Killed processes on port $1"
     kill -9 "${pids[@]}"
-    echo "killed processes on port $1"
   else
-    echo "no process found on port $1"
+    echo "No process found on port $1"
   fi
 }
 
 s() {
+  echo "running s function...\n"
   local containers
-  echo "running s function..."
   containers=$(docker ps -q)
 
   if [[ -n "$containers" ]]; then
-    docker stop "$containers"
-    echo "stopped containers:"
-    echo ""
+    docker stop $(docker ps -q) >/dev/null
+    echo "Stopped containers:\n$containers"
   else
-    echo "no running containers to stop"
+    echo "No running containers to stop."
   fi
 
   k 5432
+  k 3021
+  k 3000
+  k 3001
+
+  echo "\nunsetting environment variables...\n"
+  unset databaseUri
+  unset postgresUri
+  unset ENV_PRIVATE_KEY
+  unset cloudFrontKeyPairId
+  unset cloudFrontPrivateKey
+  unset AWS_ACCESS_KEY_ID
+  unset AWS_SECRET_ACCESS_KEY
+  unset DB_ENV
 }
 
 repoHere() {
