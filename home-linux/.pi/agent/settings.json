@@ -12,5 +12,6 @@
     "enabled": true,
     "reserveTokens": 4096,
     "keepRecentTokens": 8000
-  }
+  },
+  "defaultProvider": "ollama"
 }
