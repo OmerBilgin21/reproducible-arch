@@ -1,0 +1,2 @@
+--exclude-dir=vendor,node_modules,dist,build
+--exclude-ext=json
