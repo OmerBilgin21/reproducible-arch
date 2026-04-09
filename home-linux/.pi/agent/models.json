@@ -8,7 +8,19 @@
       "supportsReasoningEffort": false,
       "models": [
         {
-          "id": "qwen3.5-9b-48kctx:latest",
+          "id": "qwen3.5-9b-48kctx",
+          "contextWindow": 48000,
+          "maxTokens": 4096,
+          "reasoning": false,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        },
+        {
+          "id": "gemma-4b-48kctx:latest",
           "contextWindow": 48000,
           "maxTokens": 4096,
           "reasoning": false,
