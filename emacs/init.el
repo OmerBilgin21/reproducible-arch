@@ -50,7 +50,8 @@
 
 (setq ring-bell-function #'ignore
       use-short-answers t
-      delete-by-moving-to-trash t)
+      delete-by-moving-to-trash t
+      use-dialog-box nil)
 
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
