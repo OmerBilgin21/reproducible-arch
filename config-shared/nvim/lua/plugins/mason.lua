@@ -20,6 +20,7 @@ return {
         "eslint_d",
         -- DAP adapters
         "delve",
+        "js-debug-adapter",
         -- Formatters
         "stylua",
         "shfmt",

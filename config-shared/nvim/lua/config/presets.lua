@@ -47,12 +47,12 @@ opt.smoothscroll = false
 opt.autoread = true
 opt.swapfile = false
 
-vim.api.nvim_create_autocmd("BufAdd", {
-  pattern = "/tmp/nvim.*/*",
-  callback = function(args)
-    vim.bo[args.buf].buflisted = false
-  end,
-})
+-- vim.api.nvim_create_autocmd("BufAdd", {
+--   pattern = "/tmp/nvim.*/*",
+--   callback = function(args)
+--     vim.bo[args.buf].buflisted = false
+--   end,
+-- })
 
 local file_sync_group = vim.api.nvim_create_augroup("FileSync", { clear = true })
 

@@ -23,6 +23,13 @@ return {
         end,
         desc = "Debug test",
       },
+      {
+        "<leader>dc",
+        function()
+          require("dap").continue()
+        end,
+        desc = "DAP continue / pick config",
+      },
       -- breakpoints
       {
         "<leader>db",
@@ -77,12 +84,62 @@ return {
     end,
   },
   {
+    "mxsdev/nvim-dap-vscode-js",
+    dependencies = { "mfussenegger/nvim-dap" },
+    config = function()
+      require("dap-vscode-js").setup({
+        debugger_cmd = { "js-debug-adapter" },
+        adapters = { "pwa-node" },
+      })
+
+      local dap = require("dap")
+      for _, lang in ipairs({ "typescript", "javascript" }) do
+        dap.configurations[lang] = {
+          {
+            type = "pwa-node",
+            request = "launch",
+            name = "Jest: current file",
+            runtimeExecutable = "node",
+            runtimeArgs = {
+              "./node_modules/jest/bin/jest.js",
+              "--runInBand",
+              "--forceExit",
+              "--no-coverage",
+              "${file}",
+            },
+            rootPath = "${workspaceFolder}",
+            cwd = "${workspaceFolder}",
+            console = "integratedTerminal",
+            internalConsoleOptions = "neverOpen",
+            sourceMaps = true,
+            skipFiles = { "<node_internals>/**", "**/node_modules/**" },
+          },
+          {
+            type = "pwa-node",
+            request = "attach",
+            name = "Attach: local-staging (SAM, port 9229)",
+            address = "localhost",
+            port = 9229,
+            cwd = "${workspaceFolder}",
+            sourceMaps = true,
+            resolveSourceMapLocations = {
+              "${workspaceFolder}/**",
+              "!**/node_modules/**",
+            },
+            skipFiles = { "<node_internals>/**", "**/node_modules/**" },
+            restart = true,
+          },
+        }
+      end
+    end,
+  },
+  {
     "OmerBilgin21/print-debugger.nvim",
     -- dir = "/home/oemer/projects/print-debugger",
     version = false,
     config = function()
       require("print-debugger").setup({
-        -- typescript = { prefix = "logger.info" },
+        typescript = { prefix = "logger.info" },
         -- go = { prefix = "internal.Logger", spread_mode = true },
         keymaps = { "<C-g>" },
       })

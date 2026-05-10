@@ -8,22 +8,22 @@ return {
       zsh = { "shfmt" },
       bash = { "shfmt" },
       python = { "isort", "black" },
-      javascript = { "eslint_d", "prettier" },
-      javascriptreact = { "eslint_d", "prettier" },
+      javascript = { "prettier" },
+      javascriptreact = { "prettier" },
+      typescript = { "prettier" },
+      typescriptreact = { "prettier" },
       sql = { "sqlfmt" },
-      typescript = { "eslint_d", "prettier" },
-      typescriptreact = { "eslint_d", "prettier" },
       go = { "gofmt" },
       json = { "jq" },
     },
     default_format_opts = {
+      stop_after_first = true,
       lsp_format = "fallback",
     },
     notify_on_error = true,
     notify_no_formatters = true,
     log_level = vim.log.levels.ERROR,
-    format_on_save = {
-      timeout_ms = 2000,
+    format_after_save = {
       lsp_format = "fallback",
     },
   },
@@ -31,9 +31,18 @@ return {
     {
       "<leader>,",
       function()
-        require("conform").format()
+        require("conform").format({ async = true })
       end,
       desc = "Format buffer",
+    },
+    {
+      "<C-s>",
+      function()
+        require("conform").format({ async = true }, function()
+          vim.cmd("write")
+        end)
+      end,
+      desc = "Format and save",
     },
   },
 }

@@ -4,9 +4,12 @@ local config = wezterm.config_builder()
 
 config.enable_wayland = false
 config.font = wezterm.font("CaskaydiaMono Nerd Font Mono")
-config.font_size = 16
+config.font_size = 19.0
 
-local theme_file = dofile(os.getenv("HOME") .. "/.config/themedir/current/theme/wezterm.lua")
+local ok, theme_file = pcall(dofile, os.getenv("HOME") .. "/.config/themedir/current/theme/wezterm.lua")
+if not ok then
+  theme_file = nil
+end
 
 if theme_file ~= nil then
   config.color_scheme = theme_file["color_scheme"]
@@ -32,7 +35,7 @@ end
 config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
 config.front_end = "OpenGL"
-config.window_background_opacity = 0.9
+config.window_background_opacity = 0.97
 config.hide_mouse_cursor_when_typing = true
 config.window_close_confirmation = "NeverPrompt"
 

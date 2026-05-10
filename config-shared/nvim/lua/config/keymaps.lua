@@ -93,6 +93,7 @@ end
 
 km.set({ "n", "i" }, "<C-f>", map_handler, { silent = true, desc = "DBUI execute query block (paragraph)" })
 
+km.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "LSP code actions" })
 km.set({ "n" }, "<leader>co", "zo", { silent = true, desc = "unfold text" })
 km.set({ "n" }, "<leader>cf", "zc", { silent = true, desc = "fold text" })
 
