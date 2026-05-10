@@ -5,13 +5,14 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 # shellcheck disable=SC1091
 source "${ZINIT_HOME}/zinit.zsh"
 
-autoload -Uz compinit
-if [[ ! -f ~/.zcompdump || $(($(date +%s) - $(stat -f %m ~/.zcompdump))) -gt 86400 ]]; then
-  compinit
-else
-  compinit -C
-fi
+# autoload -Uz compinit
+# if [[ ! -f ~/.zcompdump || $(($(date +%s) - $(stat -f %m ~/.zcompdump))) -gt 86400 ]]; then
+  # compinit
+# else
+# compinit -C
+# fi
 
+autoload -Uz compinit && compinit
 repo_dir="$HOME/reproducible-arch"
 source "$repo_dir/zsh/.zshenv"
 source "$repo_dir/zsh/.zshsecrets"
