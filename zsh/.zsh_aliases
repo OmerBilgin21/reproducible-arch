@@ -3,16 +3,17 @@ alias aliases='nvim ~/reproducible-arch/zsh/.zsh_aliases'
 alias envs='nvim ~/reproducible-arch/zsh/.zshenv'
 alias so='source ~/.zshrc'
 alias pg='cd ~/projects/playground;nvim'
-
-alias nvc="cd ~/reproducible-arch/config/nvim;nvim"
 alias repr='cd ~/reproducible-arch;nvim'
+alias nvc="cd ~/reproducible-arch/config/nvim;nvim"
+
 alias lg='lazygit'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias nrt='npm run test'
+alias nrtu='npm run test:unit'
 alias n='nvim'
 alias nr='npm run'
 alias c='clear'
-alias l="eza --icons=auto -a --group-directories-first --show-symlinks --grid --ignore-glob=node_modules"
+alias l='eza --icons=auto -a --group-directories-first --show-symlinks --grid --ignore-glob=node_modules'
 alias ls='l'
 alias ld='lazydocker'
 alias m='make'
@@ -21,10 +22,13 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias createDb="createdb -h localhost -U omer -O omer"
-alias aws='AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 aws --endpoint-url http://localhost.localstack.cloud:4566'
+alias cfmd='npm i;c;npx tsc --noEmit;'
 alias pac='pkg-install'
 alias aur='pkg-aur-install'
 alias cat='bat'
+alias exot='exit'
+alias exut='exit'
+
 # alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider'
 alias aider-dev='OLLAMA_API_BASE=http://0.0.0.0:11434 /home/oemer/projects/aider/venv/bin/aider'
 alias launchresearcher="docker compose -f ~/projects/local-deep-research-compose/docker-compose.yml up -d"
@@ -131,11 +135,6 @@ compress() {
 }
 
 alias decompress="tar -xzf"
-
-rest() {
-  postman --disable-gpu >/dev/null 2>&1 &
-  disown
-}
 
 open() {
   (
