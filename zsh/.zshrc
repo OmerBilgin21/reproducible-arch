@@ -1,9 +1,16 @@
 # Zinit setup
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+[ ! -d "$ZINIT_HOME" ] && mkdir -p "$(dirname "$ZINIT_HOME")"
+[ ! -d "$ZINIT_HOME/.git" ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+# shellcheck disable=SC1091
 source "${ZINIT_HOME}/zinit.zsh"
-autoload -Uz compinit && compinit
+
+autoload -Uz compinit
+if [[ ! -f ~/.zcompdump || $(($(date +%s) - $(stat -f %m ~/.zcompdump))) -gt 86400 ]]; then
+  compinit
+else
+  compinit -C
+fi
 
 repo_dir="$HOME/reproducible-arch"
 source "$repo_dir/zsh/.zshenv"
@@ -12,8 +19,15 @@ source "$repo_dir/zsh/.zsh_vi_mode"
 source "$repo_dir/zsh/.zsh_aliases"
 
 eval "$(mise activate zsh)"
+# shfmt fmt:off #
+# shellcheck disable=SC2206
+precmd_functions=(${precmd_functions:#_mise_hook_precmd})
+# shellcheck disable=SC2206
+chpwd_functions=(${chpwd_functions:#_mise_hook_chpwd})
+# shfmt fmt:on
+
 eval "$(starship init zsh)"
-eval "$(starship completions zsh)"
+# eval "$(starship completions zsh)"
 eval "$(rg --generate=complete-zsh)"
 
 if [[ $- == *i* ]]; then
@@ -34,11 +48,15 @@ zinit snippet OMZP::vi-mode
 zinit cdreplay -q
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' menu no
+# shellcheck disable=SC2016
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+# shellcheck disable=SC2016
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # needs to be after plugin setup
+# shellcheck disable=SC1094
 source "$repo_dir/home-shared/fzf-completion.zsh"
+# shellcheck disable=SC1094
 source "$repo_dir/home-shared/fzf-key-bindings.zsh"
 
 # Keybindings
@@ -49,7 +67,9 @@ bindkey '^f' autosuggest-accept
 # History setup
 HISTSIZE=9999
 HISTFILE=~/.zsh_history
+# shellcheck disable=SC2034
 SAVEHIST=$HISTSIZE
+# shellcheck disable=SC2034
 HISTDUP=erase
 setopt appendhistory
 setopt sharehistory
