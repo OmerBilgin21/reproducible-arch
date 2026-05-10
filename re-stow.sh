@@ -6,11 +6,13 @@ OS="$(uname -s)"
 
 stow -D -t ~/.config config-shared
 stow -D -t ~/.local/bin localbin-shared
+stow -D -t ~/.emacs.d emacs
 stow -D -t ~/ zsh
 stow -D -t ~/ home-shared
 
 stow -t ~/.config config-shared
 stow -t ~/.local/bin localbin-shared
+stow -t ~/.emacs.d emacs
 stow -t ~/ zsh
 stow -t ~/ home-shared
 

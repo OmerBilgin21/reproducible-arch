@@ -4,11 +4,13 @@ set -euo pipefail
 
 mkdir -p ~/.config
 mkdir -p ~/.local/bin
+mkdir -p ~/.emacs.d
 
 OS="$(uname -s)"
 
 stow -t ~/.config config-shared
 stow -t ~/.local/bin localbin-shared
+stow -t ~/.emacs.d emacs
 stow -t ~/ zsh
 stow -t ~/ home-shared
 
