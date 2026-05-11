@@ -246,6 +246,11 @@
         eglot-events-buffer-size 0
         eglot-sync-connect nil)
 
+  (setq-default eglot-workspace-configuration
+                '(:vtsls (:autoUseWorkspaceTsdk t)
+                  :typescript (:tsserver (:maxTsServerMemory 8192)
+                               :preferences (:includePackageJsonAutoImports "auto"))))
+
   (add-to-list 'eglot-ignored-server-capabilities :signatureHelpProvider)
 
   (add-hook 'eglot-managed-mode-hook
@@ -254,7 +259,15 @@
               (setq-local eldoc-echo-area-use-multiline-p nil)))
 
   (add-to-list 'eglot-server-programs
-               '((typescript-ts-mode tsx-ts-mode js-ts-mode) . ("vtsls" "--stdio")))
+               '((typescript-ts-mode tsx-ts-mode js-ts-mode)
+                 . ("vtsls" "--stdio"
+                    :initializationOptions
+                    (:vtsls (:autoUseWorkspaceTsdk t)
+                            :typescript (:tsserver (:maxTsServerMemory 8192)
+                                                   :preferences (:includePackageJsonAutoImports "auto"))))))
+
+  (put 'tsx-ts-mode 'eglot-language-id "typescriptreact")
+  (put 'js-ts-mode 'eglot-language-id "javascript")
   (add-to-list 'eglot-server-programs
                '(go-ts-mode . ("gopls")))
   (add-to-list 'eglot-server-programs
