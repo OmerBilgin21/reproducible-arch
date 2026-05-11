@@ -578,7 +578,7 @@
         (evil-define-key '(normal insert) vterm-mode-map (kbd "C-SPC") 'claude-code-ide-menu)
         )
 
-      (evil-define-key 'normal 'global (kbd "<S-tab>") 'my/vterm-shift-tab)
+      (evil-define-key '(normal insert visual) 'global (kbd "<S-tab>") 'my/vterm-shift-tab)
       (evil-define-key '(normal insert) vterm-mode-map (kbd "<escape>") 'vterm-send-escape)
       (evil-define-key 'insert vterm-mode-map (kbd "C-n") 'evil-normal-state)
       (evil-define-key 'insert 'global (kbd "C-g") 'evil-normal-state)
