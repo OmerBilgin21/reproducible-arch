@@ -560,17 +560,14 @@
 
 (defun my/vterm-shift-tab ()
   (interactive)
-  (if (string-prefix-p "*claude-code[" (buffer-name)) (vterm-send-string (concat "\e" "[Z")))
-
-  (let* ((tab-name (alist-get 'name (tab-bar--current-tab)))
-         (buf-name (format "*vterm[%s]*" tab-name))
-         (buf (get-buffer buf-name)))
-    (if (string-prefix-p buf-name (buffer-name))
-        (evil-switch-to-windows-last-buffer)
-      (if buf (switch-to-buffer buf) (vterm buf-name)))
-    ;; let ending below
-    )
-  )
+  (if (string-prefix-p "*claude-code[" (buffer-name))
+      (vterm-send-string (concat "\e" "[Z"))
+    (let* ((tab-name (alist-get 'name (tab-bar--current-tab)))
+           (buf-name (format "*vterm[%s]*" tab-name))
+           (buf (get-buffer buf-name)))
+      (if (string-prefix-p buf-name (buffer-name))
+          (evil-switch-to-windows-last-buffer)
+        (if buf (switch-to-buffer buf) (vterm buf-name))))))
 
 (with-eval-after-load 'vterm
   (with-eval-after-load 'evil
