@@ -248,8 +248,8 @@
 
   (setq-default eglot-workspace-configuration
                 '(:vtsls (:autoUseWorkspaceTsdk t)
-                  :typescript (:tsserver (:maxTsServerMemory 8192)
-                               :preferences (:includePackageJsonAutoImports "auto"))))
+                         :typescript (:tsserver (:maxTsServerMemory 8192)
+                                                :preferences (:includePackageJsonAutoImports "auto"))))
 
   (add-to-list 'eglot-ignored-server-capabilities :signatureHelpProvider)
 
