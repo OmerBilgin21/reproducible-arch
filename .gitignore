@@ -1,2 +1,3 @@
 .zshsecrets
 node_modules
+*.elc
