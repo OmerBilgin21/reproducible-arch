@@ -204,12 +204,18 @@
   :init (global-corfu-mode 1)
   :config
   (setq corfu-auto t
-        corfu-auto-delay 0.1
-        corfu-auto-prefix 2
+        corfu-auto-delay 0.3
+        corfu-auto-prefix 1
         corfu-cycle t
         corfu-preselect 'prompt
+        corfu-count 20
+        corfu-min-width 30
+        corfu-max-width 80
         corfu-popupinfo-delay '(0.5 . 0.2))
-  (corfu-popupinfo-mode 1))
+  (corfu-popupinfo-mode 1)
+  (add-to-list 'corfu--frame-parameters '(internal-border-width . 12))
+  (custom-set-faces
+   '(corfu-border ((t (:background "#ffffff"))))))
 
 (use-package cape
   :init
