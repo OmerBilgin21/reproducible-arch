@@ -575,13 +575,26 @@
           (evil-switch-to-windows-last-buffer)
         (if buf (switch-to-buffer buf) (vterm buf-name))))))
 
+(defun my/smart-c-spc ()
+  (interactive)
+  (cond
+   ((derived-mode-p 'vterm-mode)
+    (claude-code-ide-toggle-window))
+   ((evil-insert-state-p)
+    (completion-at-point))
+   ((evil-normal-state-p)
+    (let ((process (claude-code-ide--get-process)))
+      (if (and process (process-live-p process))
+          (claude-code-ide-toggle-window)
+        (claude-code-ide))))))
+
 (with-eval-after-load 'vterm
   (with-eval-after-load 'evil
     (with-eval-after-load 'evil-collection
 
       (with-eval-after-load 'claude-code-ide
-        (evil-define-key 'normal 'global (kbd "C-SPC") 'claude-code-ide-menu)
-        (evil-define-key '(normal insert) vterm-mode-map (kbd "C-SPC") 'claude-code-ide-menu)
+        (evil-define-key '(normal insert) 'global (kbd "C-SPC") 'my/smart-c-spc)
+        (evil-define-key '(normal insert) vterm-mode-map (kbd "C-SPC") 'my/smart-c-spc)
         )
 
       (evil-define-key '(normal insert visual) 'global (kbd "<S-tab>") 'my/vterm-shift-tab)
