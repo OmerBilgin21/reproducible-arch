@@ -436,16 +436,6 @@
   :config
   (setq vterm-max-scrollback 10000
         vterm-timer-delay 0.05)
-  ;; (add-hook 'vterm-mode-hook
-  ;;           (lambda ()
-  ;;             (setq-local scroll-conservatively 101)
-  ;;             ;; (add-hook 'evil-normal-state-entry-hook
-  ;;             ;;           (lambda () (when (eq major-mode 'vterm-mode) (vterm-copy-mode 1)))
-  ;;             ;;           nil t)
-  ;;             ;; (add-hook 'evil-insert-state-entry-hook
-  ;;             ;;           (lambda () (when (and (eq major-mode 'vterm-mode) vterm-copy-mode) (vterm-copy-mode-done nil)))
-  ;;             ;;           nil t)
-  ;;             ))
   )
 
 (use-package claude-code-ide
@@ -490,13 +480,39 @@
 
 (setq sql-postgres-login-params '(user database server port))
 
+
+(defvar sql-last-prompt-pos 1
+  "Position of last prompt when added recording started")
+(make-variable-buffer-local 'sql-last-prompt-pos)
+(put 'sql-last-prompt-pos 'permanent-local t)
+
+(defun sql-add-newline-first (output)
+  "Add newline to beginning of OUTPUT for `comint-preoutput-filter-functions'.
+This fixes up the display of queries sent to the inferior buffer programatically."
+  (let ((begin-of-prompt
+         (or (and comint-last-prompt
+                  (save-excursion
+                    (goto-char (car comint-last-prompt))
+                    (looking-at-p comint-prompt-regexp)
+                    (point)))
+             1)))
+    (if (> begin-of-prompt sql-last-prompt-pos)
+        (progn
+          (setq sql-last-prompt-pos begin-of-prompt)
+          (concat "\n" output))
+      output)))
+
 (add-hook 'sql-interactive-mode-hook
           (lambda ()
-            (setq truncate-lines t)
+            (add-hook 'comint-preoutput-filter-functions 'sql-add-newline-first nil t)
+(setq truncate-lines t)
             (setq-local comint-buffer-maximum-size 10000)
             (setq-local comint-scroll-show-maximum-output nil)
             (setq-local scroll-conservatively 0)
-            (setq-local redisplay-dont-pause nil)))
+            (setq-local redisplay-dont-pause nil)
+            (when-let ((proc (get-buffer-process (current-buffer))))
+              (set-process-window-size proc 50 10000))))
+
 
 (add-hook 'sql-mode-hook
           (lambda ()
@@ -594,6 +610,7 @@
         )
 
       (evil-define-key '(normal insert visual) 'global (kbd "<S-tab>") 'my/vterm-shift-tab)
+      (evil-define-key '(normal insert visual) 'global (kbd "<backtab>") 'my/vterm-shift-tab) ;; this is backtab in linux and S-tab in mac -_-
       (evil-define-key '(normal insert) vterm-mode-map (kbd "C-e") 'my/tab-prefix-map)
       (evil-define-key '(normal insert) vterm-mode-map (kbd "<escape>") 'vterm-send-escape)
       (evil-define-key '(insert normal visual) vterm-mode-map (kbd "C-n") 'evil-normal-state)

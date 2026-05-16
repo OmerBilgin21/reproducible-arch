@@ -1,2 +1,11 @@
+\set PROMPT1 ''
+\set PROMPT2 ''
 \set AUTOCOMMIT off
-\set ON_ERROR_STOP on
+\set ON_ERROR_ROLLBACK on
+\set ECHO queries
+\pset linestyle unicode
+\pset border 2
+\pset footer on
+\pset columns 250
+\pset null 'NULL'
+\timing on
