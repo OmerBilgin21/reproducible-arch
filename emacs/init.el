@@ -505,7 +505,7 @@ This fixes up the display of queries sent to the inferior buffer programatically
 (add-hook 'sql-interactive-mode-hook
           (lambda ()
             (add-hook 'comint-preoutput-filter-functions 'sql-add-newline-first nil t)
-(setq truncate-lines t)
+            (setq truncate-lines t)
             (setq-local comint-buffer-maximum-size 10000)
             (setq-local comint-scroll-show-maximum-output nil)
             (setq-local scroll-conservatively 0)
@@ -514,9 +514,16 @@ This fixes up the display of queries sent to the inferior buffer programatically
               (set-process-window-size proc 50 10000))))
 
 
+(defun my/sql-send-paragraph ()
+  (interactive)
+  (when-let ((buf (sql-find-sqli-buffer)))
+    (with-current-buffer buf
+      (comint-clear-buffer)))
+  (sql-send-paragraph))
+
 (add-hook 'sql-mode-hook
           (lambda ()
-            (evil-local-set-key 'normal (kbd "C-f") 'sql-send-paragraph)))
+            (evil-local-set-key 'normal (kbd "C-f") 'my/sql-send-paragraph)))
 
 (defun my/sql-connect-in-tab ()
   (interactive)
