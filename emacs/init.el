@@ -493,7 +493,6 @@
 (add-hook 'sql-interactive-mode-hook
           (lambda ()
             (setq truncate-lines t)
-            (setq-local comint-prompt-read-only t)
             (setq-local comint-buffer-maximum-size 10000)
             (setq-local comint-scroll-show-maximum-output nil)
             (setq-local scroll-conservatively 0)
@@ -524,9 +523,6 @@
         (sql-connect (intern connection))))))
 
 (evil-define-key 'normal 'global (kbd "<leader><tab>d") 'my/sql-connect-in-tab)
-
-(use-package pg :vc (:url "https://github.com/emarsden/pg-el/"))
-(use-package pgmacs :vc (:url "https://github.com/emarsden/pgmacs/"))
 
 ;;; ============================================================
 ;;; Print debugger
