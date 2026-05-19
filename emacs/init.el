@@ -545,7 +545,198 @@ This fixes up the display of queries sent to the inferior buffer programatically
                                                 (switch-to-buffer buf))))
         (sql-connect (intern connection))))))
 
-(evil-define-key 'normal 'global (kbd "<leader><tab>d") 'my/sql-connect-in-tab)
+(evil-define-key 'normal 'global (kbd "<leader><tab>d") 'my/db-workspace)
+
+(use-package pg :vc (:url "https://github.com/emarsden/pg-el/") :demand t)
+
+;; ============================================================
+;; DB Browser
+;; ============================================================
+
+(defvar-local my/db-browser-con nil)
+(defvar-local my/db-browser-expanded nil)
+(defvar-local my/db-browser-cache nil)
+
+(defun my/db-browser-uri (connection-name)
+  (let ((p (cdr (assoc (intern connection-name) sql-connection-alist))))
+    (format "postgresql://%s:%s@%s:%s/%s"
+            (cadr (assoc 'sql-user p))
+            (cadr (assoc 'sql-password p))
+            (cadr (assoc 'sql-server p))
+            (cadr (assoc 'sql-port p))
+            (cadr (assoc 'sql-database p)))))
+
+(defun my/db-browser--query (sql)
+  (pg-result (pg-exec my/db-browser-con sql) :tuples))
+
+(defun my/db-browser--schemas ()
+  (or (gethash "schemas" my/db-browser-cache)
+      (puthash "schemas"
+               (mapcar #'car
+                       (my/db-browser--query
+                        "SELECT schema_name FROM information_schema.schemata
+                          WHERE schema_name NOT IN ('pg_catalog','information_schema','pg_toast')
+                          ORDER BY schema_name"))
+               my/db-browser-cache)))
+
+(defun my/db-browser--tables (schema)
+  (let ((k (format "tables:%s" schema)))
+    (or (gethash k my/db-browser-cache)
+        (puthash k
+                 (mapcar #'car
+                         (my/db-browser--query
+                          (format "SELECT table_name FROM information_schema.tables
+                                    WHERE table_schema='%s' AND table_type='BASE TABLE'
+                                    ORDER BY table_name" schema)))
+                 my/db-browser-cache))))
+
+(defun my/db-browser--columns (schema table)
+  (let ((k (format "columns:%s.%s" schema table)))
+    (or (gethash k my/db-browser-cache)
+        (puthash k
+                 (my/db-browser--query
+                  (format "SELECT column_name, data_type, is_nullable, COALESCE(column_default,'')
+                            FROM information_schema.columns
+                            WHERE table_schema='%s' AND table_name='%s'
+                            ORDER BY ordinal_position" schema table))
+                 my/db-browser-cache))))
+
+(defun my/db-browser--constraints (schema table)
+  (let ((k (format "constraints:%s.%s" schema table)))
+    (or (gethash k my/db-browser-cache)
+        (puthash k
+                 (my/db-browser--query
+                  (format "SELECT c.conname,
+                                    CASE c.contype
+                                      WHEN 'c' THEN 'CHECK'
+                                      WHEN 'f' THEN 'FK'
+                                      WHEN 'p' THEN 'PK'
+                                      WHEN 'u' THEN 'UNIQUE'
+                                      WHEN 'x' THEN 'EXCL'
+                                    END,
+                                    pg_get_constraintdef(c.oid)
+                             FROM pg_constraint c
+                             JOIN pg_namespace n ON n.oid = c.connamespace
+                             JOIN pg_class cl ON cl.oid = c.conrelid
+                             WHERE n.nspname = '%s' AND cl.relname = '%s'
+                             ORDER BY c.contype, c.conname" schema table))
+                 my/db-browser-cache))))
+
+(defun my/db-browser--insert-line (key text)
+  (let ((start (point)))
+    (insert text "\n")
+    (when key
+      (put-text-property start (1- (point)) 'my/db-browser-key key))))
+
+(defun my/db-browser-render ()
+  (let ((inhibit-read-only t)
+        (saved-pos (point)))
+    (erase-buffer)
+    (dolist (schema (my/db-browser--schemas))
+      (let* ((sk (format "schema:%s" schema))
+             (s-open (gethash sk my/db-browser-expanded)))
+        (my/db-browser--insert-line sk (format "%s %s" (if s-open "▼" "▶") schema))
+        (when s-open
+          (dolist (table (my/db-browser--tables schema))
+            (let* ((tk (format "table:%s.%s" schema table))
+                   (t-open (gethash tk my/db-browser-expanded)))
+              (my/db-browser--insert-line tk (format "  %s %s" (if t-open "▼" "▶") table))
+              (when t-open
+                (let* ((ck (format "section:%s.%s.columns" schema table))
+                       (c-open (gethash ck my/db-browser-expanded))
+                       (xk (format "section:%s.%s.constraints" schema table))
+                       (x-open (gethash xk my/db-browser-expanded)))
+                  (my/db-browser--insert-line ck (format "    %s columns" (if c-open "▼" "▶")))
+                  (when c-open
+                    (dolist (col (my/db-browser--columns schema table))
+                      (my/db-browser--insert-line nil
+                                                  (concat "        "
+                                                          (truncate-string-to-width (nth 0 col) 25 0 ?\s t) " "
+                                                          (truncate-string-to-width (nth 1 col) 22 0 ?\s t) " "
+                                                          (truncate-string-to-width (nth 2 col) 3  0 ?\s nil) " "
+                                                          (nth 3 col)))))
+                  (my/db-browser--insert-line xk (format "    %s constraints" (if x-open "▼" "▶")))
+                  (when x-open
+                    (dolist (con (my/db-browser--constraints schema table))
+                      (my/db-browser--insert-line nil
+                                                  (concat "        "
+                                                          (truncate-string-to-width (nth 0 con) 30 0 ?\s t) " "
+                                                          (truncate-string-to-width (nth 1 con) 7  0 ?\s nil) " "
+                                                          (nth 2 con))))))))))))
+    (goto-char (min saved-pos (point-max)))))
+
+(defun my/db-browser-toggle ()
+  (interactive)
+  (when-let ((key (get-text-property (point) 'my/db-browser-key)))
+    (puthash key (not (gethash key my/db-browser-expanded)) my/db-browser-expanded)
+    (my/db-browser-render)))
+
+(defun my/db-browser-refresh ()
+  (interactive)
+  (clrhash my/db-browser-cache)
+  (my/db-browser-render))
+
+(define-derived-mode my/db-browser-mode special-mode "DB-Browser"
+  (setq-local my/db-browser-expanded (make-hash-table :test 'equal))
+  (setq-local my/db-browser-cache (make-hash-table :test 'equal)))
+
+(define-key my/db-browser-mode-map (kbd "RET") #'my/db-browser-toggle)
+(define-key my/db-browser-mode-map (kbd "TAB") #'my/db-browser-toggle)
+(define-key my/db-browser-mode-map (kbd "r") #'my/db-browser-refresh)
+
+(evil-set-initial-state 'my/db-browser-mode 'motion)
+(evil-define-key 'motion my/db-browser-mode-map
+  (kbd "RET") #'my/db-browser-toggle
+  (kbd "TAB") #'my/db-browser-toggle
+  (kbd "C-h") #'evil-window-left
+  (kbd "C-j") #'evil-window-down
+  (kbd "C-k") #'evil-window-up
+  (kbd "C-l") #'evil-window-right
+  "j" #'next-line
+  "k" #'previous-line
+  "r" #'my/db-browser-refresh)
+
+(defun my/db-browser (connection-name)
+  (let ((buf (get-buffer-create (format "*db-browser:%s*" connection-name))))
+    (with-current-buffer buf
+      (my/db-browser-mode)
+      (setq-local my/db-browser-con
+                  (pg-connect/uri (my/db-browser-uri connection-name)))
+      (my/db-browser-render))
+    buf))
+
+(defun my/db-workspace ()
+  (interactive)
+  (let* ((connection (completing-read "Connection: "
+                                      (mapcar (lambda (c) (symbol-name (car c)))
+                                              sql-connection-alist)))
+         (tab-name (format "db:%s" connection))
+         (existing (seq-find (lambda (tab)
+                               (string= tab-name (alist-get 'name tab)))
+                             (tab-bar-tabs))))
+    (if existing
+        (tab-bar-select-tab-by-name tab-name)
+      (tab-bar-new-tab)
+      (tab-bar-rename-tab tab-name)
+      (let* ((p      (cdr (assoc (intern connection) sql-connection-alist)))
+             (passwd (cadr (assoc 'sql-password p)))
+             (process-environment (if passwd
+                                      (cons (format "PGPASSWORD=%s" passwd)
+                                            process-environment)
+                                    process-environment))
+             sqli-buf
+             (sql-display-sqli-buffer-function
+              (lambda (buf) (setq sqli-buf buf))))
+        (sql-connect (intern connection))
+        (let* ((browser-buf (my/db-browser connection))
+               (dired-buf   (dired-noselect (expand-file-name "~/queries")))
+               (w-right (progn (delete-other-windows) (selected-window)))
+               (w-left  (split-window w-right 45 'left))
+               (w-sqli  (split-window w-right nil 'below)))
+          (set-window-buffer w-left  browser-buf)
+          (set-window-buffer w-right dired-buf)
+          (set-window-buffer w-sqli  sqli-buf)
+          (select-window w-sqli))))))
 
 ;;; ============================================================
 ;;; Print debugger
