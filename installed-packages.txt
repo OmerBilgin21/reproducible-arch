@@ -135,7 +135,6 @@ woff2-font-awesome
 xdg-desktop-portal-gtk
 xdg-desktop-portal-hyprland
 xmlstarlet
-yazi
 zoxide
 zram-generator
 zsh
