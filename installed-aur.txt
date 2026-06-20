@@ -1,9 +1,1 @@
-localsend-bin
-pinta
-python-terminaltexteffects
-ttf-ia-writer
-tzupdate
-ufw-docker
-ungoogled-chromium-bin
-wl-screenrec
-yaru-icon-theme
+brave-origin-bin
