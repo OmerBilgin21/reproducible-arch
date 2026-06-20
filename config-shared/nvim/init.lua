@@ -12,5 +12,5 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("config")
-require("lazy").setup("plugins")
+require("lazy").setup("plugins", { root = "~/reproducible-arch/config-shared/nvim/plugin-code/" })
 require("config.landing").setup()
