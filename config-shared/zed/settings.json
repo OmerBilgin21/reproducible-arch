@@ -1,6 +1,17 @@
 // Zed settings
 // Ported from Neovim config at ~/reproducible-arch/config/nvim
 {
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "agent": {
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "git_panel": {
+    "dock": "left"
+  },
   "icon_theme": "Catppuccin Frappé",
   "theme": "Aura Dark (Soft Text)",
   "disable_ai": true,
@@ -65,6 +76,7 @@
     },
   },
   "outline_panel": {
+    "dock": "left",
     "default_width": 300,
     "indent_guides": {
       "show": "never",
