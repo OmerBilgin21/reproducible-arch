@@ -1,0 +1,10 @@
+#!/bin/bash
+
+source ./scripts/utils
+
+__install_lib "nvim-lua" "plenary.nvim"
+__install_lib "tjdevries" "tree-sitter-lua"
+
+(cd ./lib/tree-sitter-lua && make build_parser)
+
+(cd ./lib/tree-sitter-lua && nvim --headless --clean --noplugin -u ../../scripts/docs.vim -c "luafile ../../scripts/gendocs.lua" -c 'qa')

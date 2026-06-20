@@ -1,0 +1,44 @@
+#!/bin/bash
+
+TIMEOUT=2000
+DAP_JS_ENABLE_LOGGING=false
+
+while getopts ":t:l" options; do
+  case "${options}" in
+    t)
+      if [ -n "${OPTARG}" ]; then
+        TIMEOUT=${OPTARG}
+      fi
+      ;;
+    l)
+      LOG=true
+      ;;
+  esac
+done
+
+export PLENARY_TEST_TIMEOUT=$TIMEOUT
+export DAP_JS_ENABLE_LOGGING=$LOG
+
+shift $(($OPTIND - 1))
+
+rm "./lib/dap-vscode-js.log"
+
+tempfile=".test_output.tmp"
+
+if [[ -n $1 ]]; then
+	nvim --headless --clean --noplugin -u tests/init.vim -c "PlenaryBustedFile $1" | tee "${tempfile}"
+else
+	nvim --headless --clean --noplugin -u tests/init.vim -c "PlenaryBustedDirectory tests/ {minimal_init = 'tests/init.vim'}" | tee "${tempfile}"
+fi
+
+# Plenary doesn't emit exit code 1 when tests have errors during setup
+errors=$(sed 's/\x1b\[[0-9;]*m//g' "${tempfile}" | awk '/(Errors|Failed) :/ {print $3}' | grep -v '0')
+
+rm "${tempfile}"
+
+if [[ -n $errors ]]; then
+  echo "Tests failed"
+  exit 1
+fi
+
+exit 0
