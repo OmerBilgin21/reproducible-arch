@@ -18,6 +18,7 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "LazyUpdate",
   callback = function()
     vim.fn.system("find ~/reproducible-arch/config-shared/nvim/plugin-code -name '.git' -type d -exec rm -rf {} +")
+    vim.fn.system("rm -f ~/reproducible-arch/config-shared/nvim/plugin-code/blink.cmp/target/release/version")
   end,
 })
 
