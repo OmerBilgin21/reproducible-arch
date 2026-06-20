@@ -1,0 +1,102 @@
+[submodule "config-shared/nvim/plugin-code/blink.cmp"]
+	path = config-shared/nvim/plugin-code/blink.cmp
+	url = https://github.com/saghen/blink.cmp.git
+[submodule "config-shared/nvim/plugin-code/conform.nvim"]
+	path = config-shared/nvim/plugin-code/conform.nvim
+	url = https://github.com/stevearc/conform.nvim.git
+[submodule "config-shared/nvim/plugin-code/flash.nvim"]
+	path = config-shared/nvim/plugin-code/flash.nvim
+	url = https://github.com/folke/flash.nvim.git
+[submodule "config-shared/nvim/plugin-code/flatten.nvim"]
+	path = config-shared/nvim/plugin-code/flatten.nvim
+	url = https://github.com/willothy/flatten.nvim.git
+[submodule "config-shared/nvim/plugin-code/godoc.nvim"]
+	path = config-shared/nvim/plugin-code/godoc.nvim
+	url = https://github.com/fredrikaverpil/godoc.nvim.git
+[submodule "config-shared/nvim/plugin-code/grug-far.nvim"]
+	path = config-shared/nvim/plugin-code/grug-far.nvim
+	url = https://github.com/MagicDuck/grug-far.nvim.git
+[submodule "config-shared/nvim/plugin-code/harpoon"]
+	path = config-shared/nvim/plugin-code/harpoon
+	url = https://github.com/ThePrimeagen/harpoon.git
+[submodule "config-shared/nvim/plugin-code/lazydev.nvim"]
+	path = config-shared/nvim/plugin-code/lazydev.nvim
+	url = https://github.com/folke/lazydev.nvim.git
+[submodule "config-shared/nvim/plugin-code/LuaSnip"]
+	path = config-shared/nvim/plugin-code/LuaSnip
+	url = https://github.com/L3MON4D3/LuaSnip.git
+[submodule "config-shared/nvim/plugin-code/mason.nvim"]
+	path = config-shared/nvim/plugin-code/mason.nvim
+	url = https://github.com/williamboman/mason.nvim.git
+[submodule "config-shared/nvim/plugin-code/mini.pairs"]
+	path = config-shared/nvim/plugin-code/mini.pairs
+	url = https://github.com/echasnovski/mini.pairs.git
+[submodule "config-shared/nvim/plugin-code/neo-tree.nvim"]
+	path = config-shared/nvim/plugin-code/neo-tree.nvim
+	url = https://github.com/nvim-neo-tree/neo-tree.nvim.git
+[submodule "config-shared/nvim/plugin-code/nui.nvim"]
+	path = config-shared/nvim/plugin-code/nui.nvim
+	url = https://github.com/MunifTanjim/nui.nvim.git
+[submodule "config-shared/nvim/plugin-code/nvim-dap"]
+	path = config-shared/nvim/plugin-code/nvim-dap
+	url = https://github.com/mfussenegger/nvim-dap.git
+[submodule "config-shared/nvim/plugin-code/nvim-dap-go"]
+	path = config-shared/nvim/plugin-code/nvim-dap-go
+	url = https://github.com/leoluz/nvim-dap-go.git
+[submodule "config-shared/nvim/plugin-code/nvim-dap-ui"]
+	path = config-shared/nvim/plugin-code/nvim-dap-ui
+	url = https://github.com/rcarriga/nvim-dap-ui.git
+[submodule "config-shared/nvim/plugin-code/nvim-dap-vscode-js"]
+	path = config-shared/nvim/plugin-code/nvim-dap-vscode-js
+	url = https://github.com/mxsdev/nvim-dap-vscode-js.git
+[submodule "config-shared/nvim/plugin-code/nvim-lint"]
+	path = config-shared/nvim/plugin-code/nvim-lint
+	url = https://github.com/mfussenegger/nvim-lint.git
+[submodule "config-shared/nvim/plugin-code/nvim-lspconfig"]
+	path = config-shared/nvim/plugin-code/nvim-lspconfig
+	url = https://github.com/neovim/nvim-lspconfig.git
+[submodule "config-shared/nvim/plugin-code/nvim-nio"]
+	path = config-shared/nvim/plugin-code/nvim-nio
+	url = https://github.com/nvim-neotest/nvim-nio.git
+[submodule "config-shared/nvim/plugin-code/nvim-surround"]
+	path = config-shared/nvim/plugin-code/nvim-surround
+	url = https://github.com/kylechui/nvim-surround.git
+[submodule "config-shared/nvim/plugin-code/nvim-treesitter"]
+	path = config-shared/nvim/plugin-code/nvim-treesitter
+	url = https://github.com/nvim-treesitter/nvim-treesitter.git
+[submodule "config-shared/nvim/plugin-code/nvim-web-devicons"]
+	path = config-shared/nvim/plugin-code/nvim-web-devicons
+	url = https://github.com/nvim-tree/nvim-web-devicons.git
+[submodule "config-shared/nvim/plugin-code/onedarkpro.nvim"]
+	path = config-shared/nvim/plugin-code/onedarkpro.nvim
+	url = https://github.com/olimorris/onedarkpro.nvim.git
+[submodule "config-shared/nvim/plugin-code/plenary.nvim"]
+	path = config-shared/nvim/plugin-code/plenary.nvim
+	url = https://github.com/nvim-lua/plenary.nvim.git
+[submodule "config-shared/nvim/plugin-code/print-debugger.nvim"]
+	path = config-shared/nvim/plugin-code/print-debugger.nvim
+	url = https://github.com/OmerBilgin21/print-debugger.nvim.git
+[submodule "config-shared/nvim/plugin-code/render-markdown.nvim"]
+	path = config-shared/nvim/plugin-code/render-markdown.nvim
+	url = https://github.com/MeanderingProgrammer/render-markdown.nvim.git
+[submodule "config-shared/nvim/plugin-code/telescope.nvim"]
+	path = config-shared/nvim/plugin-code/telescope.nvim
+	url = https://github.com/nvim-telescope/telescope.nvim.git
+[submodule "config-shared/nvim/plugin-code/toggleterm.nvim"]
+	path = config-shared/nvim/plugin-code/toggleterm.nvim
+	url = https://github.com/akinsho/toggleterm.nvim.git
+[submodule "config-shared/nvim/plugin-code/trouble.nvim"]
+	path = config-shared/nvim/plugin-code/trouble.nvim
+	url = https://github.com/folke/trouble.nvim.git
+[submodule "config-shared/nvim/plugin-code/vim-dadbod"]
+	path = config-shared/nvim/plugin-code/vim-dadbod
+	url = https://github.com/tpope/vim-dadbod.git
+[submodule "config-shared/nvim/plugin-code/vim-dadbod-completion"]
+	path = config-shared/nvim/plugin-code/vim-dadbod-completion
+	url = https://github.com/kristijanhusak/vim-dadbod-completion.git
+[submodule "config-shared/nvim/plugin-code/vim-dadbod-ui"]
+	path = config-shared/nvim/plugin-code/vim-dadbod-ui
+	url = https://github.com/kristijanhusak/vim-dadbod-ui.git
+[submodule "config-shared/nvim/plugin-code/vim-fugitive"]
+	path = config-shared/nvim/plugin-code/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive.git
