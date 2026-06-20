@@ -13,4 +13,12 @@ vim.opt.rtp:prepend(lazypath)
 
 require("config")
 require("lazy").setup("plugins", { root = "~/reproducible-arch/config-shared/nvim/plugin-code/" })
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyUpdate",
+  callback = function()
+    vim.fn.system("find ~/reproducible-arch/config-shared/nvim/plugin-code -name '.git' -type d -exec rm -rf {} +")
+  end,
+})
+
 require("config.landing").setup()
