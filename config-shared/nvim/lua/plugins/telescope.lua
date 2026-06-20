@@ -89,6 +89,8 @@ return {
           "!build/",
           "-g",
           "!target/",
+          "-g",
+          "!plugin-code/",
         },
       })
     end, {
