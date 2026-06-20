@@ -29,3 +29,4 @@ video/x-theora+ogg=mpv.desktop
 application/ogg=mpv.desktop
 x-scheme-handler/postman=Postman.desktop
 x-scheme-handler/bruno=bruno.desktop
+x-scheme-handler/nxm=modorganizer2-nxm-handler.desktop
