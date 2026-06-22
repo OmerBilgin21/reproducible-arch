@@ -97,12 +97,6 @@ return {
       noremap = true,
       silent = true,
     })
-    vim.keymap.set("n", "<C-n>", function()
-      builtin.marks()
-    end, {
-      noremap = true,
-      silent = true,
-    })
     vim.keymap.set("n", "<leader>f", function()
       builtin.live_grep({
         glob_pattern = { "!package-lock.json" },
