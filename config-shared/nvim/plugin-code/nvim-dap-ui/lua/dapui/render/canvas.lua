@@ -16,7 +16,7 @@ M.namespace = api.nvim_create_namespace("dapui")
 local Canvas = {}
 
 ---@type dapui.Action[]
-local all_actions = { "expand", "open", "remove", "edit", "repl", "toggle", "watch" }
+local all_actions = { "expand", "open", "remove", "edit", "repl", "toggle" }
 
 ---@return dapui.Canvas
 function Canvas:new()
