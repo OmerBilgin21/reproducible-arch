@@ -1,0 +1,10 @@
+(defsrc
+  rmet
+  caps
+)
+
+(deflayer base
+  rctl
+  rctl
+)
+
