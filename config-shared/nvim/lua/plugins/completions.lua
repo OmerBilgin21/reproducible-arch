@@ -8,6 +8,7 @@ return {
       },
     },
     version = "1.*",
+    build = "cargo build --release",
     opts = {
       keymap = { preset = "enter" },
       appearance = {
