@@ -38,6 +38,8 @@ config.front_end = "OpenGL"
 config.window_background_opacity = 0.97
 config.hide_mouse_cursor_when_typing = true
 config.window_close_confirmation = "NeverPrompt"
+config.send_composed_key_when_right_alt_is_pressed = false
+config.send_composed_key_when_left_alt_is_pressed = false
 
 config.keys = {
   { key = "Enter", mods = "SHIFT", action = wezterm.action({ SendString = "\x1b\r" }) },
