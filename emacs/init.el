@@ -407,7 +407,22 @@
       (tab-bar-rename-tab (file-name-nondirectory (directory-file-name root)))
       (puthash (alist-get 'name (tab-bar--current-tab)) root my/tab-project-roots))))
 
-(evil-define-key 'normal 'global (kbd "<leader><tab><tab>") 'tab-bar-new-tab)
+(evil-define-key 'normal 'global (kbd "<leader>pa")
+  (lambda () (interactive)
+    (let ((dirs (directory-files (expand-file-name "~/projects") t "\\`[^.]")))
+      (dolist (dir dirs)
+        (when (file-directory-p dir)
+          (let* ((name (file-name-nondirectory dir))
+                 (existing (seq-find (lambda (tab)
+                                       (string= name (alist-get 'name tab)))
+                                     (tab-bar-tabs))))
+            (unless existing
+              (tab-bar-new-tab)
+              (dired dir)
+              (let ((root (expand-file-name (file-name-as-directory dir))))
+                (tab-bar-rename-tab name)
+                (puthash (alist-get 'name (tab-bar--current-tab)) root my/tab-project-roots)))))))))
+
 (evil-define-key 'normal 'global (kbd "<leader><tab><tab>") 'tab-bar-new-tab)
 (evil-define-key 'normal 'global (kbd "<leader><tab>c") 'tab-bar-close-tab)
 (evil-define-key 'normal 'global (kbd "S-<right>") 'tab-bar-switch-to-next-tab)
@@ -560,8 +575,8 @@ This fixes up the display of queries sent to the inferior buffer programatically
 (defun my/db-browser-uri (connection-name)
   (let ((p (cdr (assoc (intern connection-name) sql-connection-alist))))
     (format "postgresql://%s:%s@%s:%s/%s"
-            (cadr (assoc 'sql-user p))
-            (cadr (assoc 'sql-password p))
+            (url-hexify-string (cadr (assoc 'sql-user p)))
+            (url-hexify-string (cadr (assoc 'sql-password p)))
             (cadr (assoc 'sql-server p))
             (cadr (assoc 'sql-port p))
             (cadr (assoc 'sql-database p)))))
@@ -765,7 +780,7 @@ This fixes up the display of queries sent to the inferior buffer programatically
 ;;; Misc
 ;;; ============================================================
 
-(setq-default tab-bar-auto-width nil)
+(setq-default tab-bar-auto-width 1)
 
 (add-hook 'text-mode-hook
           (lambda ()
