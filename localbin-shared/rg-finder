@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+mode=$(gum choose \
+  "find file by name" \
+  "find files containing text" \
+  "find text occurrences" \
+  "find directory by name")
+
+[ -z "$mode" ] && exit 0
+
+case "$mode" in
+  "find file by name"|"find directory by name")
+    query=$(gum input --placeholder "glob pattern (e.g. *review*)")
+    ;;
+  *)
+    query=$(gum input --placeholder "regex pattern")
+    ;;
+esac
+
+[ -z "$query" ] && exit 0
+
+case "$mode" in
+  "find file by name")
+    rg --files --glob "$query"
+    ;;
+  "find files containing text")
+    rg -l "$query"
+    ;;
+  "find text occurrences")
+    rg -n "$query"
+    ;;
+  "find directory by name")
+    find . -type d -name "$query"
+    ;;
+esac
