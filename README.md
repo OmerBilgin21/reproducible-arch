@@ -46,3 +46,5 @@ All plugins remain the property of their respective authors:
 - [vim-dadbod-completion](https://github.com/kristijanhusak/vim-dadbod-completion) — kristijanhusak
 - [vim-dadbod-ui](https://github.com/kristijanhusak/vim-dadbod-ui) — kristijanhusak
 - [vim-fugitive](https://github.com/tpope/vim-fugitive) — tpope
+- [octo.nvim](https://github.com/pwntester/octo.nvim) - pwntester
+- [diffview.nvim](https://github.com/sindrets/diffview.nvim) - sindrets
