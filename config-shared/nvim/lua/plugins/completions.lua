@@ -94,6 +94,7 @@ return {
       },
       -- never do this again, TERRRIBBBBLE speed
       -- fuzzy = { implementation = "prefer_rust_with_warning" },
+      fuzzy = { prebuilt_binaries = { ignore_version_mismatch = true } },
     },
     opts_extend = { "sources.default" },
   },
