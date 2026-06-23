@@ -1,6 +1,18 @@
 return {
   {
     "sindrets/diffview.nvim",
+    keys = {
+      {
+        "<leader>do",
+        "<CMD>DiffviewOpen<CR>",
+        desc = "Open Diffview",
+      },
+      {
+        "<leader>dc",
+        "<CMD>DiffviewClose<CR>",
+        desc = "Close Diffview",
+      },
+    },
   },
   {
     "pwntester/octo.nvim",
