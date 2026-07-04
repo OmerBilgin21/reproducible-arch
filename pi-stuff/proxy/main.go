@@ -49,10 +49,12 @@ func main() {
 		}
 
 		payload["reasoning_effort"] = "none"
+		payload["think"] = false
+		payload["chat_template_kwargs"] = map[string]any{"enable_thinking": false}
+		payload["thinking_enabled"] = false
 
 		modified, err := json.Marshal(payload)
 
-		fmt.Printf("payload: %+v\n", payload)
 		fmt.Printf("req.URL: %+v\n", req.URL)
 
 		if err != nil {
