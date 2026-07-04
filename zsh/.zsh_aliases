@@ -35,7 +35,7 @@ alias launchresearcher="docker compose -f ~/projects/local-deep-research-compose
 
 oo() {
   export OLLAMA_FLASH_ATTENTION=1
-  export OLLAMA_KV_CACHE_TYPE=q8_0
+  export OLLAMA_KV_CACHE_TYPE=q4_0
   export OLLAMA_NO_CLOUD=1
   # export OLLAMA_MAX_LOADED_MODELS=1
   # export OLLAMA_NUM_PARALLEL=1
@@ -51,6 +51,7 @@ oc() {
   export OLLAMA_NO_CLOUD=1
   export OLLAMA_MAX_LOADED_MODELS=1
   export OLLAMA_NUM_PARALLEL=1
+  export OLLAMA_KEEP_ALIVE=-1
   export OLLAMA_HOST=0.0.0.0:11434
 
   ollama serve
