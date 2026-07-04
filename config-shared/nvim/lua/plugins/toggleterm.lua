@@ -42,18 +42,12 @@ return {
         id = 999,
       })
 
-      local codex_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
-        cmd = "codex",
-        title = "Codex",
-        id = 996,
-      })
-
       local free_offcanvas_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
         title = "Free brother",
         id = 994,
       })
 
-      local offcanvas_setups = { claude_setup, codex_setup, free_offcanvas_setup }
+      local offcanvas_setups = { claude_setup, free_offcanvas_setup }
 
       local function is_offcanvas_focused()
         local focused_id = term.get_focused_id()
@@ -100,7 +94,6 @@ return {
       local lazygit = Terminal:new(lazygit_setup)
       local default = Terminal:new(default_setup)
       local claude = Terminal:new(claude_setup)
-      local codex = Terminal:new(codex_setup)
       local free_offcanvas = Terminal:new(free_offcanvas_setup)
 
       vim.keymap.set("n", "<leader>tt", function()
@@ -125,6 +118,10 @@ return {
         end
       end, { noremap = true, silent = true })
 
+      vim.keymap.set({ "n", "t", "v", "x", "i" }, "<C-t>", function()
+        vim.cmd("ToggleTermSendVisualSelection " .. claude.id)
+      end, { noremap = true, silent = true })
+
       vim.keymap.set("t", "<C-n>", [[<C-\><C-n>]])
       vim.keymap.set({ "i", "n", "t" }, "<S-tab>", function()
         if is_offcanvas_focused() then
@@ -142,70 +139,9 @@ return {
         claude:toggle()
       end)
 
-      vim.keymap.set({ "n", "t" }, "<M-Space>", function()
-        codex:toggle()
-      end)
-
       vim.keymap.set({ "n", "t" }, "<C-a>", function()
         free_offcanvas:toggle()
       end)
-
-      vim.keymap.set("t", "<C-x>", function()
-        local trim = function(str)
-          return str:match("^%s*(.-)%s*$")
-        end
-
-        if term.get_focused_id() ~= 997 then
-          return
-        end
-
-        vim.cmd("stopinsert")
-
-        local buf = vim.api.nvim_create_buf(false, true)
-        vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
-        vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
-        vim.api.nvim_buf_set_option(buf, "filetype", "sh")
-        vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "" })
-
-        local width = math.min(80, vim.o.columns - 4)
-        local height = 1
-        local win = vim.api.nvim_open_win(buf, true, {
-          relative = "editor",
-          width = width,
-          height = height,
-          col = math.floor((vim.o.columns - width) / 2),
-          row = math.floor((vim.o.lines - height) / 2),
-          style = "minimal",
-          border = "rounded",
-          title = " Command ",
-          title_pos = "center",
-        })
-
-        vim.keymap.set({ "i", "n" }, "<CR>", function()
-          local command = vim.api.nvim_buf_get_lines(buf, 0, -1, false)[1] or ""
-          command = trim(command)
-          vim.api.nvim_win_close(win, true)
-          default:send(command, false)
-          vim.schedule(function()
-            default:open()
-            vim.cmd("startinsert")
-          end)
-        end, { buffer = buf })
-
-        local close = function()
-          vim.api.nvim_win_close(win, true)
-          vim.schedule(function()
-            default:open()
-            vim.cmd("startinsert")
-          end)
-        end
-
-        vim.keymap.set("i", "<C-n>", "<Esc>", { buffer = buf })
-        vim.keymap.set("n", "<Esc>", close, { buffer = buf })
-        vim.keymap.set("n", "q", close, { buffer = buf })
-
-        vim.cmd("startinsert")
-      end, { noremap = true })
     end,
   },
 }
