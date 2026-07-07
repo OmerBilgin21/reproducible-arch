@@ -55,7 +55,24 @@ return {
       }),
     })
 
-    vim.keymap.set("i", "<C-b>", function()
+    ls.add_snippets("sql", {
+      s("jbup", {
+        t("UPDATE "),
+        i(1, "schema"),
+        t("."),
+        i(2, "table"),
+        t({ "", "SET " }),
+        i(3, "column"),
+        t({ " = '", "" }),
+        i(4, "{}"),
+        t({ "", "'::jsonb" }),
+        t({ "", "WHERE " }),
+        i(5, "id = ''"),
+        t(";"),
+      }),
+    })
+
+    vim.keymap.set("i", "<TAB>", function()
       if ls.expand_or_jumpable() then
         ls.expand_or_jump()
       else
@@ -64,4 +81,3 @@ return {
     end)
   end,
 }
-
