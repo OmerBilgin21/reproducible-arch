@@ -119,7 +119,7 @@ return {
       end, { noremap = true, silent = true })
 
       vim.keymap.set({ "n", "t", "v", "x", "i" }, "<C-t>", function()
-        vim.cmd("ToggleTermSendVisualSelection " .. claude.id)
+        tt.send_lines_to_terminal("visual_selection", false, { args = claude.id })
       end, { noremap = true, silent = true })
 
       vim.keymap.set("t", "<C-n>", [[<C-\><C-n>]])

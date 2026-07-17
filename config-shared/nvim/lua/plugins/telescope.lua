@@ -108,7 +108,7 @@ return {
       noremap = true,
       silent = true,
     })
-    vim.keymap.set("n", "<leader>d", function()
+    vim.keymap.set("n", "<leader>dd", function()
       builtin.help_tags()
     end, {
       noremap = true,

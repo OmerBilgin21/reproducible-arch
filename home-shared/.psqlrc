@@ -1,11 +1,14 @@
 \set QUIET on
-\x on
-\set PROMPT1 ''
-\set PROMPT2 ''
-\set AUTOCOMMIT off
-\set ON_ERROR_ROLLBACK on
-\pset border 2
-\pset footer on
 \pset null 'NULL'
-\timing on
+\set ON_ERROR_ROLLBACK on
+\set AUTOCOMMIT off
+\set is_interactive `test -t 0 && echo 'true' || echo 'false'`
+\if :is_interactive
+  \x on
+  \set PROMPT1 ''
+  \set PROMPT2 ''
+  \pset border 2
+  \pset footer on
+  \timing on
+\endif
 \set QUIET off
