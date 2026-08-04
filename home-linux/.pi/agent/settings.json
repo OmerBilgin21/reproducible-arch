@@ -1,6 +1,6 @@
 {
-  "defaultModel": "qwen3.5-9b-48kctx:latest",
-  "lastChangelogVersion": "0.75.4",
+  "defaultModel": "qwen3.5-9b-66kctx",
+  "lastChangelogVersion": "0.80.2",
   "defaultThinkingLevel": "off",
   "hideThinkingBlock": false,
   "extensions": [
@@ -13,5 +13,6 @@
     "reserveTokens": 4096,
     "keepRecentTokens": 8000
   },
-  "defaultProvider": "ollama"
+  "defaultProvider": "ollama",
+  "theme": "dark"
 }
