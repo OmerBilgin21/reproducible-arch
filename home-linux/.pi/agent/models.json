@@ -8,6 +8,18 @@
       "supportsReasoningEffort": false,
       "models": [
         {
+          "id": "qwen3.5-9b-66kctx",
+          "contextWindow": 66000,
+          "maxTokens": 4096,
+          "reasoning": false,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        },
+        {
           "id": "qwen3.5-9b-48kctx",
           "contextWindow": 48000,
           "maxTokens": 4096,
