@@ -7,8 +7,6 @@
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock", "custom/screenrecording-indicator"],
   "modules-right": [
-    "group/tray-expander",
-    "bluetooth",
     "network",
     "pulseaudio",
     "cpu",
@@ -82,13 +80,6 @@
       "critical": 10
     }
   },
-  "bluetooth": {
-    "format": "",
-    "format-disabled": "󰂲",
-    "format-connected": "",
-    "tooltip-format": "Devices connected: {num_connections}",
-    "on-click": "launch-with-terminal bluetui"
-  },
   "pulseaudio": {
     "format": "{icon}",
     "on-click": "launch-with-terminal wiremix",
@@ -99,18 +90,6 @@
     "format-icons": {
       "default": ["", "", ""]
     }
-  },
-  "group/tray-expander": {
-    "orientation": "inherit",
-    "drawer": {
-      "transition-duration": 600,
-      "children-class": "tray-group-item"
-    },
-    "modules": ["custom/expand-icon", "tray"]
-  },
-  "custom/expand-icon": {
-    "format": " ",
-    "tooltip": false
   },
   "custom/screenrecording-indicator": {
     "on-click": "cmd-screenrecord",
