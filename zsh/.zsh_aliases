@@ -101,9 +101,31 @@ s() {
   unset DB_ENV
 }
 
+installed() {
+  sudo pacman -Qe
+}
+
+cleanupDeps() {
+  sudo pacman -Rns $(pacman -Qdtq)
+}
+
+wtfis() {
+  if [ $# -ne 1 ]; then
+    echo "Please provide a package name..."
+    return 1
+  fi
+
+  pacman -Qi "$1" | grep Reason
+
+  echo "pactree: "
+  pactree -r "$1"
+
+}
+
 repoHere() {
   if [ $# -ne 1 ]; then
     echo "Please provide a repo name..."
+    return 1
   fi
 
   gh repo create "$1" --public --source=. --remote=upstream
