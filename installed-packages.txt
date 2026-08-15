@@ -1,5 +1,4 @@
 7zip
-alacritty
 base
 base-devel
 bat
@@ -8,10 +7,6 @@ brightnessctl
 btop
 btrfs-progs
 clang
-cups
-cups-browsed
-cups-filters
-cups-pdf
 dnscrypt-proxy
 docker
 docker-buildx
@@ -21,9 +16,6 @@ efibootmgr
 egl-wayland
 evince
 fastfetch
-fcitx5
-fcitx5-gtk
-fcitx5-qt
 ffmpegthumbnailer
 fontconfig
 gamemode
@@ -32,7 +24,6 @@ github-cli
 gnome-calculator
 gnome-keyring
 gnome-themes-extra
-greetd-tuigreet
 gst-plugin-pipewire
 gum
 gvfs-mtp
@@ -45,14 +36,11 @@ hyprpicker
 hyprshot
 hyprsunset
 ifuse
-imagemagick
 impala
 imv
-inetutils
 intel-ucode
 iwd
 jq
-jre-openjdk-headless
 kvantum-qt5
 lazydocker
 lazygit
@@ -69,7 +57,6 @@ luarocks
 mako
 man-db
 mangohud
-mariadb-libs
 mesa-utils
 mise
 mpv
@@ -91,10 +78,8 @@ plocate
 polkit-gnome
 postgresql-libs
 python-gobject
-python-poetry-core
 pyenv
 qt5-wayland
-qutebrowser
 resvg
 rofi
 rsync
@@ -138,7 +123,6 @@ xmlstarlet
 zoxide
 zram-generator
 zsh
-bluez
 bluetui
 foot
 cloc
