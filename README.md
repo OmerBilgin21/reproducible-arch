@@ -48,3 +48,4 @@ All plugins remain the property of their respective authors:
 - [vim-fugitive](https://github.com/tpope/vim-fugitive) — tpope
 - [octo.nvim](https://github.com/pwntester/octo.nvim) - pwntester
 - [diffview.nvim](https://github.com/sindrets/diffview.nvim) - sindrets
+- [garbage-day.nvim](https://github.com/Zeioth/garbage-day.nvim) - Zeioth
