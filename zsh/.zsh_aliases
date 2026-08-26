@@ -28,6 +28,7 @@ alias aur='pkg-aur-install'
 alias cat='bat'
 alias exot='exit'
 alias exut='exit'
+alias d='n ~/Documents/log.txt'
 
 # alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider'
 alias aider-dev='OLLAMA_API_BASE=http://0.0.0.0:11434 /home/oemer/projects/aider/venv/bin/aider'
@@ -89,6 +90,8 @@ s() {
   k 3021
   k 3000
   k 3001
+  k 3307
+  k 3306
 
   echo "\nunsetting environment variables...\n"
   unset databaseUri
