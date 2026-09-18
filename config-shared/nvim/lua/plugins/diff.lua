@@ -52,6 +52,13 @@ return {
         desc = "PR review: peek comment",
       },
       {
+        "<leader>de",
+        function()
+          require("custom.pr-review").edit_comment()
+        end,
+        desc = "PR review: reword comment",
+      },
+      {
         "<leader>ds",
         function()
           require("custom.pr-review").submit()
