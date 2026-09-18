@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Resolve origin HEAD safely
+REMOTE_HEAD=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD ||
+  git remote show origin | awk '/HEAD branch/ {print "origin/" $NF}')
+
+CHUNK_DIR="/tmp/magicv2_chunks"
+
+mkdir -p "$CHUNK_DIR"
+
+shopt -s nullglob
+rm -f "$CHUNK_DIR"/*
+shopt -u nullglob
+
+# get relevant changed files
+FILES=$(git diff --name-only "$REMOTE_HEAD" -- \
+  ':(exclude)node_modules' \
+  ':(exclude)package*.json' \
+  ':(exclude)dist' \
+  ':(exclude)build' \
+  ':(exclude)*.log' \
+  ':(exclude)*lock*')
+
+if [[ -z "$FILES" ]]; then
+  echo "No relevant changes found."
+  exit 0
+fi
+
+# save per-file diff chunks
+while IFS= read -r FILE; do
+  SAFE_NAME=$(echo "$FILE" | sed 's|/|__|g')
+
+  git diff "$REMOTE_HEAD" \
+    -M0.9 \
+    --function-context \
+    --patience \
+    -U5 \
+    -- "$FILE" >"$CHUNK_DIR/$SAFE_NAME.diff"
+done <<<"$FILES"
+
+echo "Diff chunks saved to $CHUNK_DIR:"
+ls -1 "$CHUNK_DIR"
