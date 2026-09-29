@@ -1,4 +1,20 @@
 return {
+  {
+    "OmerBilgin21/print-debugger.nvim",
+    -- dir = "/home/oemer/projects/print-debugger",
+    version = false,
+    config = function()
+      require("print-debugger").setup({
+        typescript = { prefix = "logger.info" },
+        -- go = { prefix = "internal.Logger", spread_mode = true },
+        keymaps = { "<C-g>" },
+      })
+    end,
+  },
+
+  -- km.set("n", "<leader>cd", function()
+  --   require("dapui").toggle()
+  -- end, { desc = "Toggle DAP UI" })
   -- { "mfussenegger/nvim-dap" },
   -- {
   --   "leoluz/nvim-dap-go",
@@ -133,16 +149,4 @@ return {
   --     end
   --   end,
   -- },
-  {
-    "OmerBilgin21/print-debugger.nvim",
-    -- dir = "/home/oemer/projects/print-debugger",
-    version = false,
-    config = function()
-      require("print-debugger").setup({
-        typescript = { prefix = "logger.info" },
-        -- go = { prefix = "internal.Logger", spread_mode = true },
-        keymaps = { "<C-g>" },
-      })
-    end,
-  },
 }
