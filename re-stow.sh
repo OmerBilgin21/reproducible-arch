@@ -3,6 +3,7 @@
 set -euo pipefail
 
 OS="$(uname -s)"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # because we do the --adopt then discard changes trick for hyprland.conf
 # this exit is good to have, I don't wanna lose my changes if I have some
@@ -43,4 +44,10 @@ elif [[ "$OS" == "Darwin" ]]; then
   stow -D -t ~/.local/bin localbin-mac
   stow -t ~/.config config-mac
   stow -t ~/.local/bin localbin-mac
+fi
+
+if command -v go >/dev/null; then
+  "$HERE/go-tools/build.sh"
+else
+  echo "go is not installed, skipping go-tools build"
 fi

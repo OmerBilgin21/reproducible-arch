@@ -6,6 +6,7 @@ mkdir -p ~/.config
 mkdir -p ~/.local/bin
 mkdir -p ~/.emacs.d
 
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OS="$(uname -s)"
 
 stow -t ~/.config config-shared
@@ -21,4 +22,10 @@ if [[ "$OS" == "Linux" ]]; then
 elif [[ "$OS" == "Darwin" ]]; then
   stow -t ~/.config config-mac
   stow -t ~/.local/bin localbin-mac
+fi
+
+if command -v go >/dev/null; then
+  "$HERE/go-tools/build.sh"
+else
+  echo "go is not installed, skipping go-tools build"
 fi
