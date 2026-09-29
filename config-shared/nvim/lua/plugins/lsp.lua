@@ -3,46 +3,12 @@ return {
     "fredrikaverpil/godoc.nvim",
     version = "*",
     dependencies = {
-      { "nvim-telescope/telescope.nvim" }, -- optional
-      {
-        "nvim-treesitter/nvim-treesitter",
-        branch = "main",
-        build = ":TSUpdate godoc go", -- install/update parsers
-        config = function()
-          require("nvim-treesitter.parsers").godoc = {
-            install_info = {
-              url = "https://github.com/fredrikaverpil/tree-sitter-godoc",
-              files = { "src/parser.c" },
-              version = "*",
-            },
-            filetype = "godoc",
-          }
-
-          -- Map godoc filetype to use godoc parser
-          vim.treesitter.language.register("godoc", "godoc")
-
-          -- Enable :TSInstall godoc, :TSUpdate godoc
-          vim.api.nvim_create_autocmd("User", {
-            pattern = "TSUpdate",
-            callback = function()
-              require("nvim-treesitter.parsers").godoc = parser_config
-            end,
-          })
-
-          -- Enable godoc filetype for .godoc files (optional)
-          vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-            pattern = "*.godoc",
-            callback = function()
-              vim.bo.filetype = "godoc"
-            end,
-          })
-        end,
-      },
+      { "nvim-telescope/telescope.nvim" },
     },
-    build = "go install github.com/lotusirous/gostdsym/stdsym@latest", -- optional
-    cmd = { "GoDoc" }, -- optional
-    ft = "godoc", -- optional
-    opts = { picker = { type = "telescope" } }, -- see further down below for configuration
+    build = "go install github.com/lotusirous/gostdsym/stdsym@latest",
+    cmd = { "GoDoc" },
+    ft = "godoc",
+    opts = { picker = { type = "telescope" } },
   },
   {
     "folke/lazydev.nvim",
@@ -136,14 +102,14 @@ return {
                   enableProjectDiagnostics = true,
                 },
               },
-              typescript = {
-                tsserver = {
-                  maxTsServerMemory = 8192,
-                },
-                preferences = {
-                  includePackageJsonAutoImports = "auto",
-                },
-              },
+              -- typescript = {
+              --   tsserver = {
+              --     maxTsServerMemory = 8192,
+              --   },
+              --   preferences = {
+              --     includePackageJsonAutoImports = "auto",
+              --   },
+              -- },
             },
           },
           pyright = {
@@ -216,6 +182,8 @@ return {
         local current = vim.diagnostic.config().virtual_text
         vim.diagnostic.config({ virtual_text = not current })
       end, {})
+
+      -- require("custom.lsp-idle").setup()
     end,
   },
 }
