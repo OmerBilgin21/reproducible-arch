@@ -1,6 +1,7 @@
 return {
   {
     "sindrets/diffview.nvim",
+    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
     config = function()
       require("custom.pr-review").setup()
     end,
