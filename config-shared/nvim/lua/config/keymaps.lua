@@ -13,7 +13,6 @@ km.set({ "i", "n", "t" }, "<c-h>", function()
   end
   vim.cmd.wincmd("h")
 end, { noremap = true })
-
 km.set({ "i", "n", "t" }, "<c-j>", function()
   local mode = vim.api.nvim_get_mode().mode
   if mode == "t" then
@@ -94,12 +93,8 @@ end
 km.set({ "n", "i" }, "<C-f>", map_handler, { silent = true, desc = "DBUI execute query block (paragraph)" })
 
 km.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "LSP code actions" })
-km.set({ "n" }, "<leader>co", "zo", { silent = true, desc = "unfold text" })
+km.set({ "n" }, "<leader>cu", "zo", { silent = true, desc = "unfold text" })
 km.set({ "n" }, "<leader>cf", "zc", { silent = true, desc = "fold text" })
-
-km.set("n", "<leader>cd", function()
-  require("dapui").toggle()
-end, { desc = "Toggle DAP UI" })
 
 vim.keymap.set("n", "<leader>ct", function()
   local file = vim.fn.expand("%")
