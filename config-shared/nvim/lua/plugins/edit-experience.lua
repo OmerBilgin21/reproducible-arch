@@ -85,7 +85,7 @@ return {
       skip_next = [=[[%w%%%'%[%"%.%`%$]]=],
       skip_ts = { "string" },
       skip_unbalanced = true,
-      markdown = true,
+      markdown = false,
     },
   },
   {
@@ -123,14 +123,6 @@ return {
           require("flash").jump()
         end,
         desc = "Flash",
-      },
-      {
-        "r",
-        mode = "o",
-        function()
-          require("flash").remote()
-        end,
-        desc = "Remote Flash",
       },
     },
   },
