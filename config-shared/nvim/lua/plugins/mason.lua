@@ -10,7 +10,7 @@ return {
         "bash-language-server",
         "lua-language-server",
         "gopls",
-        "typescript-language-server",
+        -- "typescript-language-server",
         "pyright",
         "dockerfile-language-server",
         "docker-compose-language-service",
@@ -19,8 +19,8 @@ return {
         "shellcheck",
         "eslint_d",
         -- DAP adapters
-        "delve",
-        "js-debug-adapter",
+        -- "delve",
+        -- "js-debug-adapter",
         -- Formatters
         "stylua",
         "shfmt",
