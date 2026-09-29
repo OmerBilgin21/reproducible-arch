@@ -62,6 +62,14 @@ tss() {
   npx ts-node main.ts
 }
 
+# kill mac docker
+kmd() {
+  sudo pkill docker
+  sudo pkill -9 -f 'Docker Desktop'
+  sudo pkill -9 -f 'com.docker'
+  sudo pkill -9 -f docker
+}
+
 k() {
   local pids
   pids=($(lsof -ti:"$1"))
