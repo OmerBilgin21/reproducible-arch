@@ -25,10 +25,6 @@ All plugins remain the property of their respective authors:
 - [mini.pairs](https://github.com/echasnovski/mini.pairs) — echasnovski
 - [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) — nvim-neo-tree
 - [nui.nvim](https://github.com/MunifTanjim/nui.nvim) — MunifTanjim
-- [nvim-dap](https://github.com/mfussenegger/nvim-dap) — mfussenegger
-- [nvim-dap-go](https://github.com/leoluz/nvim-dap-go) — leoluz
-- [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui) — rcarriga
-- [nvim-dap-vscode-js](https://github.com/mxsdev/nvim-dap-vscode-js) — mxsdev
 - [nvim-lint](https://github.com/mfussenegger/nvim-lint) — mfussenegger
 - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) — neovim
 - [nvim-nio](https://github.com/nvim-neotest/nvim-nio) — nvim-neotest
@@ -46,6 +42,5 @@ All plugins remain the property of their respective authors:
 - [vim-dadbod-completion](https://github.com/kristijanhusak/vim-dadbod-completion) — kristijanhusak
 - [vim-dadbod-ui](https://github.com/kristijanhusak/vim-dadbod-ui) — kristijanhusak
 - [vim-fugitive](https://github.com/tpope/vim-fugitive) — tpope
-- [octo.nvim](https://github.com/pwntester/octo.nvim) - pwntester
 - [diffview.nvim](https://github.com/sindrets/diffview.nvim) - sindrets
 - [garbage-day.nvim](https://github.com/Zeioth/garbage-day.nvim) - Zeioth
