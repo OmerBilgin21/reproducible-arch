@@ -99,4 +99,11 @@ end, {
   desc = "Sync buffers with disk changes; use ! to write all modified buffers first",
 })
 
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = "*.godoc",
+  callback = function()
+    vim.bo.filetype = "godoc"
+  end,
+})
+
 vim.o.tabline = "%!v:lua.override_defaults.tabline()"
