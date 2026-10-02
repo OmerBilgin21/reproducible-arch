@@ -22,7 +22,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias createDb="createdb -h localhost -U omer -O omer"
-alias cfmd='npm ci --no-fund --no-audit;c;npx tsc --noEmit;'
+alias cfmd='qins;nr tsc;nr lint'
 alias pac='pkg-install'
 alias aur='pkg-aur-install'
 alias cat='bat'
@@ -33,6 +33,45 @@ alias d='n ~/Documents/log.txt'
 # alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider'
 alias aider-dev='OLLAMA_API_BASE=http://0.0.0.0:11434 /home/oemer/projects/aider/venv/bin/aider'
 alias launchresearcher="docker compose -f ~/projects/local-deep-research-compose/docker-compose.yml up -d"
+
+_lock_hash() {
+  {
+    shasum -a 256 package-lock.json
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      git ls-files -z -- ':(glob)**/package.json' | xargs -0 shasum -a 256
+    else
+      shasum -a 256 package.json
+    fi
+    node -v
+  } | shasum -a 256 | cut -d' ' -f1
+}
+
+check() {
+  [[ -f package-lock.json ]] || {
+    echo "no package-lock.json here"
+    return 1
+  }
+  if [[ -f node_modules/.lock-hash && "$(<node_modules/.lock-hash)" == "$(_lock_hash)" ]]; then
+    echo "deps unchanged"
+  else
+    echo "deps changed"
+  fi
+}
+
+qins() {
+  [[ -f package-lock.json ]] || {
+    echo "no package-lock.json here"
+    return 1
+  }
+
+  if [[ $# -eq 0 && -f node_modules/.lock-hash && "$(<node_modules/.lock-hash)" == "$(_lock_hash)" ]]; then
+    echo "deps unchanged, skipping install"
+    return 0
+  fi
+
+  npm i --prefer-offline --no-fund --no-audit --loglevel=error --progress=false --no-update-notifier "$@" &&
+    _lock_hash >node_modules/.lock-hash
+}
 
 oo() {
   export OLLAMA_FLASH_ATTENTION=1
@@ -62,12 +101,16 @@ tss() {
   npx ts-node main.ts
 }
 
-# kill mac docker
-kmd() {
+# restart mac docker (cause it's fucked up bro)
+rmd() {
   sudo pkill docker
   sudo pkill -9 -f 'Docker Desktop'
   sudo pkill -9 -f 'com.docker'
   sudo pkill -9 -f docker
+
+  sleep 2
+
+  command open -ga "Docker Desktop"
 }
 
 k() {
@@ -94,12 +137,22 @@ s() {
     echo "No running containers to stop."
   fi
 
-  k 5432
-  k 3021
-  k 3000
-  k 3001
-  k 3307
-  k 3306
+  local ports
+  ports=(
+    # BEs
+    3021 3022 3023 3024 3025 3026 3027 3028 3029
+    # FEs
+    3000 3001
+    # MySQLs
+    3307 3306
+    # PostgreSQL
+    5432
+  )
+
+  local port
+  for port in "${ports[@]}"; do
+    k "$port"
+  done
 
   echo "\nunsetting environment variables...\n"
   unset databaseUri
@@ -142,8 +195,6 @@ repoHere() {
   gh repo create "$1" --public --source=. --remote=upstream
 }
 
-# utils
-# Compression
 compress() {
   if [ $# -ne 1 ]; then
     echo "Usage: compress /absolute/path/to/dir"
