@@ -1,4 +1,5 @@
 .zshsecrets
+config-shared/opencode/.opencode-secrets
 node_modules
 *.elc
 localbin*/allow-chained-allowlist

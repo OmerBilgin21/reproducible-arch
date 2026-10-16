@@ -1,0 +1,124 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "share": "disabled",
+  "snapshot": false,
+  "provider": {
+    "llama-text": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (Qwen3.6-35B-A3B, text)",
+      "options": {
+        "baseURL": "{file:~/.config/opencode/.opencode-secrets}",
+        "apiKey": "moldere"
+      },
+      "models": {
+        "qwen3.6-35b-a3b": {
+          "limit": {
+            "context": 262144,
+            "output": 8192
+          },
+          "tool_call": true,
+          "reasoning": false
+        }
+      }
+    },
+    "llama-vision": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (Qwen3.6-35B-A3B, vision)",
+      "options": {
+        "baseURL": "{file:~/.config/opencode/.opencode-secrets}",
+        "apiKey": "moldere"
+      },
+      "models": {
+        "qwen3.6-35b-a3b-vl": {
+          "limit": {
+            "context": 262144,
+            "output": 8192
+          },
+          "tool_call": true,
+          "reasoning": false,
+          "attachment": true
+        }
+      }
+    }
+  },
+  "model": "llama-text/qwen3.6-35b-a3b",
+  "lsp": {
+    "golang": {},
+    "typescript": {},
+    "lua": {}
+  },
+  "mcp": {
+    "context7": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "enabled": true
+    }
+  },
+  "permission": {
+    "bash": {
+      "*": "ask",
+      "aws *": "ask",
+      "curl *": "ask",
+      "node -e *": "deny",
+      "node --eval *": "deny",
+      "node -p *": "deny",
+      "node --print *": "deny",
+      "npx ts-node -e *": "deny",
+      "npx tsx -e *": "deny",
+      "ts-node -e *": "deny",
+      "tsx -e *": "deny",
+      "bun -e *": "deny",
+      "deno eval *": "deny",
+      "perl -e *": "deny",
+      "ruby -e *": "deny",
+      "python *": "deny",
+      "python3 *": "deny",
+      "sed *": "deny",
+      "stow *": "deny",
+      "./stow.sh": "deny",
+      "./re-stow.sh": "deny",
+      "./setup.sh": "deny",
+      "./nvidia.sh": "deny",
+      "git push *": "deny",
+      "git commit --no-verify *": "deny",
+      "git commit -n *": "deny",
+      "git commit -m *": "deny",
+      "git reset --hard *": "deny",
+      "git checkout -- *": "deny",
+      "git restore *": "deny",
+      "git clean -f *": "deny",
+      "git rebase *": "deny",
+      "git commit --amend *": "deny",
+      "git filter-branch *": "deny",
+      "git filter-repo *": "deny",
+      "git branch -D *": "deny",
+      "git tag -d *": "deny",
+      "git stash drop *": "deny",
+      "git stash clear *": "deny",
+      "gh pr create *": "deny",
+      "gh pr comment *": "deny",
+      "gh pr review *": "deny",
+      "gh pr merge *": "deny",
+      "gh pr close *": "deny",
+      "gh pr edit *": "deny",
+      "gh issue create *": "deny",
+      "gh issue comment *": "deny",
+      "gh release create *": "deny",
+      "gh secret set *": "deny",
+      "gh workflow run *": "deny",
+      "gh repo delete *": "deny",
+      "npm run destroy *": "deny",
+      "npm run local-db:refresh *": "deny",
+      "npm run eject *": "deny",
+      "npm run reset-db *": "deny",
+      "npm run typeorm:revert *": "deny",
+      "npm run deploy *": "deny",
+      "npm run npm-publish *": "deny"
+    }
+  }
+}
