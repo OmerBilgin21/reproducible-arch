@@ -43,4 +43,3 @@ All plugins remain the property of their respective authors:
 - [vim-dadbod-ui](https://github.com/kristijanhusak/vim-dadbod-ui) — kristijanhusak
 - [vim-fugitive](https://github.com/tpope/vim-fugitive) — tpope
 - [diffview.nvim](https://github.com/sindrets/diffview.nvim) - sindrets
-- [garbage-day.nvim](https://github.com/Zeioth/garbage-day.nvim) - Zeioth
