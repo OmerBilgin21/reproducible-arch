@@ -42,12 +42,18 @@ return {
         id = 999,
       })
 
+      local claude_tab_setup = vim.tbl_extend("force", {}, claude_setup, {
+        direction = "tab",
+        title = "Claude (tab)",
+        id = 996,
+      })
+
       local free_offcanvas_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
         title = "Free brother",
         id = 994,
       })
 
-      local offcanvas_setups = { claude_setup, free_offcanvas_setup }
+      local offcanvas_setups = { claude_setup, claude_tab_setup, free_offcanvas_setup }
 
       local function is_offcanvas_focused()
         local focused_id = term.get_focused_id()
@@ -94,6 +100,7 @@ return {
       local lazygit = Terminal:new(lazygit_setup)
       local default = Terminal:new(default_setup)
       local claude = Terminal:new(claude_setup)
+      local claude_tab = Terminal:new(claude_tab_setup)
       local free_offcanvas = Terminal:new(free_offcanvas_setup)
 
       vim.keymap.set("n", "<leader>tt", function()
@@ -138,6 +145,10 @@ return {
       vim.keymap.set({ "n", "t" }, "<C-Space>", function()
         claude:toggle()
       end)
+
+      vim.keymap.set({ "n", "t" }, "<C-b>", function()
+        claude_tab:toggle()
+      end, { desc = "toggle claude in a tab" })
 
       vim.keymap.set({ "n", "t" }, "<C-a>", function()
         free_offcanvas:toggle()
