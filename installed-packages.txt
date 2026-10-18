@@ -126,3 +126,4 @@ zsh
 bluetui
 foot
 cloc
+ddcutil
