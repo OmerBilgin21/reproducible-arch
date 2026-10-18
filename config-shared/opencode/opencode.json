@@ -52,6 +52,19 @@
         "@upstash/context7-mcp"
       ],
       "enabled": true
+    },
+    "servers": {
+      "exa": {
+        "type": "remote",
+        "url": "https://mcp.exa.ai/mcp",
+        "headers": {
+          "x-api-key": "58e3c0ec-7b6d-4976-ae71-4c7aa3eba6d5"
+        }
+      },
+      "revenuecat": {
+        "type": "remote",
+        "url": "https://mcp.revenuecat.ai/mcp"
+      }
     }
   },
   "permission": {
