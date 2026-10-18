@@ -29,10 +29,29 @@ alias cat='bat'
 alias exot='exit'
 alias exut='exit'
 alias d='n ~/Documents/log.txt'
+alias runllama='llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf -c 262144 -fa on -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --spec-type draft-mtp --spec-draft-n-max 2 --spec-draft-type-k q8_0 --spec-draft-type-v q8_0 --temp 0.6 --top-p 0.95 --top-k 20 --host 0.0.0.0 --api-key moldere --reasoning off'
+
+runllamaV() {
+  llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
+    --mmproj ~/projects/aimodels/mmproj-F16.gguf \
+    -c 262144 -fa on -np 1 \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --temp 0.7 --top-p 0.8 --top-k 20 --presence-penalty 1.5 \
+    --reasoning off \
+    --port 8081 --api-key moldere "$@"
+}
 
 # alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider'
 alias aider-dev='OLLAMA_API_BASE=http://0.0.0.0:11434 /home/oemer/projects/aider/venv/bin/aider'
 alias launchresearcher="docker compose -f ~/projects/local-deep-research-compose/docker-compose.yml up -d"
+
+claudeLocal() {
+  export CLAUDE_CODE_AUTO_COMPACT_WINDOW=250000
+  export ANTHROPIC_BASE_URL="http://127.0.0.1:9931"
+  export ANTHROPIC_AUTH_TOKEN="local"
+  export ANTHROPIC_API_KEY=""
+  claude --settings '{"env":{"CLAUDE_CODE_ATTRIBUTION_HEADER":"0","CLAUDE_CODE_ENABLE_TELEMETRY":"0","CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC":"1"}}' --model qwen3.6 --exclude-dynamic-system-prompt-sections "$@"
+}
 
 _lock_hash() {
   {
