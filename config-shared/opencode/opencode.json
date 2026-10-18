@@ -43,11 +43,6 @@
     }
   },
   "model": "llama-text/qwen3.6-35b-a3b",
-  "lsp": {
-    "golang": {},
-    "typescript": {},
-    "lua": {}
-  },
   "mcp": {
     "context7": {
       "type": "local",
