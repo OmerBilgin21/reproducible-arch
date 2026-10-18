@@ -13,37 +13,37 @@ const debug = (label, data) => {
   appendFileSync(DEBUG_LOG, `${new Date().toISOString()} ${label} ${JSON.stringify(data)}\n`)
 }
 
-export const ChainAllowlistPlugin = async (ctx) => {
-  const commandByCall = new Map()
-  let lastCommand = ""
+// Plugin.define is an identity function (returns its argument unchanged), so a
+// plain { id, setup } default export works without resolving the @opencode/plugin
+// package from this loose, non-npm plugin file.
+export default {
+  id: "chain-allowlist",
+  async setup(ctx) {
+    const commandById = new Map()
+    let lastCommand = ""
 
-  const callKey = (input) =>
-    input?.callID ?? input?.permission?.callID ?? input?.id ?? input?.permission?.id
+    await ctx.tool.hook("execute.before", (event) => {
+      debug("tool.execute.before", event)
+      if (event.tool !== "bash") return
 
-  return {
-    "tool.execute.before": async (input, output) => {
-      debug("tool.execute.before", { input, args: output?.args })
-      if (input.tool !== "bash") return
-
-      const command = output?.args?.command
+      const command = event.input?.command
       if (!command) return
 
       lastCommand = command
-      const key = callKey(input)
-      if (key) commandByCall.set(key, command)
-    },
+      if (event.id) commandById.set(event.id, command)
+    })
 
-    "permission.ask": async (input, output) => {
-      debug("permission.ask", { input, output })
-      const type = input?.permission?.type ?? input?.type
-      if (type !== "bash") return
+    await ctx.permission.hook("evaluate", async (event) => {
+      debug("permission.evaluate", event)
+      if (event.effect !== "ask") return
+      if (event.action !== "shell" && event.action !== "bash") return
 
-      const key = callKey(input)
-      const command = (key && commandByCall.get(key)) || lastCommand
+      const callId = event.source?.id
+      const command = (callId && commandById.get(callId)) || lastCommand
       if (!command) return
 
       const payload = JSON.stringify({
-        cwd: ctx.directory,
+        cwd: ctx.location?.directory,
         tool_name: "Bash",
         tool_input: { command },
       })
@@ -59,10 +59,8 @@ export const ChainAllowlistPlugin = async (ctx) => {
       }
 
       if (decision?.hookSpecificOutput?.permissionDecision === "allow") {
-        output.status = "allow"
+        event.effect = "allow"
       }
-    },
-  }
+    })
+  },
 }
-
-export default ChainAllowlistPlugin
