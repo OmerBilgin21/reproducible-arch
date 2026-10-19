@@ -1,5 +1,7 @@
 .zshsecrets
-config-shared/opencode/.opencode-secrets
+config-shared/opencode/.opencode-tailscale-url
+config-shared/opencode/.opencode-exa-api-key
+config-shared/opencode/.opencode-context7-api-key
 node_modules
 *.elc
 localbin*/allow-chained-allowlist
