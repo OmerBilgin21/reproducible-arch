@@ -19,6 +19,14 @@
           },
           "tool_call": true,
           "reasoning": false
+        },
+        "bonsai2-27b": {
+          "limit": {
+            "context": 90112,
+            "output": 8192
+          },
+          "tool_call": true,
+          "reasoning": false
         }
       }
     },
