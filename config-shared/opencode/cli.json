@@ -7,9 +7,30 @@
     "wrap": "word"
   },
   "session": {
-    "sidebar": "auto",
+    "sidebar": "hide",
     "scrollbar": false,
-    "thinking": "hide"
+    "thinking": "show",
+    "image_preview": true
   },
-  "animations": true
+  "animations": true,
+  "cursor": {
+    "style": "block",
+    "blinking": false
+  },
+  "plugins": [
+    {
+      "package": "@leohenon/opencode-vim-plugin@beta",
+      "options": {
+        "enabled": true,
+        "toggle_key": "ctrl+shift+v",
+        "indicator": true,
+        "vim_enter_submit": false,
+        "vim_insert_after_submit": false,
+        "vim_system_clipboard_register": false
+      }
+    }
+  ],
+  "tabs": {
+    "mode": "auto"
+  }
 }
