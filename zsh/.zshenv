@@ -1,5 +1,6 @@
 export PATH="$HOME/.local/bin:$HOME/.local/share/nvim/mason/bin:$PATH"
 export XCOMPOSEFILE="$HOME/.config/xcompose"
+export EDITOR=nvim
 export SUDO_EDITOR="$EDITOR"
 export BAT_THEME=ansi
 export CHROMIUM_BINARY="$HOME/.local/bin/chromium.sh"
