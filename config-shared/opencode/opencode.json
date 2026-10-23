@@ -1,60 +1,104 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": false,
+  "update": "disable",
   "lsp": true,
   "share": "disabled",
-  "snapshot": false,
+  "snapshots": false,
+  "experimental": {
+    "todo": true
+  },
   "compaction": {
     "auto": true,
     "keep": {
       "tokens": 10000
     }
   },
-  "provider": {
+  "providers": {
     "llama-text": {
-      "npm": "@ai-sdk/openai-compatible",
       "name": "llama.cpp",
+      "package": "aisdk:@ai-sdk/openai-compatible",
       "settings": {
+        "baseURL": "{file:~/.config/opencode/.opencode-tailscale-url}:8080/v1",
+        "apiKey": "moldere",
         "compaction": {
           "type": "summary"
         }
       },
-      "options": {
-        "baseURL": "{file:~/.config/opencode/.opencode-tailscale-url}:8080/v1",
-        "apiKey": "moldere"
-      },
       "models": {
         "qwen3.6-35b-a3b": {
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ],
+            "reasoning": {
+              "supported": false
+            }
+          },
           "limit": {
             "context": 262144,
             "output": 8192
-          },
-          "tool_call": true,
-          "attachment": false,
-          "reasoning": false
+          }
         },
         "bonsai2-27b": {
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ],
+            "reasoning": {
+              "supported": false
+            }
+          },
           "limit": {
             "context": 90112,
             "output": 8192
-          },
-          "tool_call": true,
-          "attachment": false,
-          "reasoning": true
+          }
         },
         "qwen3.6-35b-a3b-vl": {
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ],
+            "reasoning": {
+              "supported": false
+            }
+          },
           "limit": {
             "context": 262144,
             "output": 8192
-          },
-          "tool_call": true,
-          "reasoning": false,
-          "attachment": true
+          }
         }
       }
     }
   },
   "model": "llama-text/bonsai2-27b",
+  "agents": {
+    "explore": {
+      "disabled": true
+    },
+    "general": {
+      "description": "Exploration, research, and code review. Reports findings; never edits.",
+      "permissions": [
+        {
+          "action": "edit",
+          "resource": "*",
+          "effect": "deny"
+        }
+      ]
+    }
+  },
   "mcp": {
     "servers": {
       "basic-memory": {
@@ -63,7 +107,7 @@
           "basic-memory",
           "mcp"
         ],
-        "enabled": true
+        "disabled": false
       },
       "context7": {
         "type": "local",
@@ -74,7 +118,7 @@
           "--api-key",
           "{file:~/.config/opencode/.opencode-context7-api-key}"
         ],
-        "enabled": true
+        "disabled": false
       },
       "exa": {
         "type": "remote",
@@ -82,7 +126,7 @@
         "headers": {
           "x-api-key": "{file:~/.config/opencode/.opencode-exa-api-key}"
         },
-        "enabled": false
+        "disabled": true
       },
       "revenuecat": {
         "type": "remote",
@@ -91,70 +135,305 @@
       "search-mcp": {
         "type": "remote",
         "url": "{file:~/.config/opencode/.opencode-tailscale-url}:3900/mcp",
-        "enabled": true
+        "disabled": false
       }
     }
   },
-  "permission": {
-    "bash": {
-      "*": "ask",
-      "aws *": "ask",
-      "curl *": "ask",
-      "node -e *": "deny",
-      "node --eval *": "deny",
-      "node -p *": "deny",
-      "node --print *": "deny",
-      "npx ts-node -e *": "deny",
-      "npx tsx -e *": "deny",
-      "ts-node -e *": "deny",
-      "tsx -e *": "deny",
-      "bun -e *": "deny",
-      "deno eval *": "deny",
-      "perl -e *": "deny",
-      "ruby -e *": "deny",
-      "python *": "deny",
-      "python3 *": "deny",
-      "sed *": "deny",
-      "stow *": "deny",
-      "./stow.sh": "deny",
-      "./re-stow.sh": "deny",
-      "./setup.sh": "deny",
-      "./nvidia.sh": "deny",
-      "git push *": "deny",
-      "git commit --no-verify *": "deny",
-      "git commit -n *": "deny",
-      "git commit -m *": "deny",
-      "git reset --hard *": "deny",
-      "git checkout -- *": "deny",
-      "git restore *": "deny",
-      "git clean -f *": "deny",
-      "git rebase *": "deny",
-      "git commit --amend *": "deny",
-      "git filter-branch *": "deny",
-      "git filter-repo *": "deny",
-      "git branch -D *": "deny",
-      "git tag -d *": "deny",
-      "git stash drop *": "deny",
-      "git stash clear *": "deny",
-      "gh pr create *": "deny",
-      "gh pr comment *": "deny",
-      "gh pr review *": "deny",
-      "gh pr merge *": "deny",
-      "gh pr close *": "deny",
-      "gh pr edit *": "deny",
-      "gh issue create *": "deny",
-      "gh issue comment *": "deny",
-      "gh release create *": "deny",
-      "gh secret set *": "deny",
-      "gh workflow run *": "deny",
-      "gh repo delete *": "deny",
-      "npm run destroy *": "deny",
-      "npm run local-db:refresh *": "deny",
-      "npm run eject *": "deny",
-      "npm run reset-db *": "deny",
-      "npm run typeorm:revert *": "deny",
-      "npm run deploy *": "deny",
-      "npm run npm-publish *": "deny"
+  "permissions": [
+    {
+      "action": "shell",
+      "resource": "*",
+      "effect": "ask"
+    },
+    {
+      "action": "external_directory",
+      "resource": "*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "aws *",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "curl *",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "node -e *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "node --eval *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "node -p *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "node --print *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npx ts-node -e *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npx tsx -e *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "ts-node -e *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "tsx -e *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "bun -e *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "deno eval *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "perl -e *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "ruby -e *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "python *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "python3 *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "sed *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "stow *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "./stow.sh",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "./re-stow.sh",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "./setup.sh",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "./nvidia.sh",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git push *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git commit --no-verify *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git commit -n *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git commit -m *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git reset --hard *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git checkout -- *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git restore *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git clean -f *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git rebase *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git commit --amend *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git filter-branch *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git filter-repo *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git branch -D *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git tag -d *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash drop *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "git stash clear *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh pr create *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh pr comment *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh pr review *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh pr merge *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh pr close *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh pr edit *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh issue create *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh issue comment *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh release create *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh secret set *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh workflow run *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "gh repo delete *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm run destroy *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm run local-db:refresh *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm run eject *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm run reset-db *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm run typeorm:revert *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm run deploy *",
+      "effect": "deny"
+    },
+    {
+      "action": "shell",
+      "resource": "npm run npm-publish *",
+      "effect": "deny"
     }
-  }
+  ]
 }
