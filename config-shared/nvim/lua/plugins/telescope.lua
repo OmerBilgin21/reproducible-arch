@@ -120,7 +120,5 @@ return {
     vim.keymap.set("n", "gr", function()
       builtin.lsp_references()
     end, {})
-
-    vim.keymap.set("n", "<leader>br", "<cmd>Telescope git_branches<cr>")
   end,
 }

@@ -118,3 +118,8 @@ vim.keymap.set("n", "<leader>ct", function()
     end,
   })
 end, { desc = "Add json tags" })
+
+vim.keymap.set("n", "<leader>br", function()
+  local name = vim.fn.input("Name: ")
+  vim.api.nvim_buf_set_name(0, name)
+end)
