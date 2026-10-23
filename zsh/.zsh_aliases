@@ -29,15 +29,34 @@ alias cat='bat'
 alias exot='exit'
 alias exut='exit'
 alias d='n ~/Documents/log.txt'
-alias runllama='llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf -c 262144 -fa on -np 1 --cache-type-k q8_0 --cache-type-v q8_0 --spec-type draft-mtp --spec-draft-n-max 2 --spec-draft-type-k q8_0 --spec-draft-type-v q8_0 --temp 0.6 --top-p 0.95 --top-k 20 --host 0.0.0.0 --api-key moldere --reasoning off'
 
-runllamaV() {
+qwen36reason() {
+  llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
+    -c 262144 -fa on -np 1 \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --reasoning on \
+    --temp 0.6 --top-p 0.95 --top-k 20 --min-p 0 --presence-penalty 0 \
+    --ui-mcp-proxy \
+    --port 8081 --api-key moldere "$@"
+}
+
+qwen36noreason() {
+  llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
+    -c 262144 -fa on -np 1 \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --temp 0.7 --top-p 0.8 --top-k 20 --presence-penalty 1.5 \
+    -- reasoning off \
+    --ui-mcp-proxy \
+    --port 8081 --api-key moldere "$@"
+}
+
+qwen36vision() {
   llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
     --mmproj ~/projects/aimodels/mmproj-F16.gguf \
     -c 262144 -fa on -np 1 \
     --cache-type-k q8_0 --cache-type-v q8_0 \
     --temp 0.7 --top-p 0.8 --top-k 20 --presence-penalty 1.5 \
-    --reasoning off \
+    --ui-mcp-proxy \
     --port 8081 --api-key moldere "$@"
 }
 
