@@ -1,222 +1,337 @@
-// Zed keymap
-// Ported from Neovim config at ~/reproducible-arch/config/nvim
 [
-  // ============================================================
-  // GLOBAL BINDINGS (always active)
-  // ============================================================
   {
+    "context": "Workspace",
     "bindings": {
-      "ctrl-shift-p": "command_palette::Toggle",
-      "ctrl-shift-f": "pane::DeploySearch",
-      "ctrl-shift-t": "pane::ReopenClosedItem",
-      "ctrl-shift-n": "workspace::NewWindow",
-      "ctrl-shift-m": "diagnostics::Deploy",
-      "ctrl-shift-k": "editor::DeleteLine",
-      "ctrl-shift-z": "editor::Redo",
-      "ctrl-w": "workspace::CloseActiveDock",
-
-      "ctrl-b": "workspace::ToggleLeftDock",
-      "ctrl-n": "workspace::NewFile",
-      "ctrl-z": "editor::Undo",
-      "ctrl-a": "editor::SelectAll",
-      "ctrl-f": "buffer_search::Deploy",
-      "ctrl-p": "file_finder::Toggle",
-      "ctrl-s": "workspace::Save",
+      "ctrl-space": "agent::ToggleFocus",
+      "ctrl-b": ["workspace::SendKeystrokes", "ctrl-space ctrl-b"],
+      "shift-tab": "terminal_panel::Toggle",
+      "alt-f": "projects::OpenRecent",
+    },
+  },
+  {
+    "context": "ThreadsSidebar",
+    "bindings": {
+      "f19": "editor::MoveDown",
+    },
+  },
+  {
+    "context": "ThreadsSidebar && !Editor",
+    "bindings": {
+      "a": "agents_sidebar::FocusSidebarFilter",
+    },
+  },
+  {
+    "context": "Dock",
+    "bindings": {
       "ctrl-h": "workspace::ActivatePaneLeft",
       "ctrl-j": "workspace::ActivatePaneDown",
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-l": "workspace::ActivatePaneRight",
-      "shift-tab": "workspace::NewCenterTerminal",
-      "escape": "editor::Cancel",
-    },
-  },
-
-  {
-    "context": "Terminal",
-    "bindings": {
-      "ctrl-shift-c": "terminal::Copy",
-      "ctrl-shift-v": "terminal::Paste",
-      "ctrl-shift-f": "buffer_search::Deploy",
-    },
-  },
-
-  {
-    "context": "ProjectPanel",
-    "bindings": {
-      "shift-j": "menu::SelectNext",
-      "shift-k": "menu::SelectPrevious",
-      "space e": "project_panel::Toggle",
-    },
-  },
-
-  {
-    "context": "ProjectPanel && vim_mode != insert && !Editor",
-    "bindings": {
-      "a": "project_panel::NewFile",
-    },
-  },
-
-  {
-    "context": "Picker > Editor",
-    "bindings": {
-      "ctrl-j": "menu::SelectNext",
-      "ctrl-k": "menu::SelectPrevious",
     },
   },
   {
-    "context": "TabSwitcher",
+    "context": "Editor && mode == full && (vim_mode == normal || vim_mode == insert)",
     "bindings": {
-      "ctrl-d": "tab_switcher::CloseSelectedItem",
-      "j": "menu::SelectNext",
-      "k": "menu::SelectPrevious",
-      "q": "menu::Cancel",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-t": "agent::AddSelectionToThread",
+      "shift-tab": "terminal_panel::Toggle",
     },
   },
-
   {
-    "context": "VimControl && !menu",
+    "context": "Editor && mode == full && vim_mode == visual",
     "bindings": {
-      "-": ["workspace::SendKeystrokes", "$"],
+      "ctrl-t": "agent::AddSelectionToThread",
     },
   },
-
+  {
+    "context": "(vim_mode == normal || vim_mode == visual) && !menu",
+    "bindings": {
+      "-": "vim::EndOfLine",
+      "alt-j": "editor::MoveLineDown",
+      "alt-k": "editor::MoveLineUp",
+    },
+  },
+  {
+    "context": "vim_mode == normal || vim_mode == visual",
+    "bindings": {
+      "s": "vim::HelixJumpToWord",
+    },
+  },
   {
     "context": "vim_mode == normal && !menu",
     "bindings": {
-      "space e": "workspace::ToggleLeftDock",
-
-      "space f": "pane::DeploySearch",
+      "t": ["vim::PushFindForward", { "before": false, "multiline": false }],
+      "shift-y": ["workspace::SendKeystrokes", "y $"],
+      "ctrl-d": ["workspace::SendKeystrokes", "1 5 ctrl-d z z"],
+      "ctrl-u": ["workspace::SendKeystrokes", "1 5 ctrl-u z z"],
+      "ctrl-c": "editor::Cancel",
+      "ctrl-s": "workspace::Save",
+      "ctrl-p": "file_finder::Toggle",
+      "ctrl-space": "agent::ToggleFocus",
+      "ctrl-b": ["workspace::SendKeystrokes", "ctrl-space ctrl-b"],
+      "alt-up": "vim::ResizePaneUp",
+      "alt-down": "vim::ResizePaneDown",
+      "alt-left": "vim::ResizePaneRight",
+      "alt-right": "vim::ResizePaneLeft",
+      "f2": "vim::ResizePaneLeft",
+      "f3": "vim::ResizePaneRight",
+      "g r": "editor::FindAllReferences",
+      "space e": "project_panel::Toggle",
+      "space o": ["workspace::SendKeystrokes", "cmd-alt-j f19"],
+      "space f": "text_finder::Toggle",
       "space space": "tab_switcher::Toggle",
+      "space ,": "editor::Format",
+      "space p": ["task::Spawn", { "task_name": "Open Project" }],
+      "space b b": "pane::AlternateFile",
+      "space b d": "pane::CloseActiveItem",
       "space s h": "pane::SplitDown",
       "space s v": "pane::SplitRight",
-      "space b d": "pane::CloseActiveItem",
-      "space b b": "pane::AlternateFile",
-      "alt-j": "editor::MoveLineDown",
-      "alt-k": "editor::MoveLineUp",
-      "space tab tab": "workspace::NewFile",
-      "space tab c": "pane::CloseActiveItem",
-      "space tab n": "pane::ActivateNextItem",
-      "space tab p": "pane::ActivatePreviousItem",
-      "g d": "editor::GoToDefinition",
-      "space g d": "editor::GoToDefinitionSplit",
-      "g r": "editor::FindAllReferences",
-      "space c a": "editor::ToggleCodeActions",
-      "space r c": "editor::Rename",
-      "[ d": "editor::GoToPreviousDiagnostic",
-      "] d": "editor::GoToDiagnostic",
-      "space x x": "diagnostics::Deploy",
-      "space c f": "editor::Hover",
-      "space c s": "outline::Toggle",
-      "space g b": "git::Blame",
-      "space b r": "git::Branch",
-
       "space s r": ["pane::DeploySearch", { "replace_enabled": true }],
-      "space ,": "editor::Format",
-      "] q": "editor::GoToDiagnostic",
-      "[ q": "editor::GoToPreviousDiagnostic",
-      "space p": ["task::Spawn", { "task_name": "Open Project" }],
-      "space t t": ["task::Spawn", { "task_name": "Jest: Run Current File" }],
-      "shift-y": ["workspace::SendKeystrokes", "y $"],
-
-      // --- Print debug (Ctrl-g) ---
-      // "o logger.debug('debug:', {data: }); escape h h h",
-      "ctrl-g": [
-        "workspace::SendKeystrokes",
-        "o util.Log(\"debug:\", data); escape h h",
+      "space c a": "editor::ToggleCodeActions",
+      "space c u": "editor::UnfoldLines",
+      "space c f": "editor::Fold",
+      "space c v": [
+        "action::Sequence",
+        ["editor::ToggleInlineDiagnostics", "editor::ToggleInlayHints"],
       ],
+      "space c l": "outline_panel::ToggleFocus",
+      "space c t": ["task::Spawn", { "task_name": "gomodifytags json" }],
+      "space r c": "editor::Rename",
+      "space r m": ["workspace::SendKeystrokes", ": %s/\\r//g enter"],
+      "space x x": "diagnostics::Deploy",
+      "space x shift-x": "diagnostics::DeployCurrentFile",
+      "space g d": "editor::GoToDefinition",
+      "space g g": [
+        "task::Spawn",
+        { "task_name": "lazygit", "reveal_target": "center" },
+      ],
+      "space g s": "git_panel::ToggleFocus",
+      "space g b": "git::Blame",
+      "space d o": "git::Diff",
+      "space d c": "pane::CloseActiveItem",
+      "space t t": ["task::Spawn", { "task_name": "jest current file" }],
     },
   },
   {
     "context": "vim_mode == visual && !menu",
     "bindings": {
-      "alt-j": "editor::MoveLineDown",
-      "alt-k": "editor::MoveLineUp",
       "shift-s": "vim::PushAddSurrounds",
+      "ctrl-s": [
+        "action::Sequence",
+        ["workspace::Save", "vim::SwitchToNormalMode"],
+      ],
+      "space r c": "editor::Rename",
     },
   },
   {
     "context": "vim_mode == insert",
     "bindings": {
-      "j k": "vim::NormalBefore",
-      "ctrl-c": "vim::NormalBefore",
-      "ctrl-s": ["workspace::SendKeystrokes", "escape :w"],
+      "ctrl-s": ["action::Sequence", ["workspace::Save", "vim::NormalBefore"]],
+      "ctrl-k": "editor::ShowSignatureHelp",
+    },
+  },
+  {
+    "context": "Editor && showing_completions",
+    "bindings": {
+      "ctrl-e": "editor::Cancel",
+      "tab": null,
+    },
+  },
+  {
+    "context": "Editor && in_snippet && has_next_tabstop",
+    "bindings": {
+      "tab": "editor::NextSnippetTabstop",
+    },
+  },
+  {
+    "context": "Editor && in_snippet && has_previous_tabstop",
+    "bindings": {
+      "shift-tab": "editor::PreviousSnippetTabstop",
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert && extension == ts",
+    "bindings": {
       "ctrl-g": [
         "workspace::SendKeystrokes",
-        "escape o util.Log(\"debug:\", ); escape h h",
+        "escape ^ \" z y g _ ^ \" _ D A logger.info(': space ', space ctrl-r z ) escape ^ f ' a ctrl-r z",
       ],
     },
   },
   {
-    "context": "Editor && vim_mode == insert",
+    "context": "Editor && vim_mode == normal && !menu && extension == ts",
     "bindings": {
-      "ctrl-space": "editor::ShowSignatureHelp",
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "^ \" z y g _ ^ \" _ D A logger.info(': space ', space ctrl-r z ) escape ^ f ' a ctrl-r z escape l",
+      ],
     },
   },
-
   {
-    "context": "(Editor || git_panel) && vim_mode != insert",
+    "context": "Editor && vim_mode == insert && (extension == tsx || extension == js || extension == jsx || extension == mjs || extension == cjs)",
     "bindings": {
-      "space g g": "git_panel::Toggle",
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "escape ^ \" z y g _ ^ \" _ D A console.log(': space ', space ctrl-r z ) escape ^ f ' a ctrl-r z",
+      ],
     },
   },
-
-  // ============================================================
-  // VIM SNEAK (leap.nvim equivalent)
-  // ============================================================
   {
-    "context": "vim_mode == normal || vim_mode == visual",
+    "context": "Editor && vim_mode == normal && !menu && (extension == tsx || extension == js || extension == jsx || extension == mjs || extension == cjs)",
     "bindings": {
-      "s": "vim::PushSneak",
-      "shift-s": "vim::PushSneakBackward",
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "^ \" z y g _ ^ \" _ D A console.log(': space ', space ctrl-r z ) escape ^ f ' a ctrl-r z escape l",
+      ],
     },
   },
-
-  // ============================================================
-  // DOCK NAVIGATION (panels like neo-tree, terminal)
-  // ============================================================
   {
-    "context": "Dock",
+    "context": "Editor && vim_mode == insert && (extension == py || extension == lua)",
     "bindings": {
-      "ctrl-h": "workspace::ActivatePaneLeft",
-      "ctrl-l": "workspace::ActivatePaneRight",
-      "ctrl-k": "workspace::ActivatePaneUp",
-      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "escape ^ \" z y g _ ^ \" _ D A print(': space ', space ctrl-r z ) escape ^ f ' a ctrl-r z",
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal && !menu && (extension == py || extension == lua)",
+    "bindings": {
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "^ \" z y g _ ^ \" _ D A print(': space ', space ctrl-r z ) escape ^ f ' a ctrl-r z escape l",
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert && extension == go",
+    "bindings": {
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "escape ^ \" z y g _ ^ \" _ D A fmt. P rintf(\": space %+v\\n\", space ctrl-r z ) escape ^ f \" a ctrl-r z",
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal && !menu && extension == go",
+    "bindings": {
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "^ \" z y g _ ^ \" _ D A fmt. P rintf(\": space %+v\\n\", space ctrl-r z ) escape ^ f \" a ctrl-r z escape l",
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert && extension == rs",
+    "bindings": {
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "escape ^ \" z y g _ ^ \" _ D A println!(\": space {:?}\", space ctrl-r z ) escape ^ f \" a ctrl-r z",
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal && !menu && extension == rs",
+    "bindings": {
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "^ \" z y g _ ^ \" _ D A println!(\": space {:?}\", space ctrl-r z ) escape ^ f \" a ctrl-r z escape l",
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == insert && (extension == sh || extension == bash || extension == zsh)",
+    "bindings": {
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "escape ^ \" z y g _ ^ \" _ D A echo space \" space $ ctrl-r z \" escape ^ f \" a ctrl-r z",
+      ],
+    },
+  },
+  {
+    "context": "Editor && vim_mode == normal && !menu && (extension == sh || extension == bash || extension == zsh)",
+    "bindings": {
+      "ctrl-g": [
+        "workspace::SendKeystrokes",
+        "^ \" z y g _ ^ \" _ D A echo space \" space $ ctrl-r z \" escape ^ f \" a ctrl-r z escape l",
+      ],
     },
   },
   {
     "context": "Terminal",
     "bindings": {
       "ctrl-n": "terminal::ToggleViMode",
-      "ctrl-enter": "workspace::NewTerminal",
-      "shift-left": "pane::ActivatePreviousItem",
-      "shift-right": "pane::ActivateNextItem",
+      "alt-f": "projects::OpenRecent",
       "ctrl-h": "workspace::ActivatePaneLeft",
       "ctrl-j": "workspace::ActivatePaneDown",
       "ctrl-k": "workspace::ActivatePaneUp",
       "ctrl-l": "workspace::ActivatePaneRight",
+      "alt-left": ["workspace::IncreaseActiveDockSize", { "px": 0 }],
+      "alt-right": ["workspace::DecreaseActiveDockSize", { "px": 0 }],
+      "ctrl-enter": "workspace::NewTerminal",
+      "shift-left": "pane::ActivatePreviousItem",
+      "shift-right": "pane::ActivateNextItem",
     },
   },
-
   {
-    "context": "Terminal || vim_mode == normal",
+    "context": "Terminal && vi_mode",
     "bindings": {
-      "ctrl-space": "workspace::ToggleRightDock",
+      "ctrl-c": ["terminal::SendKeystroke", "escape"],
     },
   },
-
   {
-    "context": "FileFinder || (FileFinder > Picker > Editor)",
+    "context": "AgentPanel",
     "bindings": {
-      "ctrl n": "file_finder::SelectPrevious",
-      "ctrl p": "file_finder::SelectPrevious",
+      "ctrl-b": "workspace::ToggleZoom",
     },
   },
-
+  {
+    "context": "AgentPanel > Terminal",
+    "bindings": {
+      "shift-tab": ["terminal::SendKeystroke", "shift-tab"],
+    },
+  },
+  {
+    "context": "Picker > Editor",
+    "bindings": {
+      "ctrl-c": "menu::Cancel",
+    },
+  },
+  {
+    "context": "TabSwitcher || (TabSwitcher > Picker > Editor)",
+    "bindings": {
+      "ctrl-d": "tab_switcher::CloseSelectedItem",
+      "j": "menu::SelectNext",
+      "k": "menu::SelectPrevious",
+    },
+  },
+  {
+    "context": "ProjectPanel && not_editing",
+    "bindings": {
+      "a": "project_panel::NewFile",
+      "space e": "project_panel::Toggle",
+    },
+  },
+  {
+    "context": "!Editor && !Terminal",
+    "bindings": {
+      "space f": "text_finder::Toggle",
+    },
+  },
   {
     "context": "EmptyPane || SharedScreen",
     "bindings": {
-      "space f": "file_finder::Toggle",
-      "space e": "workspace::ToggleLeftDock",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-p": "file_finder::Toggle",
+      "space e": "project_panel::Toggle",
+      "space o": ["workspace::SendKeystrokes", "cmd-alt-j f19"],
+      "space f": "text_finder::Toggle",
       "space space": "tab_switcher::Toggle",
       "space p": ["task::Spawn", { "task_name": "Open Project" }],
     },

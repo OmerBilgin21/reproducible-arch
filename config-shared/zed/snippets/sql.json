@@ -1,0 +1,12 @@
+{
+  "jbup": {
+    "prefix": "jbup",
+    "body": [
+      "UPDATE ${1:schema}.${2:table}",
+      "SET ${3:column} = '",
+      "${4:{\\}}",
+      "'::jsonb",
+      "WHERE ${5:id = ''};"
+    ]
+  }
+}

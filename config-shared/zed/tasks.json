@@ -1,4 +1,3 @@
-// Project tasks configuration. See https://zed.dev/docs/tasks for documentation.
 [
   {
     "label": "Open Project",
@@ -9,6 +8,40 @@
     "reveal_target": "dock",
     "hide": "on_success",
     "show_summary": false,
-    "show_command": false,
+    "show_command": false
   },
+  {
+    "label": "lazygit",
+    "command": "lazygit",
+    "args": ["-p", "$ZED_WORKTREE_ROOT"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": true,
+    "reveal": "always",
+    "reveal_target": "center",
+    "hide": "always",
+    "show_summary": false,
+    "show_command": false
+  },
+  {
+    "label": "jest current file",
+    "command": "npx",
+    "args": ["jest", "--", "$ZED_FILENAME"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": true,
+    "reveal": "always",
+    "reveal_target": "dock",
+    "hide": "never"
+  },
+  {
+    "label": "gomodifytags json",
+    "command": "gomodifytags",
+    "args": ["-file", "$ZED_FILE", "-line", "$ZED_ROW", "-add-tags", "json", "-transform", "snakecase", "-w"],
+    "use_new_terminal": false,
+    "allow_concurrent_runs": true,
+    "reveal": "never",
+    "hide": "on_success",
+    "save": "current",
+    "show_summary": false,
+    "show_command": false
+  }
 ]
