@@ -94,6 +94,7 @@
     "modal_max_width": "large"
   },
   "lsp_results_location": "picker",
+  "go_to_definition_fallback": "none",
   "gutter": {
     "min_line_number_digits": 0,
     "folds": false,
