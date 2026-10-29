@@ -6,6 +6,8 @@ set -euo pipefail
 REMOTE_HEAD=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD ||
   git remote show origin | awk '/HEAD branch/ {print "origin/" $NF}')
 
+BASE=$(git merge-base "$REMOTE_HEAD" HEAD)
+
 CHUNK_DIR="/tmp/magicv2_chunks"
 
 mkdir -p "$CHUNK_DIR"
@@ -15,7 +17,7 @@ rm -f "$CHUNK_DIR"/*
 shopt -u nullglob
 
 # get relevant changed files
-FILES=$(git diff --name-only "$REMOTE_HEAD" -- \
+FILES=$(git diff --name-only "$BASE" -- \
   ':(exclude)node_modules' \
   ':(exclude)package*.json' \
   ':(exclude)dist' \
@@ -32,7 +34,7 @@ fi
 while IFS= read -r FILE; do
   SAFE_NAME=$(echo "$FILE" | sed 's|/|__|g')
 
-  git diff "$REMOTE_HEAD" \
+  git diff "$BASE" \
     -M0.9 \
     --function-context \
     --patience \
