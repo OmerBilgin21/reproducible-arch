@@ -31,310 +31,308 @@ alias exut='exit'
 alias d='n ~/Documents/log.txt'
 
 qwen36reason() {
-	llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
-		-c 262144 -fa on -np 1 \
-		--cache-type-k q8_0 --cache-type-v q8_0 \
-		--reasoning on \
-		--temp 0.6 --top-p 0.95 --top-k 20 --min-p 0 --presence-penalty 0 \
-		--ui-mcp-proxy \
-		--port 8081 --api-key moldere "$@"
+  GGML_METAL_BF16_DISABLE=1 llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
+    --mmproj ~/projects/aimodels/mmproj-F16.gguf \
+    -c 262144 -fa on -np 1 \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --spec-type draft-mtp --spec-draft-n-max 3 \
+    --reasoning on \
+    --temp 0.6 --top-p 0.95 --top-k 20 --min-p 0 --presence-penalty 0 \
+    --ui-mcp-proxy \
+    --port 8081 --api-key moldere "$@"
 }
 
 qwen36noreason() {
-	llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
-		-c 262144 -fa on -np 1 \
-		--cache-type-k q8_0 --cache-type-v q8_0 \
-		--temp 0.7 --top-p 0.8 --top-k 20 --presence-penalty 1.5 \
-		-- reasoning off \
-		--ui-mcp-proxy \
-		--port 8081 --api-key moldere "$@"
+  llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
+    -c 262144 -fa on -np 1 \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --temp 0.7 --top-p 0.8 --top-k 20 --presence-penalty 1.5 \
+    --reasoning off \
+    --ui-mcp-proxy \
+    --port 8081 --api-key moldere "$@"
 }
 
 qwen36vision() {
-	llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
-		--mmproj ~/projects/aimodels/mmproj-F16.gguf \
-		-c 262144 -fa on -np 1 \
-		--cache-type-k q8_0 --cache-type-v q8_0 \
-		--temp 0.7 --top-p 0.8 --top-k 20 --presence-penalty 1.5 \
-		--ui-mcp-proxy \
-		--port 8081 --api-key moldere "$@"
+  llama serve -m ~/projects/aimodels/Qwen3.6-35B-A3B-UD-IQ4_NL.gguf \
+    --mmproj ~/projects/aimodels/mmproj-F16.gguf \
+    -c 262144 -fa on -np 1 \
+    --cache-type-k q8_0 --cache-type-v q8_0 \
+    --temp 0.7 --top-p 0.8 --top-k 20 --presence-penalty 1.5 \
+    --ui-mcp-proxy \
+    --port 8081 --api-key moldere "$@"
 }
 
-# alias aider='OLLAMA_API_BASE=http://0.0.0.0:11434 aider'
-alias aider-dev='OLLAMA_API_BASE=http://0.0.0.0:11434 /home/oemer/projects/aider/venv/bin/aider'
-alias launchresearcher="docker compose -f ~/projects/local-deep-research-compose/docker-compose.yml up -d"
-
 claudeLocal() {
-	export CLAUDE_CODE_AUTO_COMPACT_WINDOW=250000
-	export ANTHROPIC_BASE_URL="https://oemer.tail430415.ts.net:8080"
-	export ANTHROPIC_AUTH_TOKEN="moldere"
-	unset ANTHROPIC_API_KEY
-	claude --settings '{"env":{"CLAUDE_CODE_ATTRIBUTION_HEADER":"0","CLAUDE_CODE_ENABLE_TELEMETRY":"0","CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC":"1"}}' --model bonsai2 --exclude-dynamic-system-prompt-sections "$@"
+  export CLAUDE_CODE_AUTO_COMPACT_WINDOW=250000
+  export ANTHROPIC_BASE_URL="https://oemer.tail430415.ts.net:8080"
+  export ANTHROPIC_AUTH_TOKEN="moldere"
+  unset ANTHROPIC_API_KEY
+  claude --settings '{"env":{"CLAUDE_CODE_ATTRIBUTION_HEADER":"0","CLAUDE_CODE_ENABLE_TELEMETRY":"0","CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC":"1"}}' --model bonsai2 --exclude-dynamic-system-prompt-sections "$@"
 }
 
 setmonitorbrtness() {
-	ddcutil setvcp 10 "$@"
+  ddcutil setvcp 10 "$@"
 }
 
 _lock_hash() {
-	{
-		shasum -a 256 package-lock.json
-		if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-			git ls-files -z -- ':(glob)**/package.json' | xargs -0 shasum -a 256
-		else
-			shasum -a 256 package.json
-		fi
-		node -v
-	} | shasum -a 256 | cut -d' ' -f1
+  {
+    shasum -a 256 package-lock.json
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      git ls-files -z -- ':(glob)**/package.json' | xargs -0 shasum -a 256
+    else
+      shasum -a 256 package.json
+    fi
+    node -v
+  } | shasum -a 256 | cut -d' ' -f1
 }
 
 check() {
-	[[ -f package-lock.json ]] || {
-		echo "no package-lock.json here"
-		return 1
-	}
-	if [[ -f node_modules/.lock-hash && "$(<node_modules/.lock-hash)" == "$(_lock_hash)" ]]; then
-		echo "deps unchanged"
-	else
-		echo "deps changed"
-	fi
+  [[ -f package-lock.json ]] || {
+    echo "no package-lock.json here"
+    return 1
+  }
+  if [[ -f node_modules/.lock-hash && "$(<node_modules/.lock-hash)" == "$(_lock_hash)" ]]; then
+    echo "deps unchanged"
+  else
+    echo "deps changed"
+  fi
 }
 
 qins() {
-	[[ -f package-lock.json ]] || {
-		echo "no package-lock.json here"
-		return 1
-	}
+  [[ -f package-lock.json ]] || {
+    echo "no package-lock.json here"
+    return 1
+  }
 
-	if [[ $# -eq 0 && -f node_modules/.lock-hash && "$(<node_modules/.lock-hash)" == "$(_lock_hash)" ]]; then
-		echo "deps unchanged, skipping install"
-		return 0
-	fi
+  if [[ $# -eq 0 && -f node_modules/.lock-hash && "$(<node_modules/.lock-hash)" == "$(_lock_hash)" ]]; then
+    echo "deps unchanged, skipping install"
+    return 0
+  fi
 
-	npm i --prefer-offline --no-fund --no-audit --loglevel=error --progress=false --no-update-notifier "$@" &&
-		_lock_hash >node_modules/.lock-hash
+  npm i --prefer-offline --no-fund --no-audit --loglevel=error --progress=false --no-update-notifier "$@" &&
+    _lock_hash >node_modules/.lock-hash
 }
 
 oo() {
-	export OLLAMA_FLASH_ATTENTION=1
-	export OLLAMA_KV_CACHE_TYPE=q4_0
-	export OLLAMA_NO_CLOUD=1
-	# export OLLAMA_MAX_LOADED_MODELS=1
-	# export OLLAMA_NUM_PARALLEL=1
-	export OLLAMA_HOST=0.0.0.0:11434
+  export OLLAMA_FLASH_ATTENTION=1
+  export OLLAMA_KV_CACHE_TYPE=q4_0
+  export OLLAMA_NO_CLOUD=1
+  # export OLLAMA_MAX_LOADED_MODELS=1
+  # export OLLAMA_NUM_PARALLEL=1
+  export OLLAMA_HOST=0.0.0.0:11434
 
-	ollama serve
+  ollama serve
 }
 
 oc() {
-	export OLLAMA_FLASH_ATTENTION=1
-	export OLLAMA_KV_CACHE_TYPE=q4_0
-	export OLLAMA_GPU_OVERHEAD=0
-	export OLLAMA_NO_CLOUD=1
-	export OLLAMA_MAX_LOADED_MODELS=1
-	export OLLAMA_NUM_PARALLEL=1
-	export OLLAMA_KEEP_ALIVE=-1
-	export OLLAMA_HOST=0.0.0.0:11434
+  export OLLAMA_FLASH_ATTENTION=1
+  export OLLAMA_KV_CACHE_TYPE=q4_0
+  export OLLAMA_GPU_OVERHEAD=0
+  export OLLAMA_NO_CLOUD=1
+  export OLLAMA_MAX_LOADED_MODELS=1
+  export OLLAMA_NUM_PARALLEL=1
+  export OLLAMA_KEEP_ALIVE=-1
+  export OLLAMA_HOST=0.0.0.0:11434
 
-	ollama serve
+  ollama serve
 }
 
 tss() {
-	npx ts-node main.ts
+  npx ts-node main.ts
 }
 
 # restart mac docker (cause it's fucked up bro)
 rmd() {
-	sudo pkill docker
-	sudo pkill -9 -f 'Docker Desktop'
-	sudo pkill -9 -f 'com.docker'
-	sudo pkill -9 -f docker
+  sudo pkill docker
+  sudo pkill -9 -f 'Docker Desktop'
+  sudo pkill -9 -f 'com.docker'
+  sudo pkill -9 -f docker
 
-	sleep 2
+  sleep 2
 
-	command open -ga "Docker Desktop"
+  command open -ga "Docker Desktop"
 }
 
 k() {
-	local pids
-	pids=($(lsof -ti:"$1"))
+  local pids
+  pids=($(lsof -ti:"$1"))
 
-	if [[ ${#pids[@]} -gt 0 ]]; then
-		echo "Killed processes on port $1"
-		kill -9 "${pids[@]}"
-	else
-		echo "No process found on port $1"
-	fi
+  if [[ ${#pids[@]} -gt 0 ]]; then
+    echo "Killed processes on port $1"
+    kill -9 "${pids[@]}"
+  else
+    echo "No process found on port $1"
+  fi
 }
 
 s() {
-	echo "running s function...\n"
-	local containers
-	containers=$(docker ps -q)
+  echo "running s function...\n"
+  local containers
+  containers=$(docker ps -q)
 
-	if [[ -n "$containers" ]]; then
-		docker stop $(docker ps -q) >/dev/null
-		echo "Stopped containers:\n$containers"
-	else
-		echo "No running containers to stop."
-	fi
+  if [[ -n "$containers" ]]; then
+    docker stop $(docker ps -q) >/dev/null
+    echo "Stopped containers:\n$containers"
+  else
+    echo "No running containers to stop."
+  fi
 
-	local ports
-	ports=(
-		# BEs
-		3021 3022 3023 3024 3025 3026 3027 3028 3029
-		# FEs
-		3000 3001
-		# MySQLs
-		3307 3306
-		# PostgreSQL
-		5432
-	)
+  local ports
+  ports=(
+    # BEs
+    3021 3022 3023 3024 3025 3026 3027 3028 3029
+    # FEs
+    3000 3001
+    # MySQLs
+    3307 3306
+    # PostgreSQL
+    5432
+  )
 
-	local port
-	for port in "${ports[@]}"; do
-		k "$port"
-	done
+  local port
+  for port in "${ports[@]}"; do
+    k "$port"
+  done
 
-	echo "\nunsetting environment variables...\n"
-	unset databaseUri
-	unset postgresUri
-	unset ENV_PRIVATE_KEY
-	unset cloudFrontKeyPairId
-	unset cloudFrontPrivateKey
-	unset AWS_ACCESS_KEY_ID
-	unset AWS_SECRET_ACCESS_KEY
-	unset DB_ENV
+  echo "\nunsetting environment variables...\n"
+  unset databaseUri
+  unset postgresUri
+  unset ENV_PRIVATE_KEY
+  unset cloudFrontKeyPairId
+  unset cloudFrontPrivateKey
+  unset AWS_ACCESS_KEY_ID
+  unset AWS_SECRET_ACCESS_KEY
+  unset DB_ENV
 }
 
 installed() {
-	sudo pacman -Qe
+  sudo pacman -Qe
 }
 
 cleanupDeps() {
-	sudo pacman -Rns $(pacman -Qdtq)
+  sudo pacman -Rns $(pacman -Qdtq)
 }
 
 wtfis() {
-	if [ $# -ne 1 ]; then
-		echo "Please provide a package name..."
-		return 1
-	fi
+  if [ $# -ne 1 ]; then
+    echo "Please provide a package name..."
+    return 1
+  fi
 
-	pacman -Qi "$1" | grep Reason
+  pacman -Qi "$1" | grep Reason
 
-	echo "pactree: "
-	pactree -r "$1"
+  echo "pactree: "
+  pactree -r "$1"
 
 }
 
 repoHere() {
-	if [ $# -ne 1 ]; then
-		echo "Please provide a repo name..."
-		return 1
-	fi
+  if [ $# -ne 1 ]; then
+    echo "Please provide a repo name..."
+    return 1
+  fi
 
-	gh repo create "$1" --public --source=. --remote=upstream
+  gh repo create "$1" --public --source=. --remote=upstream
 }
 
 compress() {
-	if [ $# -ne 1 ]; then
-		echo "Usage: compress /absolute/path/to/dir"
-		return 1
-	fi
+  if [ $# -ne 1 ]; then
+    echo "Usage: compress /absolute/path/to/dir"
+    return 1
+  fi
 
-	target="$1"
-	if [ ! -d "$target" ]; then
-		echo "Error: $target is not a directory"
-		return 1
-	fi
+  target="$1"
+  if [ ! -d "$target" ]; then
+    echo "Error: $target is not a directory"
+    return 1
+  fi
 
-	parent=$(dirname "$target")
-	base=$(basename "$target")
-	tarball="${base}.tar.gz"
+  parent=$(dirname "$target")
+  base=$(basename "$target")
+  tarball="${base}.tar.gz"
 
-	echo "parent $parent"
-	echo "base $base"
-	echo "tarball $tarball"
+  echo "parent $parent"
+  echo "base $base"
+  echo "tarball $tarball"
 
-	echo "Compressing as $tarball to current dir..."
-	tar -czf "$tarball" -C "$parent" "$base"
+  echo "Compressing as $tarball to current dir..."
+  tar -czf "$tarball" -C "$parent" "$base"
 }
 
 alias decompress="tar -xzf"
 
 open() {
-	(
-		set +m
-		xdg-open "$@" >/dev/null 2>&1 </dev/null &
-	)
+  (
+    set +m
+    xdg-open "$@" >/dev/null 2>&1 </dev/null &
+  )
 }
 
 # Write iso file to sd card
 iso2sd() {
-	if [ $# -ne 2 ]; then
-		echo "Usage: iso2sd <input_file> <output_device>"
-		echo "Example: iso2sd ~/Downloads/ubuntu-25.04-desktop-amd64.iso /dev/sda"
-		echo -e "\nAvailable SD cards:"
-		lsblk -d -o NAME | grep -E '^sd[a-z]' | awk '{print "/dev/"$1}'
-	else
-		sudo dd bs=4M status=progress oflag=sync if="$1" of="$2"
-		sudo eject "$2"
-	fi
+  if [ $# -ne 2 ]; then
+    echo "Usage: iso2sd <input_file> <output_device>"
+    echo "Example: iso2sd ~/Downloads/ubuntu-25.04-desktop-amd64.iso /dev/sda"
+    echo -e "\nAvailable SD cards:"
+    lsblk -d -o NAME | grep -E '^sd[a-z]' | awk '{print "/dev/"$1}'
+  else
+    sudo dd bs=4M status=progress oflag=sync if="$1" of="$2"
+    sudo eject "$2"
+  fi
 }
 
 # Format an entire drive for a single partition using ext4
 format-drive() {
-	if [ $# -ne 2 ]; then
-		echo "Usage: format-drive <device> <name>"
-		echo "Example: format-drive /dev/sda 'My Stuff'"
-		echo -e "\nAvailable drives:"
-		lsblk -d -o NAME -n | awk '{print "/dev/"$1}'
-	else
-		echo "WARNING: This will completely erase all data on $1 and label it '$2'."
-		read "confirm?Are you sure you want to continue? (y/N): "
-		if [[ "$confirm" =~ ^[Yy]$ ]]; then
-			sudo wipefs -a "$1"
-			sudo dd if=/dev/zero of="$1" bs=1M count=100 status=progress
-			sudo parted -s "$1" mklabel gpt
-			sudo parted -s "$1" mkpart primary ext4 1MiB 100%
-			sudo mkfs.ext4 -L "$2" "$([[ $1 == *"nvme"* ]] && echo "${1}p1" || echo "${1}1")"
-			sudo chmod -R 777 "/run/media/$USER/$2"
-			echo "Drive $1 formatted and labeled '$2'."
-		fi
-	fi
+  if [ $# -ne 2 ]; then
+    echo "Usage: format-drive <device> <name>"
+    echo "Example: format-drive /dev/sda 'My Stuff'"
+    echo -e "\nAvailable drives:"
+    lsblk -d -o NAME -n | awk '{print "/dev/"$1}'
+  else
+    echo "WARNING: This will completely erase all data on $1 and label it '$2'."
+    read "confirm?Are you sure you want to continue? (y/N): "
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+      sudo wipefs -a "$1"
+      sudo dd if=/dev/zero of="$1" bs=1M count=100 status=progress
+      sudo parted -s "$1" mklabel gpt
+      sudo parted -s "$1" mkpart primary ext4 1MiB 100%
+      sudo mkfs.ext4 -L "$2" "$([[ $1 == *"nvme"* ]] && echo "${1}p1" || echo "${1}1")"
+      sudo chmod -R 777 "/run/media/$USER/$2"
+      echo "Drive $1 formatted and labeled '$2'."
+    fi
+  fi
 }
 
 # Transcode a video to a good-balance 1080p that's great for sharing online
 transcode-video-1080p() {
-	ffmpeg -i "$1" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${1%.*}"-1080p.mp4
+  ffmpeg -i "$1" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${1%.*}"-1080p.mp4
 }
 
 # Transcode a video to a good-balance 4K that's great for sharing online
 transcode-video-4K() {
-	ffmpeg -i "$1" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${1%.*}"-optimized.mp4
+  ffmpeg -i "$1" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${1%.*}"-optimized.mp4
 }
 
 # Transcode any image to JPG image that's great for shrinking wallpapers
 img2jpg() {
-	magick "$1" -quality 95 -strip "${1%.*}".jpg
+  magick "$1" -quality 95 -strip "${1%.*}".jpg
 }
 
 # Transcode any image to JPG image that's great for sharing online without being too big
 img2jpg-small() {
-	magick "$1" -resize 1080x\> -quality 95 -strip "${1%.*}".jpg
+  magick "$1" -resize 1080x\> -quality 95 -strip "${1%.*}".jpg
 }
 
 # Transcode any image to compressed-but-lossless PNG
 img2png() {
-	magick "$1" -strip -define png:compression-filter=5 \
-		-define png:compression-level=9 \
-		-define png:compression-strategy=1 \
-		-define png:exclude-chunk=all \
-		"${1%.*}.png"
+  magick "$1" -strip -define png:compression-filter=5 \
+    -define png:compression-level=9 \
+    -define png:compression-strategy=1 \
+    -define png:exclude-chunk=all \
+    "${1%.*}.png"
 }
 
 start() {
-	cd ~/projects || return
-	tmux
+  cd ~/projects || return
+  tmux
 }
