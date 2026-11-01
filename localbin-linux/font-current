@@ -1,3 +1,5 @@
 #!/bin/bash
 
-grep -oP 'font-family:\s*["'\'']?\K[^;"'\'']+' ~/.config/waybar/style.css | head -n1
+xmlstarlet sel -t -v \
+  '//match[@target="pattern"][test/string="monospace"]/edit[@name="family"]/string' \
+  ~/.config/fontconfig/fonts.conf

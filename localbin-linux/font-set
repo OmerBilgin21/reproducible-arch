@@ -9,15 +9,10 @@ if [[ -n "$font_name" && "$font_name" != "CNCLD" ]]; then
       pkill -SIGUSR1 wezterm
     fi
 
-    sed -i "s/font-family: .*/font-family: '$font_name';/g" ~/.config/waybar/style.css
-    sed -i "s/font-family: .*/font-family: '$font_name';/g" ~/.config/swayosd/style.css
     xmlstarlet ed -L \
       -u '//match[@target="pattern"][test/string="monospace"]/edit[@name="family"]/string' \
       -v "$font_name" \
       ~/.config/fontconfig/fonts.conf
-
-    restart-waybar
-    restart-swayosd
   else
     echo "Font '$font_name' not found."
     exit 1
