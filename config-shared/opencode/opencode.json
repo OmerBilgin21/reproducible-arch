@@ -14,35 +14,17 @@
     }
   },
   "providers": {
-    "llama-text": {
+    "linux-computer": {
       "name": "llama.cpp",
       "package": "aisdk:@ai-sdk/openai-compatible",
       "settings": {
-        "baseURL": "{file:~/.config/opencode/.opencode-tailscale-url}:8080/v1",
+        "baseURL": "{file:~/.config/opencode/.opencode-linux-tailscale-url}:8080/v1",
         "apiKey": "moldere",
         "compaction": {
           "type": "summary"
         }
       },
       "models": {
-        "qwen3.6-35b-a3b": {
-          "capabilities": {
-            "tools": true,
-            "input": [
-              "text"
-            ],
-            "output": [
-              "text"
-            ],
-            "reasoning": {
-              "supported": false
-            }
-          },
-          "limit": {
-            "context": 262144,
-            "output": 8192
-          }
-        },
         "bonsai2-27b": {
           "capabilities": {
             "tools": true,
@@ -60,7 +42,20 @@
             "context": 90112,
             "output": 8192
           }
-        },
+        }
+      }
+    },
+    "mac-computer": {
+      "name": "llama.cpp",
+      "package": "aisdk:@ai-sdk/openai-compatible",
+      "settings": {
+        "baseURL": "{file:~/.config/opencode/.opencode-mac-tailscale-url}",
+        "apiKey": "moldere",
+        "compaction": {
+          "type": "summary"
+        }
+      },
+      "models": {
         "qwen3.6-35b-a3b-vl": {
           "capabilities": {
             "tools": true,
@@ -72,7 +67,7 @@
               "text"
             ],
             "reasoning": {
-              "supported": false
+              "supported": true
             }
           },
           "limit": {
@@ -83,7 +78,7 @@
       }
     }
   },
-  "model": "llama-text/bonsai2-27b",
+  "model": "qwen3.6-35b-a3b-vl",
   "agents": {
     "explore": {
       "disabled": true
@@ -107,7 +102,7 @@
           "basic-memory",
           "mcp"
         ],
-        "disabled": false
+        "disabled": true
       },
       "context7": {
         "type": "local",
@@ -134,8 +129,18 @@
       },
       "search-mcp": {
         "type": "remote",
-        "url": "{file:~/.config/opencode/.opencode-tailscale-url}:3900/mcp",
+        "url": "{file:~/.config/opencode/.opencode-search-mcp-url}",
         "disabled": false
+      },
+      "rea": {
+        "type": "local",
+        "command": [
+          "/home/oemer/.local/share/mise/installs/node/24.12.0/bin/rea",
+          "mcp"
+        ],
+        "environment": {
+          "HOPPER_LAUNCHER_PATH": "/opt/hopper/bin/Hopper"
+        }
       }
     }
   },
