@@ -56,6 +56,59 @@
           }
         }
       ]
+    },
+    "qwen-mac": {
+      "name": "Qwen3.6 35B A3B VL (Mac, remote via tailscale)",
+      "baseUrl": "https://mac.tail430415.ts.net/v1",
+      "api": "openai-completions",
+      "apiKey": "moldere",
+      "authHeader": true,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false
+      },
+      "models": [
+        {
+          "id": "qwen3.6-35b-a3b-vl",
+          "name": "Qwen3.6 35B A3B VL",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144,
+          "maxTokens": 8192,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    },
+    "bonsai": {
+      "name": "Bonsai-2 27B (local, thinking mode)",
+      "baseUrl": "http://127.0.0.1:8080/v1",
+      "api": "openai-completions",
+      "apiKey": "moldere",
+      "authHeader": true,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false
+      },
+      "models": [
+        {
+          "id": "bonsai2-27b",
+          "name": "Bonsai-2 27B",
+          "reasoning": true,
+          "contextWindow": 91904,
+          "maxTokens": 8192,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
     }
   }
 }

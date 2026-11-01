@@ -1,6 +1,6 @@
 {
   "defaultModel": "qwen3.5-9b-66kctx",
-  "lastChangelogVersion": "0.80.2",
+  "lastChangelogVersion": "1.4.0",
   "defaultThinkingLevel": "off",
   "hideThinkingBlock": false,
   "extensions": [
@@ -14,5 +14,10 @@
     "keepRecentTokens": 8000
   },
   "defaultProvider": "ollama",
-  "theme": "dark"
+  "theme": "dark",
+  "packages": [
+    "npm:pi-vim-editor",
+    "npm:pi-permission-modes",
+    "npm:cc-safety-net"
+  ]
 }
