@@ -337,4 +337,111 @@ start() {
 	tmux
 }
 
+# rollback: interactively undo a pacman transaction using snapper snapshots.
+# zsh heavy stuff so shellcheck is off
+# shellcheck disable=all
+rollback() {
+	# this apprently resets everything that may have drifted in an interactive shell
+	# again apparently this is quite important to use esp. in scripts that do array index work
+	emulate -L zsh
+	setopt pipefail
+
+	local cfg=root
+	sudo -v || return 1
+
+	# Machine readable snapshot list: number, type, pre-number, date, description
+	local raw
+	raw=$(sudo snapper --csvout --separator $'\t' -c $cfg list \
+		--columns number,type,pre-number,date,description) || {
+		print -u2 "rollback: could not read snapper list for config '$cfg'"
+		return 1
+	}
+
+	typeset -A s_type s_date s_desc post_of
+	local line num
+	local -a f
+	for line in ${(f)raw}; do
+		f=("${(@ps:\t:)line}") # keeps empty fields
+		num=${f[1]}
+		[[ $num == <-> ]] || continue # skips the header row
+		s_type[$num]=${f[2]}
+		s_date[$num]=${f[4]}
+		s_desc[$num]=${f[5]}
+		[[ ${f[2]} == post && -n ${f[3]} ]] && post_of[${f[3]}]=$num
+	done
+
+	sudo snapper -c $cfg list
+	print
+
+	read -q "?Would you like to roll back an install? [y/N] " || {
+		print
+		return 0
+	}
+	print
+	print
+
+	local from to
+	read -r "from?From (the snapshot BEFORE the change, usually a 'pre'): "
+	if [[ $from != <-> || $from == 0 || -z ${s_type[$from]} ]]; then
+		print -u2 "rollback: snapshot '$from' does not exist (or is 0, the live system)"
+		return 1
+	fi
+
+	# Default "to" is the matching post snapshot, so a pre/post pair is one Enter away
+	local def=${post_of[$from]:-0}
+	read -r "to?To [$def]: "
+	to=${to:-$def}
+	if [[ $to != <-> || -z ${s_type[$to]} ]]; then
+		print -u2 "rollback: snapshot '$to' does not exist"
+		return 1
+	fi
+	if ((to != 0 && to <= from)); then
+		print -u2 "rollback: 'to' ($to) must be newer than 'from' ($from), or 0 for the live system"
+		return 1
+	fi
+
+	local date_from=${s_date[$from]}
+	local date_to=${s_date[$to]:-now}
+	((to == 0)) && date_to="now (current system)"
+
+	# Preview what will change
+	local changes
+	changes=$(sudo snapper -c $cfg status $from..$to) || return 1
+	local count=${#${(f)changes}}
+
+	print
+	print "Files affected: $count"
+	print -l -- ${${(f)changes}[1,20]}
+	((count > 20)) && print "... and $((count - 20)) more"
+
+	if print -r -- $changes | grep -q '/usr/lib/modules/'; then
+		print
+		print -P "%F{yellow}Warning:%f this range includes kernel modules. /boot is not snapshotted,"
+		print "so after rolling back, reinstall the kernel (sudo pacman -S linux) before rebooting."
+	fi
+
+	print
+	print "System changes from version: $to (${s_desc[$to]:-current}) from date: $date_to will be undone."
+	print "The system will be rolled back to version: $from (${s_desc[$from]}) from date: $date_from."
+	print
+
+	local answer
+	read -r "answer?Type 'confirm' to proceed: "
+	if [[ $answer != confirm ]]; then
+		print "Aborted. Nothing changed."
+		return 0
+	fi
+
+	# Safety net: snapshot the current state first, so the rollback itself can be undone
+	local safety
+	safety=$(sudo snapper -c $cfg create --print-number --cleanup-algorithm number \
+		--description "before rollback $from..$to") || {
+		print -u2 "rollback: could not create safety snapshot, aborting"
+		return 1
+	}
+
+	sudo snapper -c $cfg undochange $from..$to || return 1
+
+	print
+	print "Done. To undo this rollback: sudo snapper -c $cfg undochange $safety..0"
 }
