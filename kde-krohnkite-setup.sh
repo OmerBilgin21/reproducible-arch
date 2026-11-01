@@ -1,18 +1,9 @@
 #!/usr/bin/env bash
 #
 # Ports the keybinds/niceties from config-linux/hypr/ (Hyprland) onto the new
-# Plasma 6 + Krohnkite 0.9.9.2 setup. Idempotent: safe to re-run.
-#
-# What this does NOT touch (Plasma/KWin already handles it natively):
-#   - media keys (volume/brightness/playback) - already bound via kmix/org_kde_powerdevil
-#   - touchpad natural-scroll / clickfinger / scroll speed - per-device group names in
-#     kcminputrc are dynamically generated and unpredictable before first use; set these
-#     once in System Settings > Input Devices > Touchpad instead
-#   - lock screen (already Meta+L), screenshots (already bound to Spectacle via
-#     PrintScreen family), notifications center
+# Plasma 6 + Krohnkite 0.9.9.2 setup. Idempotent.
 #
 # What it deliberately overrides vs. Krohnkite/KWin's shipped defaults, and why,
-# is in the PR/commit message / chat summary, not repeated here.
 #
 # CAVEAT (Plasma 6.8.2): kglobalaccel caches a custom-command component's *first-ever*
 # registered shortcut and silently reverts later kglobalshortcutsrc edits back to it on
@@ -22,8 +13,6 @@
 # you also need to delete ~/.local/share/applications/hypr-port-<id>.desktop, kbuildsycoca6,
 # recreate it, and only then write the new _launch value - i.e. re-run this whole script only
 # after `rm ~/.local/share/applications/hypr-port-*.desktop && kbuildsycoca6`.
-#
-# This is NOT wired into any autostart/login hook - it only ever runs when invoked by hand.
 
 set -euo pipefail
 
