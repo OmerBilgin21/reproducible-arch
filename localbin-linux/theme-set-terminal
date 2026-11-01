@@ -1,6 +1,0 @@
-#!/bin/bash
-
-case "$TERMINAL" in
-"wezterm-gui") killall -SIGUSR2 wezterm-gui ;;
-"foot") ;;
-esac
