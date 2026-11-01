@@ -1,7 +1,0 @@
-#!/bin/bash
-
-clear
-echo -e "\033[32m"
-cat <~/.config/themedir/branding/about.txt
-echo -e "\033[0m"
-echo

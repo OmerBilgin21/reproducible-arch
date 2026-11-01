@@ -50,8 +50,6 @@ intltool
 iwd
 jq
 kate
-konsole
-kvantum-qt5
 less
 lib32-gamemode
 lib32-mangohud
@@ -89,7 +87,6 @@ pipewire-alsa
 pipewire-jack
 pipewire-pulse
 plasma-meta
-playerctl
 plocate
 postgresql-libs
 protontricks
@@ -101,7 +98,6 @@ python-pipx
 qalculate-gtk
 qt5-wayland
 reflector
-resvg
 rlwrap
 rofi
 rofi-calc
@@ -125,7 +121,6 @@ tree-sitter-cli
 ttf-cascadia-mono-nerd
 ttf-dejavu
 ttf-jetbrains-mono-nerd
-udiskie
 ufw
 unixodbc
 unzip
