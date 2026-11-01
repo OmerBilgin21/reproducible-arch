@@ -100,12 +100,22 @@ KWC kwin "Switch to Desktop 10" "Meta+0,none,Switch to Desktop 10"
 # have no raw-keycode equivalent, so symbols it is. These are US QWERTY shift-level-2 symbols
 # - if you're on the "tr" layout when you press this, the produced symbol may differ and the
 # binding won't match; there's no single string that works across both layouts.)
-declare -A desktop_shift_symbol=( [1]="!" [2]="@" [3]="#" [4]='$' [5]="%" [6]="^" [7]="&" [8]="*" [9]="(" [0]=")" )
+# Writing "Meta+!" to kglobalshortcutsrc and calling doRegister is NOT enough - KDE
+# re-displays "Meta+!" as "Meta+Shift+1" (same canonical QKeySequence either way) but the
+# live compositor grab never actually updates from an ini-write + doRegister for an action
+# that already has a registered (even if non-functional) shortcut. The only thing that
+# reliably pushes a live grab is calling setForeignShortcut with the actual Qt key integer -
+# this is what System Settings' own Apply button does under the hood. Qt's key enum mirrors
+# ASCII for printable punctuation, so the integer is just (Meta modifier) + (ascii code).
+declare -A desktop_shift_symbol=([1]="!" [2]="@" [3]="#" [4]='$' [5]="%" [6]="^" [7]="&" [8]="*" [9]="(" [0]=")")
 for i in 1 2 3 4 5 6 7 8 9 0; do
-  n=$i; [[ "$i" == "0" ]] && n=10
-  KWC kwin "Window to Desktop $n" "Meta+${desktop_shift_symbol[$i]},none,Window to Desktop $n"
+  n=$i
+  [[ "$i" == "0" ]] && n=10
+  s="${desktop_shift_symbol[$i]}"
+  key=$((0x10000000 + $(printf '%d' "'$s")))
   gdbus call --session --dest org.kde.kglobalaccel --object-path /kglobalaccel \
-    --method org.kde.KGlobalAccel.doRegister "['kwin', 'Window to Desktop $n', 'KWin', 'Window to Desktop $n']" >/dev/null 2>&1 || true
+    --method org.kde.KGlobalAccel.setForeignShortcut \
+    "['kwin', 'Window to Desktop $n', 'KWin', 'Window to Desktop $n']" "[$key]" >/dev/null
 done
 
 echo "==> Mouse: drag-move/resize anywhere on a window with Meta (was Alt), matching bindm"
@@ -143,19 +153,19 @@ EOF
   KWC "$desktop" _launch "${shortcut},none,${name}"
 }
 
-make_launcher terminal        "Terminal"             "launch-terminal"                                                              "Meta+Return"
-make_launcher filemanager     "File Manager"         "dolphin"                                                                      "Meta+Alt+F"
-make_launcher browser         "Browser"              "launch-browser"                                                               "Meta+B"
-make_launcher activity        "Activity (btop)"      "launch-with-terminal btop"                                                    "Meta+Alt+T"
-make_launcher claude          "Claude"               "launch-or-focus-webapp Claude https://claude.ai/new"                          "Meta+Alt+A"
-make_launcher github          "GitHub"               "launch-or-focus-webapp GitHub https://github.com/OmerBilgin21"               "Meta+Alt+G"
-make_launcher crunchyroll     "Crunchyroll"          "launch-or-focus-webapp Crunchyroll https://www.crunchyroll.com/discover"      "Meta+C"
-make_launcher youtube         "YouTube"              "launch-or-focus-webapp YouTube https://youtube.com/"                          "Meta+Y"
-make_launcher whatsapp        "WhatsApp"             "launch-or-focus-webapp WhatsApp https://web.whatsapp.com/"                    "Alt+W"
-make_launcher netflix         "Netflix"              "launch-or-focus-webapp Netflix https://www.netflix.com/browse"                "Meta+N"
-make_launcher rofi-drun       "App Launcher (rofi)"  "/bin/sh -c 'pkill rofi || rofi -show drun'"                                   "Meta+Space"
-make_launcher rofimoji        "Emoji Picker"         "rofimoji --action=copy"                                                       "Meta+Shift+E"
-make_launcher rofi-calc       "Calculator (rofi)"    "/bin/sh -c \"rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'echo -n {result} | wl-copy'\"" "Meta+Shift+C"
+make_launcher terminal "Terminal" "launch-terminal" "Meta+Return"
+make_launcher filemanager "File Manager" "dolphin" "Meta+Alt+F"
+make_launcher browser "Browser" "launch-browser" "Meta+B"
+make_launcher activity "Activity (btop)" "launch-with-terminal btop" "Meta+Alt+T"
+make_launcher claude "Claude" "launch-webapp https://claude.ai/new" "Meta+Alt+A"
+make_launcher github "GitHub" "launch-webapp https://github.com/OmerBilgin21" "Meta+Alt+G"
+make_launcher crunchyroll "Crunchyroll" "launch-webapp https://www.crunchyroll.com/discover" "Meta+C"
+make_launcher youtube "YouTube" "launch-webapp https://youtube.com/" "Meta+Y"
+make_launcher whatsapp "WhatsApp" "launch-webapp https://web.whatsapp.com/" "Alt+W"
+make_launcher netflix "Netflix" "launch-webapp https://www.netflix.com/browse" "Meta+N"
+make_launcher rofi-drun "App Launcher (rofi)" "/bin/sh -c 'pkill rofi || rofi -show drun'" "Meta+Space"
+make_launcher rofimoji "Emoji Picker" "rofimoji --action=copy" "Meta+Shift+E"
+make_launcher rofi-calc "Calculator (rofi)" "/bin/sh -c \"rofi -show calc -modi calc -no-show-match -no-sort -calc-command 'qdbus6 org.kde.klipper /klipper org.kde.klipper.klipper.setClipboardContents \\\"{result}\\\"'\"" "Meta+Shift+C"
 
 echo "==> Session environment: \$TERMINAL/\$EDITOR aren't exported outside zsh under Plasma"
 mkdir -p ~/.config/plasma-workspace/env
