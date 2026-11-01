@@ -127,3 +127,5 @@ bluetui
 foot
 cloc
 ddcutil
+caddy
+snap-pac
