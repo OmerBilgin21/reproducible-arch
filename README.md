@@ -1,6 +1,6 @@
 # reproducible-arch
 
-Personal Arch Linux dotfiles for a Hyprland + NVIDIA setup. Includes my development tooling alongside.
+Personal Arch Linux dotfiles for a KDE plasma + NVIDIA setup. Includes my development tooling alongside.
 
 ## Neovim Plugin Vendoring
 
@@ -19,7 +19,6 @@ All plugins remain the property of their respective authors:
 - [flatten.nvim](https://github.com/willothy/flatten.nvim) — willothy
 - [godoc.nvim](https://github.com/fredrikaverpil/godoc.nvim) — fredrikaverpil
 - [grug-far.nvim](https://github.com/MagicDuck/grug-far.nvim) — MagicDuck
-- [harpoon](https://github.com/ThePrimeagen/harpoon) — ThePrimeagen
 - [lazydev.nvim](https://github.com/folke/lazydev.nvim) — folke
 - [mason.nvim](https://github.com/williamboman/mason.nvim) — williamboman
 - [mini.pairs](https://github.com/echasnovski/mini.pairs) — echasnovski
