@@ -1,11 +1,6 @@
-alias rc='nvim ~/reproducible-arch/zsh/.zshrc'
-alias aliases='nvim ~/reproducible-arch/zsh/.zsh_aliases'
-alias envs='nvim ~/reproducible-arch/zsh/.zshenv'
 alias so='source ~/.zshrc'
 alias pg='cd ~/projects/playground;nvim'
 alias repr='cd ~/reproducible-arch;nvim'
-alias nvc="cd ~/reproducible-arch/config/nvim;nvim"
-
 alias lg='lazygit'
 alias lt='eza --tree --level=2 --long --icons --git'
 alias nrt='npm run test'
@@ -17,18 +12,41 @@ alias l='eza --icons=auto -a --group-directories-first --show-symlinks --grid --
 alias ls='l'
 alias ld='lazydocker'
 alias m='make'
-alias e='exit'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias createDb="createdb -h localhost -U omer -O omer"
 alias cfmd='qins;nr tsc;nr lint'
-alias pacc='pkg-install'
-alias aur='pkg-aur-install'
 alias cat='bat'
+alias e='exit'
 alias exot='exit'
 alias exut='exit'
 alias d='n ~/Documents/log.txt'
+
+aur() {
+	local fzf_args=(
+		--multi
+		--preview 'yay -Siia {1}'
+		--preview-label='alt-p: toggle description, alt-b/B: toggle PKGBUILD, alt-j/k: scroll, tab: multi-select, F11: maximize'
+		--preview-label-pos='bottom'
+		--preview-window 'down:65%:wrap'
+		--bind 'alt-p:toggle-preview'
+		--bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
+		--bind 'alt-k:preview-up,alt-j:preview-down'
+		--bind 'alt-b:change-preview:yay -Gpa {1} | tail -n +5'
+		--bind 'alt-B:change-preview:yay -Siia {1}'
+		--color 'pointer:green,marker:green'
+	)
+
+	local pkg_names=$(yay -Slqa | fzf "${fzf_args[@]}")
+
+	if [[ -n "$pkg_names" ]]; then
+		# Convert newline-separated selections to space-separated for yay
+		echo "$pkg_names" | tr '\n' ' ' | xargs yay -S --noconfirm
+		sudo updatedb
+		show-done
+	fi
+}
 
 pac() {
 	local fzf_args=(
@@ -43,11 +61,32 @@ pac() {
 		--color 'pointer:green,marker:green'
 	)
 
-	pkg_names=$(pacman -Slq | fzf "${fzf_args[@]}")
+	local pkg_names=$(pacman -Slq | fzf "${fzf_args[@]}")
+
+	if [[ -n "$pkg_names" ]]; then
+		echo "$pkg_names" | tr '\n' ' ' | xargs sudo pacman -S --noconfirm
+	fi
+}
+
+remove() {
+	local fzf_args=(
+		--multi
+		--preview 'yay -Qi {1}'
+		--preview-label='alt-p: toggle description, alt-j/k: scroll, tab: multi-select, F11: maximize'
+		--preview-label-pos='bottom'
+		--preview-window 'down:65%:wrap'
+		--bind 'alt-p:toggle-preview'
+		--bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
+		--bind 'alt-k:preview-up,alt-j:preview-down'
+		--color 'pointer:red,marker:red'
+	)
+
+	local pkg_names=$(yay -Qqe | fzf "${fzf_args[@]}")
 
 	if [[ -n "$pkg_names" ]]; then
 		# Convert newline-separated selections to space-separated for yay
-		echo "$pkg_names" | tr '\n' ' ' | xargs sudo pacman -S --noconfirm
+		echo "$pkg_names" | tr '\n' ' ' | xargs sudo pacman -Rns --noconfirm
+		show-done
 	fi
 }
 
@@ -91,10 +130,6 @@ claudeLocal() {
 	claude --settings '{"env":{"CLAUDE_CODE_ATTRIBUTION_HEADER":"0","CLAUDE_CODE_ENABLE_TELEMETRY":"0","CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC":"1"}}' --model bonsai2 --exclude-dynamic-system-prompt-sections "$@"
 }
 
-monitorbrightness() {
-	ddcutil setvcp 10 "$@"
-}
-
 _lock_hash() {
 	{
 		shasum -a 256 package-lock.json
@@ -105,18 +140,6 @@ _lock_hash() {
 		fi
 		node -v
 	} | shasum -a 256 | cut -d' ' -f1
-}
-
-check() {
-	[[ -f package-lock.json ]] || {
-		echo "no package-lock.json here"
-		return 1
-	}
-	if [[ -f node_modules/.lock-hash && "$(<node_modules/.lock-hash)" == "$(_lock_hash)" ]]; then
-		echo "deps unchanged"
-	else
-		echo "deps changed"
-	fi
 }
 
 qins() {
@@ -132,30 +155,6 @@ qins() {
 
 	npm i --prefer-offline --no-fund --no-audit --loglevel=error --progress=false --no-update-notifier "$@" &&
 		_lock_hash >node_modules/.lock-hash
-}
-
-oo() {
-	export OLLAMA_FLASH_ATTENTION=1
-	export OLLAMA_KV_CACHE_TYPE=q4_0
-	export OLLAMA_NO_CLOUD=1
-	# export OLLAMA_MAX_LOADED_MODELS=1
-	# export OLLAMA_NUM_PARALLEL=1
-	export OLLAMA_HOST=0.0.0.0:11434
-
-	ollama serve
-}
-
-oc() {
-	export OLLAMA_FLASH_ATTENTION=1
-	export OLLAMA_KV_CACHE_TYPE=q4_0
-	export OLLAMA_GPU_OVERHEAD=0
-	export OLLAMA_NO_CLOUD=1
-	export OLLAMA_MAX_LOADED_MODELS=1
-	export OLLAMA_NUM_PARALLEL=1
-	export OLLAMA_KEEP_ALIVE=-1
-	export OLLAMA_HOST=0.0.0.0:11434
-
-	ollama serve
 }
 
 tss() {
@@ -230,7 +229,7 @@ installed() {
 	sudo pacman -Qe
 }
 
-cleanupDeps() {
+removeorphans() {
 	sudo pacman -Rns $(pacman -Qdtq)
 }
 
@@ -324,14 +323,9 @@ format-drive() {
 	fi
 }
 
-# Transcode a video to a good-balance 1080p that's great for sharing online
+# Transcode a video to a good-balance 1080p
 transcode-video-1080p() {
 	ffmpeg -i "$1" -vf scale=1920:1080 -c:v libx264 -preset fast -crf 23 -c:a copy "${1%.*}"-1080p.mp4
-}
-
-# Transcode a video to a good-balance 4K that's great for sharing online
-transcode-video-4K() {
-	ffmpeg -i "$1" -c:v libx265 -preset slow -crf 24 -c:a aac -b:a 192k "${1%.*}"-optimized.mp4
 }
 
 # Transcode any image to JPG image that's great for shrinking wallpapers
@@ -339,12 +333,10 @@ img2jpg() {
 	magick "$1" -quality 95 -strip "${1%.*}".jpg
 }
 
-# Transcode any image to JPG image that's great for sharing online without being too big
 img2jpg-small() {
 	magick "$1" -resize 1080x\> -quality 95 -strip "${1%.*}".jpg
 }
 
-# Transcode any image to compressed-but-lossless PNG
 img2png() {
 	magick "$1" -strip -define png:compression-filter=5 \
 		-define png:compression-level=9 \
