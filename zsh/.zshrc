@@ -21,9 +21,11 @@ chpwd_functions=(${chpwd_functions:#_mise_hook_chpwd})
 # shfmt fmt:on
 
 if [[ $- == *i* ]]; then
-  eval "$(starship init zsh)"
-  eval "$(rg --generate=complete-zsh)"
-  eval "$(zoxide init zsh --cmd cd)"
+	eval "$(starship init zsh)"
+	eval "$(rg --generate=complete-zsh)"
+	eval "$(zoxide init zsh --cmd cd)"
+	eval "$(caddy completion zsh)"
+	# eval "$(rea completion zsh)"
 fi
 
 # shellcheck disable=SC2034
