@@ -6,6 +6,7 @@
       "ctrl-b": ["workspace::SendKeystrokes", "ctrl-space ctrl-b"],
       "shift-tab": "terminal_panel::Toggle",
       "alt-f": "projects::OpenRecent",
+      "alt-e": "editor::ToggleFocus",
     },
   },
   {
