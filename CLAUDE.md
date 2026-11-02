@@ -28,6 +28,24 @@ Formatting/linting is editor-driven (conform.nvim + nvim-lint), not script-drive
 
 The only package-manager project is `pi-stuff/extensions` (`npm run lint`, `npm run tsc`, `npm run format`).
 
+## Changing KDE/KWin/Krohnkite settings
+
+Any request to change a KWin global shortcut, window rule, Krohnkite setting, or other
+live-system KDE config is a two-step job, in this order:
+
+1. **Apply and verify it live first**, via whatever actually works for that setting
+   (`kwriteconfig6` + `qdbus6 org.kde.KWin /KWin reconfigure`, `gdbus call ... setForeignShortcut`
+   for shortcuts that are already registered, a throwaway KWin JS script loaded via
+   `org.kde.KWin.Scripting.loadScript` to inspect live window/rule state, etc.). Confirm it
+   actually took effect on the running session — don't assume a config write alone is enough;
+   several of these (kglobalaccel especially) silently no-op on a plain ini edit. Report success
+   or failure to the user based on the live result, not the file write.
+2. **Once confirmed working, add that exact working version to `kde-krohnkite-setup.sh`** (new
+   function/section as needed) so it's reproducible on a fresh install or after a re-run, not
+   just a one-off hand fix. Don't add a version you haven't verified live - if the straightforward
+   approach silently no-ops (common with kglobalaccel), find the one that actually works before
+   writing it into the script.
+
 ## Stow layout — the central convention
 
 Directory name encodes both the target and the platform. `stow.sh`/`re-stow.sh` map them as:
