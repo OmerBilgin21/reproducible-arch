@@ -28,6 +28,7 @@ return {
         "black",
         "sqlfmt",
         "prettier",
+        "gofumpt",
         "gofmt",
         "jq",
       }
