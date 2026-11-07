@@ -13,7 +13,7 @@ return {
       typescript = { "prettier" },
       typescriptreact = { "prettier" },
       sql = { "sqlfmt" },
-      go = { "gofmt" },
+      go = { "gofumpt", "gofmt" },
       json = { "jq" },
     },
     default_format_opts = {
@@ -25,8 +25,7 @@ return {
         command = "shfmt",
         args = function(_, ctx)
           local args = { "-ln=zsh", "-filename", "$FILENAME" }
-          local has_editorconfig = vim.fs.find(".editorconfig", { path = ctx.dirname, upward = true })[1]
-            ~= nil
+          local has_editorconfig = vim.fs.find(".editorconfig", { path = ctx.dirname, upward = true })[1] ~= nil
           if not has_editorconfig and vim.bo[ctx.buf].expandtab then
             vim.list_extend(args, { "-i", ctx.shiftwidth })
           end
