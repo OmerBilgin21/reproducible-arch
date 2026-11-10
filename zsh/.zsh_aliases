@@ -157,6 +157,24 @@ qins() {
 		_lock_hash >node_modules/.lock-hash
 }
 
+refresh() {
+	git fetch
+	git pull
+	qins
+}
+
+co() {
+	if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
+		echo "uncommitted changes, not checking out"
+		git status --short --untracked-files=no
+		return 1
+	fi
+
+	git fetch
+	git checkout "$1"
+	qins
+}
+
 tss() {
 	npx ts-node main.ts
 }
