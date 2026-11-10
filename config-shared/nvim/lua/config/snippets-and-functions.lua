@@ -39,7 +39,7 @@ _G.appendTables = function(destination, source)
 end
 
 _G.is_home = function()
-  return true
+  return vim.system({ "uname", "-s" }, { text = true }):wait().stdout ~= "Linux"
 end
 
 _G.override_defaults = require("config.override_defaults")
