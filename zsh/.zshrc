@@ -5,7 +5,6 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 # shellcheck disable=SC1091
 source "${ZINIT_HOME}/zinit.zsh"
 
-autoload -Uz compinit && compinit
 repo_dir="$HOME/reproducible-arch"
 source "$repo_dir/zsh/.zshenv"
 source "$repo_dir/zsh/.zshsecrets"
@@ -13,23 +12,15 @@ source "$repo_dir/zsh/.zsh_vi_mode"
 source "$repo_dir/zsh/.zsh_aliases"
 
 eval "$(mise activate zsh)"
-# shfmt fmt:off #
+# shfmt fmt:off
 # shellcheck disable=SC2206
 precmd_functions=(${precmd_functions:#_mise_hook_precmd})
 # shellcheck disable=SC2206
 chpwd_functions=(${chpwd_functions:#_mise_hook_chpwd})
 # shfmt fmt:on
 
-if [[ $- == *i* ]]; then
-	eval "$(starship init zsh)"
-	eval "$(rg --generate=complete-zsh)"
-	eval "$(zoxide init zsh --cmd cd)"
-	eval "$(caddy completion zsh)"
-	# eval "$(rea completion zsh)"
-fi
-
 # shellcheck disable=SC2034
-typeset -U path PATH
+typeset -U path PATH fpath
 
 export MANPAGER="sh -c 'awk '\''{ gsub(/\x1B\[[0-9;]*m/, \"\", \$0); gsub(/.\x08/, \"\", \$0); print }'\'' | bat -p -lman'"
 
@@ -41,6 +32,19 @@ zinit light Aloxaf/fzf-tab
 zinit snippet OMZP::git
 zinit snippet OMZP::vi-mode
 
+autoload -Uz compinit && compinit
+
+if [[ $- == *i* ]]; then
+	eval "$(starship init zsh)"
+	eval "$(rg --generate=complete-zsh)"
+	eval "$(zoxide init zsh --cmd cd)"
+	# shellcheck disable=SC2154
+	if (($+commands[caddy])); then
+		eval "$(caddy completion zsh)"
+	fi
+	# eval "$(rea completion zsh)"
+fi
+
 # Plugin configs
 zinit cdreplay -q
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
@@ -49,7 +53,6 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 # shellcheck disable=SC2016
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
-
 # needs to be after plugin setup
 # shellcheck disable=SC1094
 source "$repo_dir/home-shared/fzf-completion.zsh"
