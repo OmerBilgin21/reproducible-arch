@@ -72,7 +72,10 @@
           "id": "qwen3.6-35b-a3b-vl",
           "name": "Qwen3.6 35B A3B VL",
           "reasoning": true,
-          "input": ["text", "image"],
+          "input": [
+            "text",
+            "image"
+          ],
           "contextWindow": 262144,
           "maxTokens": 8192,
           "cost": {
@@ -101,6 +104,64 @@
           "reasoning": true,
           "contextWindow": 91904,
           "maxTokens": 8192,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    },
+    "aibox": {
+      "name": "Qwen3.8 27B (aibox, remote via tailscale)",
+      "baseUrl": "https://aibox.tail430415.ts.net:8443/v1",
+      "api": "openai-completions",
+      "apiKey": "none",
+      "compat": {
+        "supportsDeveloperRole": false,
+        "thinkingFormat": "chat-template",
+        "chatTemplateKwargs": {
+          "enable_thinking": {
+            "$var": "thinking.enabled"
+          },
+          "reasoning_effort": {
+            "$var": "thinking.effort"
+          }
+        }
+      },
+      "models": [
+        {
+          "id": "/home/aibox/models/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf",
+          "name": "Qwen3.8 27B",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 196608,
+          "maxTokens": 8192,
+          "thinkingLevelMap": {
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": null,
+            "xhigh": "xhigh",
+            "max": null
+          },
+          "samplingParams": {
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "top_k": 20,
+            "min_p": 0
+          },
+          "samplingParamsByThinkingLevel": {
+            "off": {
+              "temperature": 0.7,
+              "top_p": 0.8,
+              "presence_penalty": 1.5
+            }
+          },
           "cost": {
             "input": 0,
             "output": 0,

@@ -1,23 +1,23 @@
 {
-  "defaultModel": "qwen3.5-9b-66kctx",
-  "lastChangelogVersion": "1.4.0",
+  "defaultModel": "/home/aibox/models/Qwen3.8-27B-GSQ-RCO-IQ3_S-mtp.gguf",
+  "lastChangelogVersion": "1.5.0",
   "defaultThinkingLevel": "off",
   "hideThinkingBlock": false,
-  "extensions": [
-    "/home/oemer/reproducible-arch/pi-stuff/extensions/websearch.ts",
-    "/home/oemer/reproducible-arch/pi-stuff/extensions/permission-gate.ts",
-    "/home/oemer/reproducible-arch/pi-stuff/extensions/full-page-search.ts"
-  ],
+  "extensions": [],
   "compaction": {
     "enabled": true,
     "reserveTokens": 4096,
     "keepRecentTokens": 8000
   },
-  "defaultProvider": "ollama",
+  "defaultProvider": "aibox",
   "theme": "dark",
   "packages": [
     "npm:pi-vim-editor",
     "npm:pi-permission-modes",
-    "npm:cc-safety-net"
-  ]
+    "npm:cc-safety-net",
+    "npm:pi-voice-stt"
+  ],
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-permission-modes\",\"scope\":\"user\"}": "2.7.2"
+  }
 }

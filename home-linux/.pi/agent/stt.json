@@ -1,0 +1,8 @@
+{
+  "provider": {
+    "type": "openai-compatible",
+    "endpoint": "https://aibox.tail430415.ts.net:8445/v1/audio/transcriptions",
+    "model": "qwen3-asr",
+    "apiKeyEnv": "asd"
+  }
+}

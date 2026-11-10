@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "search-mcp": {
+      "url": "https://aibox.tail430415.ts.net:3900/mcp",
+      "description": "Web search/fetch and German online-shopping research: Amazon.de search/pricing, price history, cross-shop comparison, review sources, MediaMarkt/Saturn store availability"
+    }
+  }
+}
