@@ -36,8 +36,10 @@ return {
         shade_terminals = false,
       }
 
+      local claude_cmd = is_home() and "pi" or "claude"
+
       local claude_setup = vim.tbl_extend("force", {}, right_side_offcanvas_terminal_setup, {
-        cmd = "claude",
+        cmd = claude_cmd,
         title = "Claude",
         id = 999,
       })
