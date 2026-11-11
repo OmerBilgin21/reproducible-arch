@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Launch Pi Web (https://github.com/agegr/pi-web) on a free port.
+#
+# Usage: runpi-web [port]
+#   - with no argument, picks the first free port from 30141 upward
+#   - prints the URL and opens it in the default browser's app window
+#
+# The pi-web package is installed on demand (and refreshed when a newer
+# version exists) into ~/.local/share/pi-web.
+
+set -euo pipefail
+
+if ! command -v node >/dev/null; then
+  echo "runpi-web: node not found in PATH" >&2
+  exit 1
+fi
+
+INSTALL_DIR="$HOME/.local/share/pi-web"
+DEFAULT_PORT=30141
+port="${1:-}"
+
+# --- install / update pi-web ---------------------------------------------
+installed="$(node -p "require('$INSTALL_DIR/package.json').version" 2>/dev/null || true)"
+latest="$(npm view @agegr/pi-web version 2>/dev/null || true)"
+
+if [ -z "$installed" ]; then
+  echo "runpi-web: installing @agegr/pi-web@${latest:-latest} into $INSTALL_DIR" >&2
+  mkdir -p "$INSTALL_DIR"
+  (cd "$INSTALL_DIR" && npm install --no-audit --no-fund "@agegr/pi-web@${latest:-latest}")
+elif [ -n "$latest" ] && [ "$installed" != "$latest" ]; then
+  echo "runpi-web: updating @agegr/pi-web $installed -> $latest" >&2
+  (cd "$INSTALL_DIR" && npm install --no-audit --no-fund "@agegr/pi-web@$latest")
+else
+  echo "runpi-web: using @agegr/pi-web $installed" >&2
+fi
+
+PIWEB="$INSTALL_DIR/node_modules/.bin/pi-web"
+[ -x "$PIWEB" ] || {
+  echo "runpi-web: $PIWEB not found after install" >&2
+  exit 1
+}
+
+# --- pick a free port -----------------------------------------------------
+if [ -z "$port" ]; then
+  port=$(node -e '
+        const net = require("net");
+        for (let p = Number(process.argv[1]); p < Number(process.argv[1]) + 100; p++) {
+            const srv = net.createServer();
+            try { srv.listen(p, "127.0.0.1"); srv.close(); console.log(p); process.exit(0); }
+            catch {}
+        }
+        process.exit(1);
+    ' "$DEFAULT_PORT")
+fi
+
+url="http://127.0.0.1:$port"
+echo "runpi-web: $url (Ctrl-C to stop)" >&2
+
+# open in an app window of the default browser, like launch-webapp does
+browser=$(xdg-settings get default-web-browser 2>/dev/null || true)
+case "$browser" in
+google-chrome* | brave-browser* | microsoft-edge* | opera* | vivaldi*) ;;
+*) browser="brave-origin.desktop" ;;
+esac
+bin="$(sed -n 's/^Exec=\([^ ]*\).*/\1/p' \
+  {~/.local,~/.nix-profile,/usr}/share/applications/$browser 2>/dev/null | head -1)"
+[ -n "$bin" ] && setsid "$bin" --app="$url" >/dev/null 2>&1 &
+
+exec "$PIWEB" --no-open --port "$port"
