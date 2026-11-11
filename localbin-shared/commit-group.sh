@@ -21,6 +21,18 @@ shift
   exit 2
 }
 
+case "$MESSAGE" in
+  *$'\n'*)
+    echo "Commit message must be a single line, with no body." >&2
+    exit 2
+    ;;
+esac
+
+[ "${#MESSAGE}" -le 90 ] || {
+  echo "Commit message is ${#MESSAGE} characters; keep it within 90." >&2
+  exit 2
+}
+
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
   {
     echo "Not inside a git work tree." >&2

@@ -15,7 +15,8 @@
     "npm:pi-vim-editor",
     "npm:pi-permission-modes",
     "npm:cc-safety-net",
-    "npm:pi-voice-stt"
+    "npm:pi-voice-stt",
+    "npm:pi-ask-user"
   ],
   "extensionChangelogVersions": {
     "{\"source\":\"npm:pi-permission-modes\",\"scope\":\"user\"}": "2.7.2"
