@@ -4,3 +4,4 @@ node_modules
 *.elc
 localbin*/allow-chained-allowlist
 go-tools/prPicker/prPicker
+.claude
