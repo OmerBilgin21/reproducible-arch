@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+WORK=$((45 * 60))
+MOVE=$((2 * 60))
+STAND_EVERY=$((2 * 60 * 60))
+STAND_FOR=$((375 * 60 / 10))
+RING_SECONDS=5
+SPEEDUP=1
+
+if [[ "$1" == "test" ]]; then
+  SPEEDUP=600
+  RING_SECONDS=0
+fi
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  MOVE_SOUND=/System/Library/Sounds/Hero.aiff
+  WORK_SOUND=/System/Library/Sounds/Submarine.aiff
+  STAND_SOUND=/System/Library/Sounds/Ping.aiff
+  SIT_SOUND=/System/Library/Sounds/Purr.aiff
+  play() { afplay "$1"; }
+else
+  SOUNDS=/usr/share/sounds/freedesktop/stereo
+  MOVE_SOUND=$SOUNDS/alarm-clock-elapsed.oga
+  WORK_SOUND=$SOUNDS/complete.oga
+  STAND_SOUND=$SOUNDS/service-login.oga
+  SIT_SOUND=$SOUNDS/service-logout.oga
+  play() { pw-play "$1"; }
+fi
+
+nap() {
+  local cs=$(($1 * 100 / SPEEDUP))
+  sleep "$(printf '%d.%02d' $((cs / 100)) $((cs % 100)))"
+}
+
+log() {
+  printf '[%s] %s\n' "$(date +%H:%M:%S)" "$1"
+}
+
+ring() {
+  local end=$((SECONDS + RING_SECONDS))
+  while play "$1" && ((SECONDS < end)); do :; done
+}
+
+to_move=$WORK
+to_desk=$STAND_EVERY
+standing=false
+
+log work
+while :; do
+  step=$((to_move < to_desk ? to_move : to_desk))
+  nap "$step"
+  to_move=$((to_move - step))
+  to_desk=$((to_desk - step))
+
+  if ((to_desk == 0)); then
+    if $standing; then
+      log sit
+      ring "$SIT_SOUND"
+      standing=false
+      to_desk=$((STAND_EVERY - STAND_FOR))
+    else
+      log stand
+      ring "$STAND_SOUND"
+      standing=true
+      to_desk=$STAND_FOR
+    fi
+  fi
+
+  if ((to_move == 0)); then
+    log move
+    ring "$MOVE_SOUND"
+    nap "$MOVE"
+    log work
+    ring "$WORK_SOUND"
+    to_move=$WORK
+  fi
+done
