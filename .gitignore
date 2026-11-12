@@ -5,3 +5,4 @@ node_modules
 localbin*/allow-chained-allowlist
 go-tools/prPicker/prPicker
 .claude
+sessions
