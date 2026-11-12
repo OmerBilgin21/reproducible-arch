@@ -19,11 +19,14 @@ function M.tabline()
     end
     s = s .. "%" .. i .. "T"
     s = s .. " " .. i .. " "
-    local buflist = vim.fn.tabpagebuflist(i)
-    local winnr = vim.fn.tabpagewinnr(i)
-    local bufname = vim.fn.bufname(buflist[winnr])
-    local filename = bufname ~= "" and vim.fn.fnamemodify(bufname, ":t") or "[No Name]"
-    s = s .. filename .. " "
+    local name = vim.fn.gettabvar(i, "name")
+    if name == "" then
+      local buflist = vim.fn.tabpagebuflist(i)
+      local winnr = vim.fn.tabpagewinnr(i)
+      local bufname = vim.fn.bufname(buflist[winnr])
+      name = bufname ~= "" and vim.fn.fnamemodify(bufname, ":t") or "[No Name]"
+    end
+    s = s .. name .. " "
   end
   s = s .. "%#TabLineFill#%T"
   return s

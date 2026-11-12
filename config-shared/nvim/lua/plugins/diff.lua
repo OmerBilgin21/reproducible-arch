@@ -2,9 +2,6 @@ return {
   {
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
-    config = function()
-      require("custom.pr-review").setup()
-    end,
     keys = {
       {
         "<leader>do",
@@ -15,63 +12,6 @@ return {
         "<leader>dc",
         "<CMD>DiffviewClose<CR>",
         desc = "Close Diffview",
-      },
-      {
-        "<leader>crs",
-        function()
-          require("custom.pr-review").start()
-        end,
-        desc = "Review branch with claude-code",
-      },
-      {
-        "<leader>cra",
-        function()
-          require("custom.pr-review").add_comment()
-        end,
-        mode = { "n", "x" },
-        desc = "PR review: add comment",
-      },
-      {
-        "<leader>crv",
-        function()
-          require("custom.pr-review").mark_viable()
-        end,
-        desc = "PR review: mark claude comment viable",
-      },
-      {
-        "<leader>crd",
-        function()
-          require("custom.pr-review").discard()
-        end,
-        desc = "PR review: discard comment",
-      },
-      {
-        "<leader>crp",
-        function()
-          require("custom.pr-review").peek()
-        end,
-        desc = "PR review: peek comment",
-      },
-      {
-        "<leader>cre",
-        function()
-          require("custom.pr-review").edit_comment()
-        end,
-        desc = "PR review: reword comment",
-      },
-      {
-        "<leader>crr",
-        function()
-          require("custom.pr-review").submit()
-        end,
-        desc = "PR review: submit review",
-      },
-      {
-        "<leader>crl",
-        function()
-          require("custom.pr-review").list()
-        end,
-        desc = "PR review: list the comments",
       },
     },
   },

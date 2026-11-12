@@ -35,6 +35,7 @@ gamemode
 git
 github-cli
 glib2-devel
+glow
 gnome-keyring
 gobject-introspection
 greetd-tuigreet

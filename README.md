@@ -33,7 +33,6 @@ All plugins remain the property of their respective authors:
 - [onedarkpro.nvim](https://github.com/olimorris/onedarkpro.nvim) — olimorris
 - [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) — nvim-lua
 - [print-debugger.nvim](https://github.com/oemer/print-debugger.nvim) — oemer (my own plugin)
-- [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) — MeanderingProgrammer
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) — nvim-telescope
 - [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) — akinsho
 - [trouble.nvim](https://github.com/folke/trouble.nvim) — folke

@@ -87,4 +87,4 @@ Consequences when adding something:
 
 lazy.nvim with `root` pointed at `config-shared/nvim/plugin-code/`: **all plugins are vendored into this repo** (see README for the credit list), and a `LazyUpdate` autocmd strips their `.git` dirs so they stay plain files. So a plugin update is a content change in this repo, and `plugin-code/` is excluded from telescope searches (`!plugin-code/`) and from lua-ls (`ignoreDir`). Don't treat files under `plugin-code/` as this repo's code and don't reformat them.
 
-Own code: `lua/config/` (presets, keymaps, snippets, landing screen), `lua/plugins/` (one file per concern, returning lazy specs), `lua/custom/` (first-party modules — `pr-review.lua`, a gh-cli + diffview PR review flow; `lsp-idle.lua`, currently commented out).
+Own code: `lua/config/` (presets, keymaps, snippets, landing screen), `lua/plugins/` (one file per concern, returning lazy specs), `lua/custom/` (first-party modules — `tuicr.lua`, a `<leader>crs` tab running tuicr beside a fresh claude that runs `/custom-review` and posts findings into the tuicr session; `lsp-idle.lua`, currently commented out).

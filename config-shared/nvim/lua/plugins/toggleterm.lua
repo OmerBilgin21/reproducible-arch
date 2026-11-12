@@ -6,6 +6,7 @@ return {
       local tt = require("toggleterm")
       local term = require("toggleterm.terminal")
       local Terminal = require("toggleterm.terminal").Terminal
+      local tuicr = require("custom.tuicr")
 
       local base_setup = {
         size = function(term_opts)
@@ -144,7 +145,44 @@ return {
         lazygit:toggle()
       end)
 
+      local glow
+      vim.keymap.set("n", "<leader>vm", function()
+        local is_markdown = vim.bo.filetype == "markdown"
+        local cmd = "glow -t " .. vim.fn.shellescape(vim.fn.expand("%:p"))
+        if glow and (glow.cmd == cmd or not is_markdown) then
+          glow:toggle(vim.o.columns * 0.5)
+          return
+        end
+        if not is_markdown then
+          return
+        end
+        if glow then
+          glow:shutdown()
+        end
+        glow = Terminal:new({
+          cmd = cmd,
+          direction = "vertical",
+          hidden = true,
+          title = "Glow",
+          on_open = function()
+            vim.schedule(function()
+              vim.cmd("wincmd p")
+              vim.cmd("stopinsert")
+            end)
+          end,
+        })
+        glow:open(vim.o.columns * 0.5)
+      end, { desc = "preview markdown with glow" })
+
+      vim.keymap.set("n", "<leader>crs", function()
+        tuicr.open()
+      end, { desc = "Review with tuicr and claude" })
+
       vim.keymap.set({ "n", "t" }, "<C-Space>", function()
+        if tuicr.in_tab() then
+          tuicr.toggle_claude()
+          return
+        end
         claude:toggle()
       end)
 
